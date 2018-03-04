@@ -3,7 +3,7 @@
 import app
 from scene import Scene
 
-GEN_BINARY = False
+GEN_BINARY = True
 
 if __name__ == '__main__':
     if not GEN_BINARY:
@@ -18,4 +18,4 @@ if __name__ == '__main__':
         app.run()
     else:
         scene = Scene('Scene/hello.yaml')
-        scene.generate_binary(ram_base_addr = 0xF0000000)
+        scene.generate_binary(target_folder='../Debug/hello.generated/', ram_base_addr = 0xF0000000)

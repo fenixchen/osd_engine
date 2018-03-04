@@ -39,6 +39,7 @@ const u8 PIXEL_FORMAT_GRAY_SCALE = 2;
 const u8 PIXEL_FORMAT_LUT = 3;
 
 struct _osd_scene {
+    u16 width, height;
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *window[OSD_SCENE_MAX_WINDOW_COUNT];
@@ -176,7 +177,7 @@ struct _osd_window {
 };
 
 
-EXTERNC osd_scene *osd_scene_new(u8 *data, u32 size);
+EXTERNC osd_scene *osd_scene_new(const char *target_folder);
 
 EXTERNC void osd_scene_delete(osd_scene *scene);
 
