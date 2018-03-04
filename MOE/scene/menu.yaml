@@ -1,0 +1,141 @@
+OSD:
+  width: 640
+  height: 480
+
+  Palettes:
+    - Palette:
+        id: rgb24
+        colors: RGB24
+
+  Ingredients:
+    - Bitmap:
+        id: arraw_right
+        palette: rgb24
+        bitmaps: 'images/arrow_right.jpg'
+
+    - Glyph:
+        id: char_M
+        font_width: 14
+        color: 0x000000
+        char: 'M'
+    - Glyph:
+        id: char_E
+        font_width: 14
+        color: 0x000000
+        char: 'E'
+    - Glyph:
+        id: char_N
+        font_width: 14
+        color: 0x000000
+        char: 'N'
+    - Glyph:
+        id: char_U
+        font_width: 14
+        color: 0x000000
+        char: 'U'
+    - Glyph:
+        id: char_1
+        font_width: 14
+        color: 0x000000
+        char: '1'
+    - Glyph:
+        id: char_2
+        font_width: 14
+        color: 0x000000
+        char: '2'
+    - Glyph:
+        id: char_3
+        font_width: 14
+        color: 0x000000
+        char: '3'
+    - Glyph:
+        id: char_4
+        font_width: 14
+        color: 0x000000
+        char: '4'
+    - Glyph:
+        id: char_5
+        font_width: 14
+        color: 0x000000
+        char: '5'
+    - Glyph:
+        id: char_6
+        font_width: 14
+        color: 0x000000
+        char: '6'
+
+    - Rectangle:
+        id: rect_inactive
+        width: parent
+        height: 18
+        border_weight: 1
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0x808080, 0xA0A0A0]
+        gradient_mode: LEFT_TO_RIGHT
+
+    - Rectangle:
+        id: rect_active
+        width: parent
+        height: 18
+        border_weight: 1
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0xD0D0D0, 0xF0F0F0]
+        gradient_mode: LEFT_TO_RIGHT
+
+
+  Windows:
+    - Window:
+        id: arraw
+        x: 50
+        y: 140
+        width: 42
+        height: 18
+        palette: rgb24
+        blocks:
+          - [b1, arraw_right, 0, 0]
+
+    - Window:
+        id: menu0
+        x: 100
+        y: 100
+        width: 200
+        height: 400
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b1, rect_inactive, 0, 0]
+          - [b1, char_M,     5,  5]
+          - [b1, char_E,     20, 5]
+          - [b1, char_N,     35, 5]
+          - [b1, char_U,     50, 5]
+          - [b1, char_1,     65, 5]
+
+          - [b1, rect_inactive, 0, 20]
+          - [b1, char_M,     5,  25]
+          - [b1, char_E,     20, 25]
+          - [b1, char_N,     35, 25]
+          - [b1, char_U,     50, 25]
+          - [b1, char_2,     65, 25]
+
+
+          - [b1, rect_active,   0, 40]
+          - [b1, char_M,     5,  45]
+          - [b1, char_E,     20, 45]
+          - [b1, char_N,     35, 45]
+          - [b1, char_U,     50, 45]
+          - [b1, char_3,     65, 45]
+
+          - [b1, rect_inactive, 0, 60]
+          - [b1, char_M,     5,  65]
+          - [b1, char_E,     20, 65]
+          - [b1, char_N,     35, 65]
+          - [b1, char_U,     50, 65]
+          - [b1, char_4,     65, 65]
+
+          - [b1, rect_inactive, 0, 80]
+          - [b1, char_M,     5,  85]
+          - [b1, char_E,     20, 85]
+          - [b1, char_N,     35, 85]
+          - [b1, char_U,     50, 85]
+          - [b1, char_5,     65, 85]
+

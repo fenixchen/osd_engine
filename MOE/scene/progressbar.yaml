@@ -1,0 +1,107 @@
+OSD:
+  width: 640
+  height: 480
+
+  Palettes:
+    - Palette:
+        id: rgb24
+        colors: RGB24
+
+  Ingredients:
+    - Bitmap:
+        id: arraw_right
+        palette: rgb24
+        bitmaps: 'images/arrow_right.jpg'
+
+    - Glyph:
+        id: char_percent
+        font_width: 14
+        color: 0x000000
+        char: '%'
+    - Glyph:
+        id: char_1
+        font_width: 14
+        color: 0x000000
+        char: '1'
+    - Glyph:
+        id: char_2
+        font_width: 14
+        color: 0x000000
+        char: '2'
+    - Glyph:
+        id: char_3
+        font_width: 14
+        color: 0x000000
+        char: '3'
+    - Glyph:
+        id: char_4
+        font_width: 14
+        color: 0x000000
+        char: '4'
+    - Glyph:
+        id: char_5
+        font_width: 14
+        color: 0x000000
+        char: '5'
+    - Glyph:
+        id: char_6
+        font_width: 14
+        color: 0x000000
+        char: '6'
+    - Glyph:
+        id: char_7
+        font_width: 14
+        color: 0x000000
+        char: '7'
+
+    - Rectangle:
+        id: rect1
+        width: parent
+        height: parent
+        border_weight: 1
+        border_color: [0xF0F0F0, 0xF0F0F0, 0xF0F0F0, 0xF0F0F0]
+        bgcolor: [0xD0D0D0, 0xF0F0F0]
+        gradient_mode: LEFT_TO_RIGHT
+
+    - Rectangle:
+        id: rect2
+        width: 100
+        height: 18
+        border_weight: 0
+        border_color: [0xF0F0F0, 0xF0F0F0, 0xF0F0F0, 0x505050]
+        bgcolor: [0x000080, 0x0000F0]
+        gradient_mode: LEFT_TO_RIGHT
+
+    - Rectangle:
+        id: rect3
+        width: parent
+        height: parent
+        border_weight: 0
+        border_color: [0xF0F0F0, 0xF0F0F0, 0xF0F0F0, 0xF0F0F0]
+        bgcolor: [0x800000, 0xF00000]
+        gradient_mode: TOP_TO_BOTTOM
+
+  Windows:
+    - Window:
+        id: progress
+        x: 100
+        y: 100
+        width: 400
+        height: 20
+        palette: rgb24
+        blocks:
+          - [b0, rect1, 0, 0]
+          - [b0, rect2, 298, 1]
+          - [b0, char_7, 160, 4]
+          - [b0, char_5, 170, 4]
+          - [b0, char_percent, 180, 4]
+    - Window:
+        id: progress2
+        x: 395
+        y: 90
+        width: 5
+        height: 40
+        palette: rgb24
+        blocks:
+          - [b0, rect3, 0, 0]
+

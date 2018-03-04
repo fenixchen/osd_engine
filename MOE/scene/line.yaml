@@ -1,0 +1,141 @@
+OSD:
+  width: 640
+  height: 480
+
+  Palettes:
+    - Palette:
+        id: rgb24
+        colors: RGB24
+
+  Ingredients:
+    - Line:
+        id: line1
+        x1: 10
+        y1: 10
+        x2: 100
+        y2: 100
+        color: 0x0000FF
+        weight: 1
+
+    - Line:
+        id: line2
+        x1: 100
+        y1: 10
+        x2: 10
+        y2: 100
+        color: 0xFF00FF
+        weight: 2
+
+    - Line:
+        id: line3
+        x1: 50
+        y1: 0
+        x2: 50
+        y2: 100
+        color: 0x00FFFF
+        weight: 3
+
+    - Line:
+        id: line4
+        x1: 0
+        y1: 50
+        x2: 100
+        y2: 50
+        color: 0x00FF00
+        weight: 5
+
+    - Line:
+        id: line5
+        x1: 10
+        y1: 10
+        x2: 100
+        y2: 100
+        color: 0x0000FF
+        weight: 10
+
+    - Line:
+        id: line6
+        x1: 100
+        y1: 10
+        x2: 10
+        y2: 100
+        color: 0xFF00FF
+        weight: 4
+
+    - Line:
+        id: line7
+        x1: 10
+        y1: 10
+        x2: 100
+        y2: 100
+        style: DASH
+        color: 0x0000FF
+        weight: 2
+
+    - Line:
+        id: line8
+        x1: 0
+        y1: 50
+        x2: 100
+        y2: 50
+        style: DOT1
+        color: 0x00FF00
+        weight: 1
+
+    - Line:
+        id: line9
+        x1: 50
+        y1: 0
+        x2: 50
+        y2: 100
+        color: 0xFFFFFF
+        weight: 1
+
+    - Line:
+        id: line10
+        x1: 0
+        y1: 50
+        x2: 100
+        y2: 50
+        color: 0xFFFFFF
+        weight: 1
+
+    - Line:
+        id: line11
+        x1: 0
+        y1: 0
+        x2: 100
+        y2: 100
+        color: 0xFFFFFF
+        weight: 1
+
+    - Line:
+        id: line12
+        x1: 100
+        y1: 0
+        x2: 0
+        y2: 100
+        color: 0xFFFFFF
+        weight: 1
+
+  Windows:
+    - Window:
+        id: window_rect
+        x: 10
+        y: 10
+        width: 600
+        height: 400
+        palette: rgb24
+        blocks:
+          - [b0, line1, 0, 0]
+          - [b0, line2, 120, 0]
+          - [b0, line3, 240, 0]
+          - [b0, line4, 360, 0]
+          - [b0, line5, 0, 120]
+          - [b0, line6, 120, 120]
+          - [b0, line7, 240, 120]
+          - [b0, line8, 360, 120]
+          - [b0, line9, 240, 240]
+          - [b0, line10, 240, 240]
+          - [b0, line11, 240, 240]
+          - [b0, line12, 240, 240]

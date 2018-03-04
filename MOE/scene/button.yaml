@@ -1,0 +1,204 @@
+OSD:
+  width: 640
+  height: 480
+  frames: 1
+  ticks: 20
+  Palettes:
+    - Palette:
+        id: rgb24
+        colors: RGB24
+
+  Ingredients:
+    - Glyph:
+        id: char_P_24
+        font_width: 20
+        color: 0x00FF00
+        char: 'P'
+
+    - Glyph:
+        id: char_U_24
+        font_width: 20
+        color: 0x0000FF
+        char: 'U'
+
+    - Glyph:
+        id: char_S_24
+        font_width: 20
+        color: 0xFF0000
+        char: 'S'
+
+    - Glyph:
+        id: char_H_24
+        font_width: 20
+        color: 0xFFFF00
+        char: 'H'
+
+    - Glyph:
+        id: char_D_24
+        font_width: 20
+        color: 0xFFFF00
+        char: 'D'
+
+    - Glyph:
+        id: char_O_24
+        font_width: 20
+        color: 0x00FFFF
+        char: 'O'
+
+    - Glyph:
+        id: char_W_24
+        font_width: 20
+        color: 0xFF00FF
+        char: 'W'
+
+    - Glyph:
+        id: char_N_24
+        font_width: 20
+        color: 0x0FFFF0
+        char: 'N'
+
+    - Rectangle:
+        id: button0_bg_up
+        width: parent
+        height: parent
+        border_weight: 2
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0x808080, 0]
+        gradient_mode: NONE
+
+    - Rectangle:
+        id: button0_bg_down
+        width: parent
+        height: parent
+        border_weight: 2
+        border_color: [0x505050, 0xF0F0F0, 0x505050, 0xF0F0F0]
+        bgcolor: [0x808080, 0]
+        gradient_mode: NONE
+
+    - Rectangle:
+        id: button1_bg
+        width: parent
+        height: parent
+        border_weight: 2
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0xFF0000, 0x0000FF]
+        gradient_mode: LEFT_TO_RIGHT
+
+
+    - Rectangle:
+        id: button2_bg
+        width: parent
+        height: parent
+        border_weight: 2
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0xFF0000, 0x0000FF]
+        gradient_mode: TOP_TO_BOTTOM
+
+    - Rectangle:
+        id: button3_bg
+        width: parent
+        height: parent
+        border_weight: 2
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0xFF0000, 0x0000FF]
+        gradient_mode: TOP_LEFT_TO_BOTTOM_RIGHT
+
+    - Rectangle:
+        id: button4_bg
+        width: parent
+        height: parent
+        border_weight: 2
+        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
+        bgcolor: [0xFF0000, 0x0000FF]
+        gradient_mode: BOTTOM_LEFT_TO_TOP_RIGHT
+
+  Windows:
+    - Window:
+        id: button0_up
+        x: 20
+        y: 20
+        width: 85
+        height: 30
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b4, button0_bg_up, 0, 0]
+          - [b0, char_P_24, 15, 7]
+          - [b1, char_U_24, 30, 7]
+          - [b2, char_S_24, 45, 7]
+          - [b3, char_H_24, 60, 7]
+
+    - Window:
+        id: button0_down
+        x: 140
+        y: 20
+        width: 85
+        height: 30
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b4, button0_bg_down, 0, 0]
+          - [b0, char_D_24, 15, 7]
+          - [b0, char_O_24, 30, 7]
+          - [b0, char_W_24, 45, 7]
+          - [b0, char_N_24, 65, 7]
+
+    - Window:
+        id: button1
+        x: 20
+        y: 70
+        width: 85
+        height: 30
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b4, button1_bg, 0, 0]
+          - [b0, char_P_24, 15, 7]
+          - [b1, char_U_24, 30, 7]
+          - [b2, char_S_24, 45, 7]
+          - [b3, char_H_24, 60, 7]
+
+    - Window:
+        id: button2
+        x: 140
+        y: 70
+        width: 85
+        height: 30
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b4, button2_bg, 0, 0]
+          - [b0, char_P_24, 15, 7]
+          - [b1, char_U_24, 30, 7]
+          - [b2, char_S_24, 45, 7]
+          - [b3, char_H_24, 60, 7]
+
+    - Window:
+        id: button3
+        x: 260
+        y: 70
+        width: 85
+        height: 30
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b4, button3_bg, 0, 0]
+          - [b0, char_P_24, 15, 7]
+          - [b1, char_U_24, 30, 7]
+          - [b2, char_S_24, 45, 7]
+          - [b3, char_H_24, 60, 7]
+
+    - Window:
+        id: button
+        x: 380
+        y: 70
+        width: 85
+        height: 30
+        palette: rgb24
+        visible: true
+        blocks:
+          - [b4, button4_bg, 0, 0]
+          - [b0, char_P_24, 15, 7]
+          - [b1, char_U_24, 30, 7]
+          - [b2, char_S_24, 45, 7]
+          - [b3, char_H_24, 60, 7]
