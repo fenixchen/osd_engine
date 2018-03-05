@@ -19,19 +19,17 @@ class ImageUtil(object):
 
     @staticmethod
     def blend_pixel(dst, src, src_alpha):
-        alpha = src_alpha / 255
-        if dst == 0:
+        if dst == 0 or src_alpha == 255:
             return src
+        elif src_alpha == 0:
+            return dst
         else:
-            dst_R = (dst & 0xFF0000) >> 16
-            dst_G = (dst & 0xFF00) >> 8
-            dst_B = (dst & 0xFF)
-            src_R = (src & 0xFF0000) >> 16
-            src_G = (src & 0xFF00) >> 8
-            src_B = (src & 0xFF)
-            return (int(dst_R * (1 - alpha) + (alpha * src_R)) << 16) + (
-                    int(dst_G * (1 - alpha) + (alpha * src_G)) << 8) + int(
-                dst_B * (1 - alpha) + (alpha * src_B))
+            alpha = src_alpha / 255
+            dst_R, dst_G, dst_B = ImageUtil.rgb(dst)
+            src_R, src_G, src_B = ImageUtil.rgb(src)
+            return ImageUtil.make_color(dst_R * (1 - alpha) + alpha * src_R,
+                                        dst_G * (1 - alpha) + alpha * src_G,
+                                        dst_B * (1 - alpha) + alpha * src_B)
 
     @staticmethod
     def color_clip(val):
@@ -39,16 +37,14 @@ class ImageUtil(object):
 
     @staticmethod
     def rgb(color):
-        return ((int(color) >> 16) & 0xFF,
-                (int(color) >> 8) & 0xFF,
-                int(color) & 0xFF)
+        return (int(color) & 0xFF), ((int(color) >> 8) & 0xFF), ((int(color) >> 16) & 0xFF)
 
     @staticmethod
-    def make_color(R, G, B):
-        R = ImageUtil.color_clip(R)
-        G = ImageUtil.color_clip(G)
-        B = ImageUtil.color_clip(B)
-        return (R << 16) | (G << 8) | B
+    def make_color(r, g, b):
+        R = ImageUtil.color_clip(r)
+        G = ImageUtil.color_clip(g)
+        B = ImageUtil.color_clip(b)
+        return (B << 16) | (G << 8) | R
 
     @staticmethod
     def color_add(src, R_delta, G_delta, B_delta):

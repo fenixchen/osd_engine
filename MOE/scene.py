@@ -12,7 +12,6 @@ from font import Font
 from rectangle import Rectangle
 from line import Line
 
-
 logger = Log.get_logger("engine")
 
 
@@ -160,20 +159,25 @@ class Scene(object):
 
     def paint_line(self, y, line_buffer, painter):
         str_color = '{'
-        for x, pixel in enumerate(line_buffer.buffer()):
+        for pixel in line_buffer:
             str_color = str_color + (" #%06x" % pixel)
         str_color = str_color + '}'
         painter.set_pixel(0, y, str_color)
 
+    def merge_line(self, dst_buf, src_buf, src_buf_offset, src_alpha):
+        assert (src_buf_offset + len(src_buf) < self._width)
+        for x in range(src_buf_offset, src_buf_offset + len(src_buf)):
+            dst_buf[x] = ImageUtil.blend_pixel(dst_buf[x], src_buf[x - src_buf_offset], src_alpha)
+
     def draw(self, painter):
         for y in range(0, self._height):
-            window_line_buffers = []
+            line_buffer = [0] * self._width
             for window in self._windows:
                 if not window.visible:
                     continue
                 if window.y <= y < window.y + window.height:
-                    window_line_buffers.append(window.draw_line(y))
-            line_buffer = LineBuf(window_line_buffers, self._width)
+                    window_line_buffer = window.draw_line(y)
+                    self.merge_line(line_buffer, window_line_buffer, window.x, window.alpha)
             self.paint_line(y, line_buffer, painter)
 
     def __str__(self):
@@ -191,8 +195,8 @@ class Scene(object):
         with open(filename, "rb") as f:
             logger.debug('\n' + hexdump.hexdump(f.read(), result='return'))
 
-    def _generate_global_bin(self, filename):
-        bins = struct.pack('<HH', self._width, self._height)
+    def _generate_global_bin(self, filename, ram_base_addr):
+        bins = struct.pack('<HHI', self._width, self._height, ram_base_addr)
         with open(filename, "wb") as f:
             f.write(bins)
         self._debug_file(filename)
@@ -201,7 +205,7 @@ class Scene(object):
     def _generate_palettes_bin(self, filename, ram_filename, ram_base_addr):
         file = open(filename, "wb")
         offset = os.path.getsize(ram_filename)
-        ram_file = open(ram_filename, "wb+")
+        ram_file = open(ram_filename, "ab")
 
         for palette in self._palettes:
             bins, ram = palette.to_binary(ram_base_addr + offset)
@@ -218,33 +222,33 @@ class Scene(object):
     def _generate_ingredients_bin(self, filename, ram_filename, ram_base_addr):
         file = open(filename, "wb")
         offset = os.path.getsize(ram_filename)
-        ram_file = open(ram_filename, "wb+")
+        ram_file = open(ram_filename, "ab")
 
         offset = 0
         for ingredient in self._ingredients:
             bins, ram = ingredient.to_binary(ram_base_addr + offset)
             file.write(bins)
-            ram_file.write(ram)
-            offset += len(ram)
+            if len(ram) > 0:
+                ram_file.write(ram)
+                offset += len(ram)
 
         file.close()
         ram_file.close()
 
         self._debug_file(filename)
         self._debug_file(ram_filename)
-
 
     def _generate_windows_bin(self, filename, ram_filename, ram_base_addr):
         file = open(filename, "wb")
         offset = os.path.getsize(ram_filename)
-        ram_file = open(ram_filename, "wb+")
+        ram_file = open(ram_filename, "ab")
 
-        offset = 0
         for window in self._windows:
             bins, ram = window.to_binary(ram_base_addr + offset)
             file.write(bins)
-            ram_file.write(ram)
-            offset += len(ram)
+            if len(ram) > 0:
+                ram_file.write(ram)
+                offset += len(ram)
 
         file.close()
         ram_file.close()
@@ -252,23 +256,26 @@ class Scene(object):
         self._debug_file(filename)
         self._debug_file(ram_filename)
 
-
     def generate_binary(self, target_folder=None, ram_base_addr=0):
         # prepare target folder
         assert self._yaml_file is not None
+
         if target_folder is None:
             path = os.path.splitext(self._yaml_file)
             target_folder = path[0] + '.generated/'
+
         logger.debug('Target folder:%s' % target_folder)
+
         if os.path.exists(target_folder):
             shutil.rmtree(target_folder, ignore_errors=True)
-        os.mkdir(target_folder)
+
+        os.makedirs(target_folder)
 
         # create empty ram.bin
         with open(target_folder + "ram.bin", "wb") as f:
             pass
 
-        self._generate_global_bin(target_folder + "global.bin")
+        self._generate_global_bin(target_folder + "global.bin", ram_base_addr)
 
         self._generate_palettes_bin(target_folder + "palettes.bin", target_folder + "ram.bin", ram_base_addr)
 

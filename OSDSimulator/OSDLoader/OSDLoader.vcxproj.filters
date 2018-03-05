@@ -24,9 +24,7 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\OSDSimulator\osd_object.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClInclude Include="..\OSDSimulator\osd_object.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -35,8 +33,6 @@
     <ClCompile Include="OSDLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\OSDSimulator\osd_object.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClCompile Include="..\OSDSimulator\osd_object.c" />
   </ItemGroup>
 </Project>

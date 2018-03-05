@@ -12,7 +12,7 @@ logger = Log.get_logger("engine")
 class Rectangle(Plot):
     def __init__(self, scene, id, width, height, border_color=0,
                  border_weight=0, bgcolor=None,
-                 gradient_mode=GradientMode.NONE.name,
+                 gradient_mode=GradientMode.SOLID.name,
                  border_style=LineStyle.SOLID.name,
                  palette=None):
         super().__init__(scene, id, palette)
@@ -222,7 +222,9 @@ class Rectangle(Plot):
         logger.debug('Generate rectangle <%s>' % self._id)
         ram = b''
         bins = struct.pack('<BBBx', IngredientType.RECTANGLE.value, self.palette_index(), self._gradient_mode.value)
-        bins += struct.pack('<HH', self._width, self._height)
+        bins += struct.pack('<HH',
+                            self._width if self._width > 0 else 0xFFFF,
+                            self._height if self._height > 0 else 0xFFFF)
         bins += struct.pack('<BBBB', self._border_color_top, self._border_color_bottom, self._border_color_left,
                             self._border_color_right)
         bins += struct.pack('<BBBB', self._border_weight, self._border_style.value, self._bgcolor_start,

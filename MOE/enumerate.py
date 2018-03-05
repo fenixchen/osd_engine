@@ -10,6 +10,7 @@ class IngredientType(Enum):
     GLYPH = 3
     BITMAP = 4
 
+
 class PixelFormat(Enum):
     INVALIED = 0
     RGB = 1
@@ -21,7 +22,8 @@ class PixelFormat(Enum):
 
 
 class GradientMode(Enum):
-    NONE = 1
+    NONE = 0
+    SOLID = 1
     LEFT_TO_RIGHT = 2
     TOP_TO_BOTTOM = 3
     TOP_LEFT_TO_BOTTOM_RIGHT = 4

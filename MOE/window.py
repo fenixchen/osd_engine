@@ -153,7 +153,7 @@ class Window(OSDObject):
                 block.ingredient.draw_line(window_line_buf,
                                            self, window_y - block.y,
                                            block.x)
-        return WindowLineBuf(self, self._x, window_line_buf)
+        return window_line_buf
 
     def __str__(self):
         ret = "%s(%s, (%d, %d), %d x %d, zorder:%d)\n" % \
@@ -175,6 +175,7 @@ class Window(OSDObject):
                            self._alpha,
                            self._zorder)
         bins += struct.pack('<HHHH', self._x, self._y, self._width, self._height)
+        bins += struct.pack('<I', len(self._blocks))
         ram = b''
         if len(self._blocks) == 0:
             bins += struct.pack('<I', 0)
@@ -185,24 +186,3 @@ class Window(OSDObject):
                 ram += struct.pack('<HHHH', block.ingredient.object_index, i, block.x, block.y)
         return bins, ram
 
-
-
-
-class WindowLineBuf(object):
-    """
-    窗口对应的一行buffer数据
-    """
-
-    def __init__(self, window, start_x, buffer):
-        self._window = window
-        self._start_x = start_x
-        self._buffer = buffer
-
-    def window(self):
-        return self._window
-
-    def start_x(self):
-        return self._start_x
-
-    def buffer(self):
-        return self._buffer

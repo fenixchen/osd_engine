@@ -18,30 +18,6 @@ class Painter(object):
         self._image.put(color, (x, y))
 
 
-class LineBuf(object):
-    """
-    整行buffer数据
-    """
-
-    def __init__(self, wlbufs, width):
-        self._width = width
-        self._lineBuf = [0] * width
-        for wlbuf in wlbufs:
-            self.merge_line(self._lineBuf, wlbuf.buffer(),
-                            wlbuf.start_x(), wlbuf.window().alpha)
-
-    def merge_line(self, dst_buf, src_buf, src_buf_offset, src_alpha):
-        """
-        blending源buffer到目的buffer中
-        """
-        assert (src_buf_offset + len(src_buf) < self._width)
-        for x in range(src_buf_offset, src_buf_offset + len(src_buf)):
-            dst_buf[x] = ImageUtil.blend_pixel(dst_buf[x], src_buf[x - src_buf_offset], src_alpha)
-
-    def buffer(self):
-        return self._lineBuf
-
-
 TITLE_STRING = "Monitor OSD Engine Demo"
 
 

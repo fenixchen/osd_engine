@@ -3,6 +3,11 @@
 
 #include "stdafx.h"
 #include "OSDSimulator.h"
+#include "Shlwapi.h"
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>
+#include <fstream>
 
 #include "osd_object.h"
 
@@ -20,41 +25,37 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
-{
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
+                       HINSTANCE hPrevInstance,
+                       LPTSTR    lpCmdLine,
+                       int       nCmdShow) {
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
 
- 	// TODO: 在此放置代码。
-	MSG msg;
-	HACCEL hAccelTable;
+    // TODO: 在此放置代码。
+    MSG msg;
+    HACCEL hAccelTable;
 
-	// 初始化全局字符串
-	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_OSDSIMULATOR, szWindowClass, MAX_LOADSTRING);
-	MyRegisterClass(hInstance);
+    // 初始化全局字符串
+    LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    LoadString(hInstance, IDC_OSDSIMULATOR, szWindowClass, MAX_LOADSTRING);
+    MyRegisterClass(hInstance);
 
-	// 执行应用程序初始化:
-	if (!InitInstance (hInstance, nCmdShow))
-	{
-		return FALSE;
-	}
+    // 执行应用程序初始化:
+    if (!InitInstance (hInstance, nCmdShow)) {
+        return FALSE;
+    }
 
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_OSDSIMULATOR));
+    hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_OSDSIMULATOR));
 
-	// 主消息循环:
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-	}
+    // 主消息循环:
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
 
-	return (int) msg.wParam;
+    return (int) msg.wParam;
 }
 
 
@@ -72,25 +73,24 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 //    这样应用程序就可以获得关联的
 //    “格式正确的”小图标。
 //
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-	WNDCLASSEX wcex;
+ATOM MyRegisterClass(HINSTANCE hInstance) {
+    WNDCLASSEX wcex;
 
-	wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.cbSize = sizeof(WNDCLASSEX);
 
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_OSDSIMULATOR));
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_OSDSIMULATOR);
-	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.style			= CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc	= WndProc;
+    wcex.cbClsExtra		= 0;
+    wcex.cbWndExtra		= 0;
+    wcex.hInstance		= hInstance;
+    wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_OSDSIMULATOR));
+    wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+    wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_OSDSIMULATOR);
+    wcex.lpszClassName	= szWindowClass;
+    wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-	return RegisterClassEx(&wcex);
+    return RegisterClassEx(&wcex);
 }
 
 //
@@ -103,90 +103,130 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        在此函数中，我们在全局变量中保存实例句柄并
 //        创建和显示主程序窗口。
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   HWND hWnd;
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
+    HWND hWnd;
 
-   hInst = hInstance; // 将实例句柄存储在全局变量中
+    hInst = hInstance; // 将实例句柄存储在全局变量中
 
-   hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+                        CW_USEDEFAULT, 0, 640, 480, NULL, NULL, hInstance, NULL);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+    if (!hWnd) {
+        return FALSE;
+    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
 
-   return TRUE;
+    return TRUE;
 }
 
-void DoOpen(HWND hWnd)
-{
-	OPENFILENAME ofn;       // common dialog box structure
-	char szFile[260];       // buffer for file name
-	HANDLE hf;              // file handle
+static void AdjustWindow(HWND hWnd, int width, int height) {
 
-	// Initialize OPENFILENAME
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.hwndOwner = hWnd;
-	ofn.lpstrFile = szFile;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = sizeof(szFile);
-	ofn.lpstrFilter = "OSD YAML File\0*.yaml\0";
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFileTitle = NULL;
-	ofn.nMaxFileTitle = 0;
-	ofn.lpstrInitialDir = NULL;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	// Display the Open dialog box. 
-	if (GetOpenFileName(&ofn)==TRUE) 
-		hf = CreateFile(ofn.lpstrFile, 
-						GENERIC_READ,
-						0,
-						(LPSECURITY_ATTRIBUTES) NULL,
-						OPEN_EXISTING,
-						FILE_ATTRIBUTE_NORMAL,
-						(HANDLE) NULL);
+    RECT rect;
+    rect.left = rect.top = 0;
+    rect.right = width - 1;
+    rect.bottom = height - 1;
+    DWORD dwStyle = GetWindowLong(hWnd, GWL_STYLE);
+    AdjustWindowRect(&rect, dwStyle, TRUE);
+    SetWindowPos(hWnd, NULL, rect.left, rect.top,
+                 rect.right - rect.left + 1,
+                 rect.bottom - rect.top + 1,
+                 SWP_NOMOVE);
+    GetClientRect(hWnd, &rect);
+}
+
+static osd_scene *scene = NULL;
+
+void DoOpen(HWND hWnd) {
+#if 0
+    OPENFILENAME ofn;       // common dialog box structure
+    char szFile[260];       // buffer for file name
+    // Initialize OPENFILENAME
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hWnd;
+    ofn.lpstrFile = szFile;
+    ofn.lpstrFile[0] = '\0';
+    ofn.nMaxFile = sizeof(szFile);
+    ofn.lpstrFilter = "OSD binary(global.bin)\0global.bin\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = ".";
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+    // Display the Open dialog box.
+    if (!GetOpenFileName(&ofn)) {
+        return;
+    }
+#else
+    char szFile[260] = "hello.generated\\global.bin";
+#endif
+    PathRemoveFileSpec(szFile);
+    if (scene) {
+        osd_scene_delete(scene);
+    }
+    scene = osd_scene_new(szFile);
+    if (scene) {
+        AdjustWindow(hWnd, scene->width, scene->height);
+    }
 }
 
 static COLORREF g_color = RGB(0xFF, 0x00, 0x00);
-void DoTimer(HWND hWnd)
-{
-	//MessageBox(hWnd, _T("Hello"), _T("World"), MB_OK);
-	//g_color = g_color + 10;
-	//KillTimer(hWnd, 0);
-	//InvalidateRect(hWnd, NULL, FALSE);
+void DoTimer(HWND hWnd) {
+    //MessageBox(hWnd, _T("Hello"), _T("World"), MB_OK);
+    //g_color = g_color + 10;
+    //KillTimer(hWnd, 0);
+    //InvalidateRect(hWnd, NULL, FALSE);
 
 }
 
-void DoPaint(HWND hWnd, HDC hDC)
-{
-	RECT rect;
-	HBITMAP hBmpMem; 
+void FnSetPixel(void *arg, int x, int y, u32 color) {
+    HDC hdc = (HDC)arg;
+    SetPixel(hdc, x, y, color);
+}
+
+void DoPaint(HWND hWnd, HDC hDC) {
+    RECT rect;
+    HBITMAP hBmpMem;
     HDC hDCMem = CreateCompatibleDC(hDC);
-	GetClientRect(hWnd, &rect);	
-    // 创建一块指定大小的位图  
-    hBmpMem = CreateCompatibleBitmap(hDC, rect.right, rect.bottom);       
-    // 将该位图选入到内存DC中，默认是全黑色的  
+    GetClientRect(hWnd, &rect);
+    // 创建一块指定大小的位图
+    hBmpMem = CreateCompatibleBitmap(hDC, rect.right, rect.bottom);
+    // 将该位图选入到内存DC中，默认是全黑色的
     HGDIOBJ hObj = SelectObject(hDCMem, hBmpMem);
+    HBRUSH hBrush = CreateSolidBrush(RGB(0,0,0));
+    FillRect(hDCMem, &rect, hBrush);
+    DeleteObject(hBrush);
+    if (scene) {
+        osd_scene_paint(scene, 0, FnSetPixel, hDCMem);
+    }
+    /* 将双缓冲区图像复制到显示缓冲区 */
+    BitBlt(hDC, 0, 0, rect.right, rect.bottom, hDCMem, 0, 0, SRCCOPY);
 
-	HBRUSH hBrush = CreateSolidBrush(g_color);
-    FillRect(hDCMem, &rect, hBrush);  
-		
-    DeleteObject(hBrush);  
-          
-    /* 将双缓冲区图像复制到显示缓冲区 */  
-    BitBlt(hDC, 0, 0, rect.right, rect.bottom, hDCMem, 0, 0, SRCCOPY);  
-          
-    /* 释放资源 */  
-    SelectObject(hDCMem, hObj);  
-    DeleteObject(hBmpMem);  
-    DeleteDC(hDCMem);  
+    /* 释放资源 */
+    SelectObject(hDCMem, hObj);
+    DeleteObject(hBmpMem);
+    DeleteDC(hDCMem);
 }
+
+void SetStdOutToNewConsole() {
+    int hConHandle;
+    long lStdHandle;
+    FILE *fp;
+
+    // Allocate a console for this app
+    AllocConsole();
+
+    // Redirect unbuffered STDOUT to the console
+    lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen(hConHandle, "w");
+    *stdout = *fp;
+
+    setvbuf(stdout, NULL, _IONBF, 0);
+}
+
 //
 //  函数: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -197,66 +237,63 @@ void DoPaint(HWND hWnd, HDC hDC)
 //  WM_DESTROY	- 发送退出消息并返回
 //
 //
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    int wmId, wmEvent;
+    PAINTSTRUCT ps;
+    HDC hdc;
 
-	switch (message)
-	{
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
-		// 分析菜单选择:
-		switch (wmId)
-		{
-		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		case IDM_OPEN:			
-			DoOpen(hWnd);			
-			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-		break;
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		DoPaint(hWnd, hdc);
-		EndPaint(hWnd, &ps);
-		break;
-	case WM_TIMER:
-		DoTimer(hWnd);
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-	return 0;
+    switch (message) {
+    case WM_COMMAND:
+        wmId    = LOWORD(wParam);
+        wmEvent = HIWORD(wParam);
+        // 分析菜单选择:
+        switch (wmId) {
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        case IDM_OPEN:
+            DoOpen(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+        break;
+    case WM_PAINT:
+        hdc = BeginPaint(hWnd, &ps);
+        DoPaint(hWnd, hdc);
+        EndPaint(hWnd, &ps);
+        break;
+    case WM_TIMER:
+        DoTimer(hWnd);
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+    case WM_CREATE:
+        SetStdOutToNewConsole();
+        DoOpen(hWnd);
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+    return 0;
 }
 
 // “关于”框的消息处理程序。
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message) {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
 
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
 }

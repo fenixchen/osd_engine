@@ -11,13 +11,12 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
+
+#define OSD_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
+
 #define OSD_SCENE_MAX_PALETE_COUNT 8
 #define OSD_SCENE_MAX_INGREDIENT_COUNT 256
 #define OSD_SCENE_MAX_WINDOW_COUNT 32
-#define OSD_WINDOW_MAX_BLOCK_COUNT 32
-#define OSD_MODIFIER_MAX_WINDOW_COUNT 4
-#define OSD_MODIFIER_MAX_BLOCK_COUNT 4
-
 
 typedef struct _osd_block osd_block;
 typedef struct _osd_window osd_window;
@@ -38,19 +37,28 @@ const u8 PIXEL_FORMAT_RGB = 1;
 const u8 PIXEL_FORMAT_GRAY_SCALE = 2;
 const u8 PIXEL_FORMAT_LUT = 3;
 
+#define OSD_SCENE_DATA_SIZE OSD_OFFSET_OF(osd_scene, palettes)
+
 struct _osd_scene {
     u16 width, height;
+    u32 ram_base_addr;
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
-    osd_window *window[OSD_SCENE_MAX_WINDOW_COUNT];
+    osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
 };
+
+#define OSD_PALETTE_DATA_SIZE OSD_OFFSET_OF(osd_palette, lut)
 
 struct _osd_palette {
     u8 pixel_format;
-    u8 pixel_bits; // 1, 2, 4, 8, 16
+    u8 pixel_bits; // 0, 1, 2, 4, 8, 16
     u16 entry_count;
-    u8 *luts;
+    u32 luts_addr;
+
+    u32 *lut;
 };
+
+const u8 OSD_PALETTE_INDEX_INVALID = 0xFF;
 
 const u8 OSD_LINE_STYLE_SOLID = 1;
 const u8 OSD_LINE_STYLE_DASH = 2;
@@ -118,20 +126,21 @@ struct _osd_bitmap {
     u8 *data; //data_size
 };
 
-const u8 OSD_INGREDIENT_RECTANGLE = 1;
-const u8 OSD_INGREDIENT_LINE = 2;
-const u8 OSD_INGREDIENT_GLYPH = 3;
-const u8 OSD_INGREDIENT_BITMAP = 4;
+#define OSD_INGREDIENT_RECTANGLE 1
+#define OSD_INGREDIENT_LINE		 2
+#define OSD_INGREDIENT_GLYPH	 3
+#define OSD_INGREDIENT_BITMAP	 4
+
+#define OSD_INGREDIENT_DATA_SIZE sizeof(osd_ingredient)
 
 struct _osd_ingredient {
     u8 type; //OSD_INGREDIENT_XXX
     u8 palette_index;
-    u16 reserved;
     union {
         osd_rectangle rect;
-        osd_line line;
-        osd_glyph glyph;
-        osd_bitmap bitmap;
+        //osd_line line;
+        //osd_glyph glyph;
+        //osd_bitmap bitmap;
     } data;
 };
 
@@ -151,8 +160,10 @@ struct _osd_modifier {
     u8 interval;
     u8 limit;
     u8 active;
-    u8 *windows[OSD_MODIFIER_MAX_WINDOW_COUNT];
-    u8 *blocks[OSD_MODIFIER_MAX_BLOCK_COUNT];
+    u16 windows_count;
+    u16 blocks_count;
+    u8 *windows;
+    u8 *blocks;
     union {
         osd_move move;
         osd_flip flip;
@@ -166,20 +177,39 @@ struct _osd_block {
     u16 y;
 };
 
+
+#define OSD_WINDOW_DATA_SIZE OSD_OFFSET_OF(osd_window, blocks)
+
 struct _osd_window {
     u8 palette_index;
     u8 visible;
     u8 alpha;
     u8 z_order;
+
     u16 x, y;
     u16 width, height;
-    osd_block *blocks[OSD_WINDOW_MAX_BLOCK_COUNT];
+
+    u32 block_count;
+    u32 blocks_addr;
+
+    osd_block *blocks;
 };
 
+
+
+#define OSD_RGB(r, g, b) ((u32)(((u8)(r)|((u16)((u8)(g))<<8))|(((u32)(u8)(b))<<16)))
+#define OSD_R(color) ((u8)(r) & 0xFF)
+#define OSD_G(color) ((u8)(r >> 8) & 0xFF)
+#define OSD_B(color) ((u8)(r >> 16) & 0xFF)
 
 EXTERNC osd_scene *osd_scene_new(const char *target_folder);
 
 EXTERNC void osd_scene_delete(osd_scene *scene);
 
+typedef void (*fn_set_pixel)(void *arg, int x, int y, u32 color);
+
+EXTERNC void osd_scene_paint(osd_scene *scene, u32 frame,
+                             fn_set_pixel set_pixel, void *arg);
 
 #endif
+
