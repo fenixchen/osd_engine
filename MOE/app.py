@@ -45,7 +45,9 @@ class App(object):
         if self._canvas is None:
             self._canvas = Canvas(self._root,
                                   width=scene.width,
-                                  height=scene.height)
+                                  height=scene.height,
+                                  bg="#000000")
+
             self._canvas.bind('<Button-1>', self.mouse_click)
             self._canvas.bind('<Button-3>', self.mouse_click)
             self._canvas.pack()
@@ -58,14 +60,14 @@ class App(object):
             scene.frames,
             scene.filename))
 
-        scene.draw(painter)
-
-        scene.modify()
-
         if self._image_on_canvas is None:
             self._image_on_canvas = self._canvas.create_image(0, 0, anchor=NW, image=image)
         else:
             self._canvas.itemconfig(self._image_on_canvas, image=image)
+
+        scene.draw(painter)
+
+        scene.modify()
 
         self._canvas.img = image
         self._frame_index = self._frame_index + 1

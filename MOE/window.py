@@ -146,14 +146,18 @@ class Window(OSDObject):
         :return: Window 行数据对象
         """
         window_y = y - self._y
-
+        painted = False
         window_line_buf = [0] * self._width
         for block in self._blocks:
             if block.start_y <= window_y < block.start_y + block.height(self):
                 block.ingredient.draw_line(window_line_buf,
                                            self, window_y - block.y,
                                            block.x)
-        return window_line_buf
+                painted = True
+        if painted:
+            return window_line_buf
+        else:
+            return None
 
     def __str__(self):
         ret = "%s(%s, (%d, %d), %d x %d, zorder:%d)\n" % \
@@ -183,6 +187,7 @@ class Window(OSDObject):
             bins += struct.pack('<I', ram_offset)
             i = 0
             for block in self._blocks:
-                ram += struct.pack('<HHHH', block.ingredient.object_index, i, block.x, block.y)
+                ram += struct.pack('<HHHH', i, block.ingredient.object_index, block.x, block.y)
+                i += 1
         return bins, ram
 

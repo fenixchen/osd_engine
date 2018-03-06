@@ -172,13 +172,17 @@ class Scene(object):
     def draw(self, painter):
         for y in range(0, self._height):
             line_buffer = [0] * self._width
+            painted = False
             for window in self._windows:
                 if not window.visible:
                     continue
                 if window.y <= y < window.y + window.height:
-                    window_line_buffer = window.draw_line(y)
-                    self.merge_line(line_buffer, window_line_buffer, window.x, window.alpha)
-            self.paint_line(y, line_buffer, painter)
+                    window_line_buffer  = window.draw_line(y)
+                    if window_line_buffer is not None:
+                        self.merge_line(line_buffer, window_line_buffer, window.x, window.alpha)
+                        painted = True
+            if painted:
+                self.paint_line(y, line_buffer, painter)
 
     def __str__(self):
         str = 'Scene(%d x %d, %s)\n' % (self._width, self._height, self._yaml_file)

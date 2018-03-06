@@ -2,6 +2,11 @@
 
 from plot import Plot
 from enumerate import *
+import struct
+from log import Log
+
+logger = Log.get_logger("engine")
+
 
 class Line(Plot):
     def __init__(self, scene, id, color, weight, x1, y1, x2, y2,
@@ -28,7 +33,7 @@ class Line(Plot):
         if self._style == LineStyle.SOLID:
             return True
         elif self._style == LineStyle.DASH:
-            return (x % (Plot.DASH_WIDTH + 1)) < Plot.DASH_WIDTH - 1
+            return (x % (Plot.DASH_WIDTH + 1)) < Plot.DASH_WIDTH
         elif self._style == LineStyle.DOT1:
             return (x % 2) == 0
         elif self._style == LineStyle.DOT2:
@@ -73,4 +78,9 @@ class Line(Plot):
                 self._palette)
 
     def to_binary(self, ram_offset):
-        raise Exception('not implemented')
+        logger.debug('Generate Line <%s>' % self._id)
+        ram = b''
+        bins = struct.pack('<BBxx', IngredientType.LINE.value, self.palette_index())
+        bins += struct.pack('<HHHH', self._x1, self._y1, self._x2, self._y2)
+        bins += struct.pack('<BBBx', self._weight, self._style.value, self._color)
+        return bins, ram

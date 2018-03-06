@@ -149,46 +149,50 @@ class Rectangle(Plot):
             return False
 
     def _fill_rect(self, window_line_buf, window, y, block_x):
+
+        if self._gradient_mode == GradientMode.NONE:
+            return
+
         width = window.width if self._width == -1 else self._width
         height = window.height if self._height == -1 else self._height
 
         bg_color_start = self.color(window, self._bgcolor_start)
         bg_color_end = self.color(window, self._bgcolor_end)
 
-        steps = 1
+        color_steps = 1
         if self._gradient_mode == GradientMode.LEFT_TO_RIGHT:
-            steps = width - self._border_weight * 2
+            color_steps = width - self._border_weight * 2
         elif self._gradient_mode == GradientMode.TOP_TO_BOTTOM:
-            steps = height - self._border_weight * 2
+            color_steps = height - self._border_weight * 2
         elif self._gradient_mode == GradientMode.TOP_LEFT_TO_BOTTOM_RIGHT or \
                 self._gradient_mode == GradientMode.BOTTOM_LEFT_TO_TOP_RIGHT:
-            steps = (width - self._border_weight * 2) * (height - self._border_weight * 2)
+            color_steps = (width - self._border_weight * 2) * (height - self._border_weight * 2)
 
-        R_delta = ((bg_color_end >> 16 & 0xFF) - (bg_color_start >> 16 & 0xFF)) / steps
-        G_delta = ((bg_color_end >> 8 & 0xFF) - (bg_color_start >> 8 & 0xFF)) / steps
-        B_delta = ((bg_color_end >> 0 & 0xFF) - (bg_color_start >> 0 & 0xFF)) / steps
+        r_start, g_start, b_start = ImageUtil.rgb(bg_color_start)
+        r_end, g_end, b_end = ImageUtil.rgb(bg_color_end)
 
-        color = bg_color_start
-        step = 0
+        r_delta = (r_end - r_start) / color_steps
+        g_delta = (g_end - g_start) / color_steps
+        b_delta = (b_end - b_start) / color_steps
 
         for x in range(block_x + self._border_weight,
                        block_x + width - self._border_weight):
-            if self._gradient_mode == GradientMode.NONE:
+            if self._gradient_mode == GradientMode.SOLID:
                 factor = 0
             elif self._gradient_mode == GradientMode.LEFT_TO_RIGHT:
-                factor = x - block_x + self._border_weight
+                factor = x - (block_x + self._border_weight)
             elif self._gradient_mode == GradientMode.TOP_TO_BOTTOM:
                 factor = y
             elif self._gradient_mode == GradientMode.TOP_LEFT_TO_BOTTOM_RIGHT:
-                factor = (x - block_x + self._border_weight) * y
+                factor = (x - (block_x + self._border_weight)) * y
             elif self._gradient_mode == GradientMode.BOTTOM_LEFT_TO_TOP_RIGHT:
-                factor = (x - block_x + self._border_weight) * (height - self._border_weight - y)
+                factor = (x - (block_x + self._border_weight)) * (height - self._border_weight - y)
             else:
                 raise Exception('Unknown gradient mode <%s>' % self._gradient_mode.name)
             color = ImageUtil.color_add(bg_color_start,
-                                        R_delta * factor,
-                                        G_delta * factor,
-                                        B_delta * factor)
+                                        r_delta * factor,
+                                        g_delta * factor,
+                                        b_delta * factor)
 
             window_line_buf[x] = color
 

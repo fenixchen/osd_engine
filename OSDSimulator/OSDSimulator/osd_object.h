@@ -60,18 +60,22 @@ struct _osd_palette {
 
 const u8 OSD_PALETTE_INDEX_INVALID = 0xFF;
 
-const u8 OSD_LINE_STYLE_SOLID = 1;
-const u8 OSD_LINE_STYLE_DASH = 2;
-const u8 OSD_LINE_STYLE_DOT1 = 3;
-const u8 OSD_LINE_STYLE_DOT2 = 4;
-const u8 OSD_LINE_STYLE_DOT3 = 5;
-const u8 OSD_LINE_STYLE_DASH_DOT = 6;
-const u8 OSD_LINE_STYLE_DASH_DOT_DOT = 7;
+#define OSD_LINE_STYLE_DASH_WIDTH 10
 
-const u8 OSD_GRADIENT_MODE_TOP_TO_BOTTOM = 1;
-const u8 OSD_GRADIENT_MODE_BOTTOM_TO_TOP = 2;
-const u8 OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT = 3;
-const u8 OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT = 4;
+#define OSD_LINE_STYLE_SOLID 1
+#define OSD_LINE_STYLE_DASH  2
+#define OSD_LINE_STYLE_DOT1  3
+#define OSD_LINE_STYLE_DOT2  4
+#define OSD_LINE_STYLE_DOT3  5
+#define OSD_LINE_STYLE_DASH_DOT 6
+#define OSD_LINE_STYLE_DASH_DOT_DOT 7
+
+#define OSD_GRADIENT_MODE_NONE 0
+#define OSD_GRADIENT_MODE_SOLID 1
+#define OSD_GRADIENT_MODE_LEFT_TO_RIGHT 2
+#define OSD_GRADIENT_MODE_TOP_TO_BOTTOM 3
+#define OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT 4
+#define OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT 5
 
 struct _osd_rectangle {
     u8 gradient_mode; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX
@@ -138,7 +142,7 @@ struct _osd_ingredient {
     u8 palette_index;
     union {
         osd_rectangle rect;
-        //osd_line line;
+        osd_line line;
         //osd_glyph glyph;
         //osd_bitmap bitmap;
     } data;
@@ -203,8 +207,11 @@ struct _osd_window {
 #define OSD_B(color) ((u8)(color >> 16) & 0xFF)
 #define OSD_BLEND(dst, src, alpha) (u8)((dst) * (255 - (alpha)) / 255 + (src_r) * (alpha) / 255)
 
+
 #define OSD_MAX(x, y) ((x) > (y) ? (x) : (y))
 #define OSD_MIN(x, y) ((x) < (y) ? (x) : (y))
+
+#define OSD_COLOR_CLIP(color) OSD_MIN(OSD_MAX(0, color), 0xFF)
 
 EXTERNC osd_scene *osd_scene_new(const char *target_folder);
 

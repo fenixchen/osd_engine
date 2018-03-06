@@ -5,25 +5,46 @@ OSD:
   Palettes:
     - Palette:
         id: palette1
-        colors: [0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF, 0x505050,0xF0F0F0]
+        colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF, 0x505050, 0xF0F0F0, 0xFFFFFF]
 
   Ingredients:
     - Rectangle:
         id: rect1
         width: 150
         height: 150
-        border_color: [0, 1, 2, 3]
+        border_color: [1, 2, 3, 4]
         border_weight: 20
-        bgcolor: [4, 5]
+        bgcolor: [5, 6]
         gradient_mode: TOP_TO_BOTTOM
+
+    - Line:
+        id: line1
+        x1: 10
+        y1: 10
+        x2: 100
+        y2: 100
+        color: 7
+        weight: 5
+
+    - Line:
+        id: line2
+        x1: 100
+        y1: 10
+        x2: 10
+        y2: 100
+        style: DOT3
+        color: 7
+        weight: 1
 
   Windows:
     - Window:
         id: window_rect
         x: 100
         y: 100
-        width: 200
-        height: 200
+        width: 300
+        height: 300
         palette: palette1
         blocks:
           - [b0, rect1, 25, 25]
+          - [b1, line1, 180, 180]
+          - [b2, line2, 180, 180]

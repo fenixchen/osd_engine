@@ -126,6 +126,7 @@ void log_palette(int index, osd_palette *palette) {
 
 void log_ingredient(int index, osd_ingredient *ingredient) {
     osd_rectangle *rect;
+    osd_line *line;
     LOG("ingredient[%d] \n\ttype:%s(%d), palette:%d\n",
         index, ingredient_name[ingredient->type], ingredient->type, ingredient->palette_index);
     switch (ingredient->type) {
@@ -139,6 +140,10 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
             rect->border_color_top, rect->border_color_bottom, rect->border_color_left,
             rect->border_color_right, rect->border_weight, rect->border_style,
             rect->bgcolor_start, rect->bgcolor_end);
+        break;
+    case OSD_INGREDIENT_LINE:
+        line = &ingredient->data.line;
+        LOG("\tx1:%d, y1:%d, x2:%d, y2:%d\n", line->x1, line->y1, line->x2, line->y2);
         break;
     default:
         printf("Unknown ingredient:%d\n", ingredient->type);
@@ -219,7 +224,7 @@ osd_scene *osd_scene_new(const char *target_folder) {
         window->blocks = MALLOC_OBJECT_ARRAY(osd_block, window->block_count);
         block = (osd_block *)(binary->ram + (window->blocks_addr - scene->ram_base_addr));
         for (j = 0; j < window->block_count; j ++) {
-            memcpy(&window->blocks[i], block, sizeof(osd_block));
+            memcpy(&window->blocks[j], block, sizeof(osd_block));
             block ++;
         }
         log_window(i, window);
@@ -254,8 +259,37 @@ void osd_scene_delete(osd_scene *scene) {
 }
 
 
-static u32 osd_scene_get_color(osd_scene *scene, osd_window *window,
-                               osd_ingredient *ingredient, u8 index) {
+static int osd_line_style_check(u32 style, u32 x) {
+    switch (style) {
+    case OSD_LINE_STYLE_SOLID:
+        return 1;
+    case OSD_LINE_STYLE_DASH:
+        return (x % (OSD_LINE_STYLE_DASH_WIDTH + 1)) < OSD_LINE_STYLE_DASH_WIDTH;
+    case OSD_LINE_STYLE_DOT1:
+        return (x % 2) == 0;
+    case OSD_LINE_STYLE_DOT2:
+        return (x % 3) == 0;
+    case OSD_LINE_STYLE_DOT3:
+        return (x % 4) == 0;
+    case OSD_LINE_STYLE_DASH_DOT: {
+        u32 index = x % (OSD_LINE_STYLE_DASH_WIDTH + 3);
+        return index < OSD_LINE_STYLE_DASH_WIDTH || index  == OSD_LINE_STYLE_DASH_WIDTH + 1;
+    }
+    case OSD_LINE_STYLE_DASH_DOT_DOT: {
+        u32 index = x % (OSD_LINE_STYLE_DASH_WIDTH + 5);
+        return index < OSD_LINE_STYLE_DASH_WIDTH
+               || index  == OSD_LINE_STYLE_DASH_WIDTH + 1
+               || index  == OSD_LINE_STYLE_DASH_WIDTH + 3;
+    }
+    default:
+        assert(0);
+    }
+    return 0;
+}
+
+
+static u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
+                                    osd_ingredient *ingredient, u8 index) {
     u8 palette_index = ingredient->palette_index;
     if (palette_index == OSD_PALETTE_INDEX_INVALID) {
         palette_index = window->palette_index;
@@ -269,31 +303,21 @@ static int osd_rectangle_border_paint(osd_scene *scene, osd_window *window, osd_
                                       osd_ingredient *ingredient,
                                       u32 *window_line_buffer,
                                       u32 y) {
-    u16 width, height;
     u32 x, color, margin;
-    osd_rectangle *rect;
-    rect = &ingredient->data.rect;
-    if (rect->width == 0xFFFF) {
-        width = window->width;
-    } else {
-        width = rect->width;
-    }
-    if (rect->height == 0xFFFF) {
-        height = window->height;
-    } else {
-        height = rect->height;
-    }
+    osd_rectangle *rect = &ingredient->data.rect;
+    u16 width = rect->width == 0xFFFF ? window->width : rect->width;
+    u16 height = rect->height == 0xFFFF ? window->height : rect->height;
     if (y < rect->border_weight) {
-        color = osd_scene_get_color(scene, window, ingredient, rect->border_color_top);
+        color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_top);
         margin = rect->border_weight - (rect->border_weight - y);
         for (x = block->x + margin; x < block->x + width - margin; x ++) {
             window_line_buffer[x] = color;
         }
-        color = osd_scene_get_color(scene, window, ingredient, rect->border_color_left);
+        color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_left);
         for (x = block->x; x < block->x + y; x ++) {
             window_line_buffer[x] = color;
         }
-        color = osd_scene_get_color(scene, window, ingredient, rect->border_color_right);
+        color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_right);
         for (x = block->x + width - y; x < (u32)(block->x + width); x ++) {
             window_line_buffer[x] = color;
         }
@@ -301,30 +325,30 @@ static int osd_rectangle_border_paint(osd_scene *scene, osd_window *window, osd_
     }
 
     if (y > (u32)(height - rect->border_weight)) {
-        color = osd_scene_get_color(scene, window, ingredient, rect->border_color_bottom);
+        color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_bottom);
         margin = height - y;
         for (x = block->x + margin; x < block->x + width - margin; x ++) {
             window_line_buffer[x] = color;
         }
 
-        color = osd_scene_get_color(scene, window, ingredient, rect->border_color_left);
+        color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_left);
         for (x = block->x; x < block->x + height - y; x ++) {
             window_line_buffer[x] = color;
         }
 
-        color = osd_scene_get_color(scene, window, ingredient, rect->border_color_right);
+        color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_right);
         for (x = block->x + width - height + y; x < (u32)(block->x + width); x ++) {
             window_line_buffer[x] = color;
         }
         return 1;
     }
 
-    color = osd_scene_get_color(scene, window, ingredient, rect->border_color_left);
+    color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_left);
     for (x = block->x; x < (u32)(block->x + rect->border_weight); x ++) {
         window_line_buffer[x] = color;
     }
 
-    color = osd_scene_get_color(scene, window, ingredient, rect->border_color_right);
+    color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_right);
     for (x = block->x + width - rect->border_weight; x < (u32)(block->x + width); x ++) {
         window_line_buffer[x] = color;
     }
@@ -332,11 +356,79 @@ static int osd_rectangle_border_paint(osd_scene *scene, osd_window *window, osd_
     return 0;
 }
 
+static u32 OSD_COLOR_ADD(u32 color, u8 r_delta, u8 g_delta, u8 b_delta) {
+    u8 r = OSD_COLOR_CLIP(OSD_R(color) + r_delta);
+    u8 g = OSD_COLOR_CLIP(OSD_G(color) + g_delta);
+    u8 b = OSD_COLOR_CLIP(OSD_B(color) + b_delta);
+    return OSD_RGB(r, g, b);
+}
+
 static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, osd_block *block,
         osd_ingredient *ingredient,
         u32 *window_line_buffer,
         u32 y) {
+    u32 x, bg_color_start, bg_color_end, color, color_steps;
+    double r_delta, g_delta, b_delta;
 
+    osd_rectangle *rect = &ingredient->data.rect;
+    u16 width = rect->width == 0xFFFF ? window->width : rect->width;
+    u16 height = rect->height == 0xFFFF ? window->height : rect->height;
+
+    bg_color_start = osd_ingredient_get_color(scene, window, ingredient, rect->bgcolor_start);
+    bg_color_end = osd_ingredient_get_color(scene, window, ingredient, rect->bgcolor_end);
+
+    switch (rect->gradient_mode) {
+    case OSD_GRADIENT_MODE_NONE:
+        return;
+    case OSD_GRADIENT_MODE_SOLID:
+        color_steps = 1;
+        break;
+    case OSD_GRADIENT_MODE_LEFT_TO_RIGHT:
+        color_steps = width - rect->border_weight * 2;
+        break;
+    case OSD_GRADIENT_MODE_TOP_TO_BOTTOM:
+        color_steps = height - rect->border_weight * 2;
+        break;
+    case OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT:
+    case OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT:
+        color_steps = (width - rect->border_weight * 2) * height - rect->border_weight * 2;
+        break;
+    default:
+        assert(0);
+    }
+    r_delta = (OSD_R(bg_color_end) - OSD_R(bg_color_start)) / (double)color_steps;
+    g_delta = (OSD_G(bg_color_end) - OSD_G(bg_color_start)) / (double)color_steps;
+    b_delta = (OSD_B(bg_color_end) - OSD_B(bg_color_start)) / (double)color_steps;
+
+    color = bg_color_start;
+    for (x = block->x + rect->border_weight;
+            x < (u32)(block->x + width - rect->border_weight); ++ x) {
+        u32 factor;
+        switch (rect->gradient_mode) {
+        case OSD_GRADIENT_MODE_SOLID:
+            factor = 0;
+            break;
+        case OSD_GRADIENT_MODE_LEFT_TO_RIGHT:
+            factor = x - (block->x + rect->border_weight);
+            break;
+        case OSD_GRADIENT_MODE_TOP_TO_BOTTOM:
+            factor = y;
+            break;
+        case OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT:
+            factor = (x - (block->x + rect->border_weight)) * y;
+            break;
+        case OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT:
+            factor = (x - (block->x + rect->border_weight)) * (rect->height - rect->border_weight - y);
+            break;
+        default:
+            assert(0);
+        }
+        color = OSD_COLOR_ADD(bg_color_start,
+                              (u8)(r_delta * factor),
+                              (u8)(g_delta * factor),
+                              (u8)(b_delta * factor));
+        window_line_buffer[x] = color;
+    }
 }
 
 static void osd_rectangle_paint(osd_scene *scene, osd_window *window, osd_block *block,
@@ -353,11 +445,52 @@ static void osd_rectangle_paint(osd_scene *scene, osd_window *window, osd_block 
     }
 }
 
+static void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *block,
+                           osd_ingredient *ingredient,
+                           u32 *window_line_buffer,
+                           u32 y) {
+    u32 x;
+    osd_line *line = &ingredient->data.line;
+    u32 color = osd_ingredient_get_color(scene, window, ingredient, line->color);
+    u32 x1 = line->x1;
+    u32 x2 = line->x2;
+    u32 y1 = line->y1;
+    u32 y2 = line->y2;
+    if (y1 == y2) {
+        if (y1 <= y && y < y1 + line->weight) {
+            for (x = block->x + x1; x < block->x + x2; x ++) {
+                if (osd_line_style_check(line->style, x)) {
+                    window_line_buffer[x] = color;
+                }
+            }
+        }
+    } else if (x1 == x2) {
+        for (x = 0; x < line->weight; x ++) {
+            if (osd_line_style_check(line->style, y)) {
+                window_line_buffer[block->x + x1 + x] = color;
+            }
+        }
+    } else {
+        double slope = (double)((int)x2 - (int)x1) / (double)((int)y2 - (int)y1);
+        u32 px = x1 + (u32)(slope * (y - y1));
+        if (osd_line_style_check(line->style, y)) {
+            for (x = 0; x < line->weight; x++) {
+                assert(block->x + px + x <= window->width);
+                window_line_buffer[block->x + px + x] = color;
+            }
+        }
+    }
+}
+
 static u32 osd_ingredient_start_y(osd_ingredient *ingredient) {
     assert(ingredient);
     switch (ingredient->type) {
     case OSD_INGREDIENT_RECTANGLE:
         return 0;
+    case OSD_INGREDIENT_LINE: {
+        osd_line *line = &ingredient->data.line;
+        return OSD_MIN(line->y1, line->y2);
+    }
     default:
         assert(0);
     }
@@ -373,6 +506,15 @@ static u32 osd_ingredient_height(osd_ingredient *ingredient, osd_window *window)
             return window->height;
         else
             return rect->height;
+    }
+    case OSD_INGREDIENT_LINE: {
+        osd_line *line = &ingredient->data.line;
+        if (line->y2 == line->y1)
+            return line->y2 - line->y1 + 1 + line->weight;
+        else if (line->y2 > line->y1)
+            return line->y2 - line->y1 + 1;
+        else
+            return line->y1 - line->y2 + 1;
     }
     default:
         assert(0);
@@ -400,6 +542,12 @@ static int osd_window_paint(osd_scene *scene, osd_window *window, u32 *window_li
                 osd_rectangle_paint(scene, window, block, ingredient,
                                     window_line_buffer,
                                     window_y - block->y);
+                ++ paint;
+                break;
+            case OSD_INGREDIENT_LINE:
+                osd_line_paint(scene, window, block, ingredient,
+                               window_line_buffer,
+                               window_y - block->y);
                 ++ paint;
                 break;
             default:
