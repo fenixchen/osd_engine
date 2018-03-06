@@ -198,9 +198,13 @@ struct _osd_window {
 
 
 #define OSD_RGB(r, g, b) ((u32)(((u8)(r)|((u16)((u8)(g))<<8))|(((u32)(u8)(b))<<16)))
-#define OSD_R(color) ((u8)(r) & 0xFF)
-#define OSD_G(color) ((u8)(r >> 8) & 0xFF)
-#define OSD_B(color) ((u8)(r >> 16) & 0xFF)
+#define OSD_R(color) ((u8)(color) & 0xFF)
+#define OSD_G(color) ((u8)(color >> 8) & 0xFF)
+#define OSD_B(color) ((u8)(color >> 16) & 0xFF)
+#define OSD_BLEND(dst, src, alpha) (u8)((dst) * (255 - (alpha)) / 255 + (src_r) * (alpha) / 255)
+
+#define OSD_MAX(x, y) ((x) > (y) ? (x) : (y))
+#define OSD_MIN(x, y) ((x) < (y) ? (x) : (y))
 
 EXTERNC osd_scene *osd_scene_new(const char *target_folder);
 
