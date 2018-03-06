@@ -9,7 +9,7 @@ OSD:
 
     - Palette:
         id: palette1
-        colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF, 0x505050, 0xF0F0F0, 0xFFFFFF]
+        colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF, 0x505050, 0xF0F0F0, 0xFFFFFF, 0xFFFF00]
 
   Ingredients:
     - Rectangle:
@@ -20,6 +20,12 @@ OSD:
         border_weight: 20
         bgcolor: [5, 6]
         gradient_mode: TOP_TO_BOTTOM
+
+    - Glyph:
+        id: char_P
+        font_width: 48
+        color: 8
+        char: 'P'
 
     - Bitmap:
         id: bitmap0
@@ -58,3 +64,4 @@ OSD:
           - [b1, line1, 180, 180]
           - [b2, line2, 180, 180]
           - [b3, bitmap0, 200, 0]
+          - [b4, char_P, 80, 80]

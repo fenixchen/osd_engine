@@ -59,6 +59,34 @@ static unsigned char *read_file(const char *base_folder,
     return buffer;
 }
 
+
+static u32 osd_blend_pixel(u32 dst, u32 src, u8 alpha) {
+    u8 dst_r, dst_g, dst_b;
+    u8 src_r, src_g, src_b;
+    u8 new_r, new_g, new_b;
+
+    if (dst == 0 || alpha == 0xFF) {
+        return src;
+    }
+    if (alpha == 0) {
+        return dst;
+    }
+    dst_r = OSD_R(dst);
+    dst_g = OSD_G(dst);
+    dst_b = OSD_B(dst);
+
+    src_r = OSD_R(src);
+    src_g = OSD_G(src);
+    src_b = OSD_B(src);
+
+    new_r = OSD_BLEND(dst_r, src_r, alpha);
+    new_g = OSD_BLEND(dst_g, src_g, alpha);
+    new_b = OSD_BLEND(dst_b, src_b, alpha);
+
+    return OSD_RGB(new_r, new_g, new_b);
+}
+
+
 static osd_binary *osd_binary_new(const char *target_folder) {
     osd_binary *binary = MALLOC_OBJECT(osd_binary);
 
@@ -136,6 +164,14 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
             bitmap->data_size, bitmap->data_addr);
         break;
     }
+    case OSD_INGREDIENT_GLYPH: {
+        osd_glyph *glyph = &ingredient->data.glyph;
+        LOG("\tleft:%d, top:%d, width:%d, height:%d\n"
+            "\tcolor:%d, char:%c, size:%d, addr:%#x\n",
+            glyph->left, glyph->top, glyph->width, glyph->height,
+            glyph->color, glyph->char_code, glyph->data_size, glyph->data_addr);
+        break;
+    }
     default:
         printf("Unknown ingredient:%d\n", ingredient->type);
         assert(0);
@@ -168,7 +204,7 @@ osd_scene *osd_scene_new(const char *target_folder) {
     scene = MALLOC_OBJECT(osd_scene);
 
     LOG("OSD_INGREDIENT_DATA_SIZE:%d", OSD_INGREDIENT_DATA_SIZE);
-    assert(OSD_INGREDIENT_DATA_SIZE == 4 * sizeof(u32));
+    assert(OSD_INGREDIENT_DATA_SIZE == 5 * sizeof(u32));
 
     binary = osd_binary_new(target_folder);
     if (!binary) {
@@ -211,11 +247,14 @@ osd_scene *osd_scene_new(const char *target_folder) {
         if (ingredient->type == OSD_INGREDIENT_BITMAP) {
             osd_bitmap *bitmap = &ingredient->data.bitmap;
             ingredient->ram_data = (u8*)(binary->ram + bitmap->data_addr - scene->ram_base_addr);
+        } else if (ingredient->type == OSD_INGREDIENT_GLYPH) {
+            osd_glyph *glyph = &ingredient->data.glyph;
+            ingredient->ram_data = (u8*)(binary->ram + glyph->data_addr - scene->ram_base_addr);
         }
         log_ingredient(i, ingredient);
     }
 
-    //load windows
+//load windows
     assert(binary->windows_size % OSD_WINDOW_DATA_SIZE == 0);
     count = binary->windows_size / OSD_WINDOW_DATA_SIZE;
     assert(count <= OSD_SCENE_MAX_WINDOW_COUNT);
@@ -508,6 +547,29 @@ static void osd_bitmap_paint(osd_scene *scene, osd_window *window, osd_block *bl
     }
 }
 
+
+static void osd_glyph_paint(osd_scene *scene, osd_window *window, osd_block *block,
+                            osd_ingredient *ingredient,
+                            u32 *window_line_buffer,
+                            u32 y) {
+    osd_glyph *glyph = &ingredient->data.glyph;
+    if (y < glyph->height) {
+        u32 width = OSD_MIN(glyph->width, window->width - block->x);
+        u32 x;
+        for (x = glyph->pitch * y; x < glyph->pitch * y + width; x ++) {
+            u8 alpha = ingredient->ram_data[x];
+            if (alpha != 0) {
+                u32 color = osd_ingredient_get_color(scene, window,
+                                                     ingredient,
+                                                     glyph->color);
+                u32 index = block->x + x - glyph->pitch * y;
+
+                window_line_buffer[index] = osd_blend_pixel(window_line_buffer[index], color, alpha);
+            }
+        }
+    }
+}
+
 static u32 osd_ingredient_start_y(osd_ingredient *ingredient) {
     assert(ingredient);
     switch (ingredient->type) {
@@ -517,6 +579,9 @@ static u32 osd_ingredient_start_y(osd_ingredient *ingredient) {
     case OSD_INGREDIENT_LINE: {
         osd_line *line = &ingredient->data.line;
         return OSD_MIN(line->y1, line->y2);
+    }
+    case OSD_INGREDIENT_GLYPH: {
+        return 0;
     }
     default:
         assert(0);
@@ -546,6 +611,10 @@ static u32 osd_ingredient_height(osd_ingredient *ingredient, osd_window *window)
     case OSD_INGREDIENT_BITMAP: {
         osd_bitmap *bitmap = &ingredient->data.bitmap;
         return bitmap->height;
+    }
+    case OSD_INGREDIENT_GLYPH: {
+        osd_glyph *glyph = &ingredient->data.glyph;
+        return glyph->height;
     }
     default:
         assert(0);
@@ -587,6 +656,12 @@ static int osd_window_paint(osd_scene *scene, osd_window *window, u32 *window_li
                                  window_y - block->y);
                 ++ paint;
                 break;
+            case OSD_INGREDIENT_GLYPH:
+                osd_glyph_paint(scene, window, block, ingredient,
+                                window_line_buffer,
+                                window_y - block->y);
+                ++ paint;
+                break;
 
             default:
                 assert(0);
@@ -594,33 +669,6 @@ static int osd_window_paint(osd_scene *scene, osd_window *window, u32 *window_li
         }
     }
     return paint;
-}
-
-static u32 osd_blend_pixel(u32 dst, u32 src, u8 alpha) {
-    u8 dst_r, dst_g, dst_b;
-    u8 src_r, src_g, src_b;
-    u8 new_r, new_g, new_b;
-
-    if (dst == 0 || alpha == 0xFF) {
-        return src;
-    }
-    if (alpha == 0) {
-        return dst;
-    }
-    dst_r = OSD_R(dst);
-    dst_g = OSD_G(dst);
-    dst_b = OSD_B(dst);
-
-    src_r = OSD_R(src);
-    src_g = OSD_G(src);
-    src_b = OSD_B(src);
-
-    new_r = OSD_BLEND(dst_r, src_r, alpha);
-    new_g = OSD_BLEND(dst_g, src_g, alpha);
-    new_b = OSD_BLEND(dst_b, src_b, alpha);
-
-    return OSD_RGB(new_r, new_g, new_b);
-
 }
 
 static void osd_merge_line(u32 *dst_buf, u32 *src_buf, u16 len, u32 x, u8 alpha) {

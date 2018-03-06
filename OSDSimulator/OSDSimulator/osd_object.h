@@ -108,6 +108,8 @@ struct _osd_rectangle {
     u8 border_style: 4; //OSD_LINE_STYLE_XXX, lower 4 bit
     u8 gradient_mode:4; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX, higher 4 bit
     u8 bgcolor_start, bgcolor_end;
+
+    u32 pad32;
 };
 
 struct _osd_line {
@@ -119,20 +121,23 @@ struct _osd_line {
     u8 style;	//OSD_LINE_STYLE_XXX
     u8 color;
     u8 reserved2;
+
+    u32 pad32;
 };
 
 struct _osd_glyph {
-    u8 bitmap_left, bitmap_top;
+    u8 left, top;
+    u8 width, height;
 
-    u8 bitmap_width, bitmap_height;
-    u8 bitmap_pitch;
+    u8 pitch;
     u8 color;
-
     u8 font_width;
     u8 reserved;
 
     u16 char_code;
     u16 data_size;
+
+    u32 data_addr;
 };
 
 struct _osd_bitmap {
@@ -144,6 +149,8 @@ struct _osd_bitmap {
     u16 data_size;
 
     u32 data_addr;
+
+    u32 pad32;
 };
 
 #define OSD_INGREDIENT_RECTANGLE 1
@@ -163,7 +170,7 @@ struct _osd_ingredient {
         osd_rectangle rect;
         osd_line line;
         osd_bitmap bitmap;
-        //osd_glyph glyph;
+        osd_glyph glyph;
     } data;
 
     u8 *ram_data;
@@ -226,7 +233,7 @@ struct _osd_window {
 #define OSD_R(color) ((u8)(color) & 0xFF)
 #define OSD_G(color) ((u8)(color >> 8) & 0xFF)
 #define OSD_B(color) ((u8)(color >> 16) & 0xFF)
-#define OSD_BLEND(dst, src, alpha) (u8)((dst) * (255 - (alpha)) / 255 + (src_r) * (alpha) / 255)
+#define OSD_BLEND(dst, src, alpha) (u8)((dst) * (255 - (alpha)) / 255 + (src) * (alpha) / 255)
 
 
 #define OSD_MAX(x, y) ((x) > (y) ? (x) : (y))

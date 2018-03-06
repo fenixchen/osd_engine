@@ -237,4 +237,6 @@ class Rectangle(Plot):
                             (self._gradient_mode.value << 4) | self._border_style.value,
                             self._bgcolor_start,
                             self._bgcolor_end)
+
+        bins += struct.pack('<xxxx')
         return bins, ram

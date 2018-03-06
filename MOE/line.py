@@ -83,4 +83,5 @@ class Line(Plot):
         bins = struct.pack('<BBxx', IngredientType.LINE.value, self.palette_index())
         bins += struct.pack('<HHHH', self._x1, self._y1, self._x2, self._y2)
         bins += struct.pack('<BBBx', self._weight, self._style.value, self._color)
+        bins += struct.pack('<xxxx')
         return bins, ram

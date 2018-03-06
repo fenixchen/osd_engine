@@ -5,6 +5,8 @@ from font import Font
 from imageutil import ImageUtil
 from ingredient import Ingredient
 from log import Log
+import struct
+from enumerate import *
 
 FONT = Font()
 
@@ -43,7 +45,7 @@ class Glyph(Ingredient):
             index = self._data[x]
             if index == 0:
                 continue
-            col = block_x + x - self._width * y
+            col = block_x + x - self._pitch * y
             line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, index)
 
     def __str__(self):
@@ -51,4 +53,17 @@ class Glyph(Ingredient):
         return ret
 
     def to_binary(self, ram_offset):
-        raise Exception('not implemented')
+        logger.debug('Generate Bitmap <%s>' % self._id)
+        ram = b''
+        bins = struct.pack('<BBxx', IngredientType.GLYPH.value,
+                           0xFF if self._palette is None else self._palette.object_index)
+        bins += struct.pack('<BBBB', self._left, self._top, self._width, self._height)
+        bins += struct.pack('<BBBx', self._pitch, self._color, self._font_width)
+
+        data_size = len(self._data)
+        bins += struct.pack('<HH', ord(self._char), data_size)
+
+        bins += struct.pack('<I', ram_offset)
+
+        ram = struct.pack('<%sB' % data_size, *self._data)
+        return bins, ram
