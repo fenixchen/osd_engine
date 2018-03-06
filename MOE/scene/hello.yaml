@@ -4,6 +4,10 @@ OSD:
 
   Palettes:
     - Palette:
+        id: palette0
+        colors: []
+
+    - Palette:
         id: palette1
         colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF, 0x505050, 0xF0F0F0, 0xFFFFFF]
 
@@ -16,6 +20,11 @@ OSD:
         border_weight: 20
         bgcolor: [5, 6]
         gradient_mode: TOP_TO_BOTTOM
+
+    - Bitmap:
+        id: bitmap0
+        palette: palette0
+        bitmaps: 'images/tv.gif'
 
     - Line:
         id: line1
@@ -41,10 +50,11 @@ OSD:
         id: window_rect
         x: 100
         y: 100
-        width: 300
+        width: 400
         height: 300
         palette: palette1
         blocks:
           - [b0, rect1, 25, 25]
           - [b1, line1, 180, 180]
           - [b2, line2, 180, 180]
+          - [b3, bitmap0, 200, 0]

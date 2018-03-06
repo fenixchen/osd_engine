@@ -25,13 +25,26 @@ class Palette(OSDObject):
         else:
             self._pixel_format = PixelFormat.LUT
             self._lut = colors
-            self._pixel_bits = 1
-            while (1 << self._pixel_bits) < len(self._lut):
-                self._pixel_bits += 1
+
+    @property
+    def pixel_bits(self):
+        pixel_bits = 1
+        while (1 << pixel_bits) < len(self._lut):
+            pixel_bits *= 2
+        return pixel_bits
 
     @property
     def id(self):
         return self._id
+
+    def get_color_index(self, color):
+        index = 0
+        for c in self._lut:
+            if c == color:
+                return index
+            index += 1
+        self._lut.append(color)
+        return index
 
     def color(self, index, based_color=None):
         if self._pixel_format == PixelFormat.RGB:
@@ -49,7 +62,7 @@ class Palette(OSDObject):
         lut_len = len(self._lut)
         bins = struct.pack('<BBH',
                            self._pixel_format.value,
-                           self._pixel_bits,
+                           self.pixel_bits,
                            len(self._lut))
         if len(self._lut) > 0:
             ram = struct.pack('<%sI' % len(self._lut), *self._lut)

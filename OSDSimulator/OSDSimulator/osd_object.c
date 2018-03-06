@@ -30,24 +30,6 @@ const char *ingredient_name[] = {
 #define MODIFIERS_FILE	"modifiers.bin"
 #define RAM_FILE	"ram.bin"
 
-typedef struct _osd_binary {
-    u8 *global;
-    u32 global_size;
-
-    u8 *palettes;
-    u32 palettes_size;
-
-    u8 *ingredients;
-    u32 ingredients_size;
-
-    u8 *windows;
-    u32 windows_size;
-
-    u8 *ram;
-    u32 ram_size;
-} osd_binary;
-
-
 static unsigned char *read_file(const char *base_folder,
                                 const char *filename,
                                 u32 *len) {
@@ -58,7 +40,7 @@ static unsigned char *read_file(const char *base_folder,
     sprintf(path, "%s/%s", base_folder, filename);
     fp = fopen(path, "rb");
     if (fp == NULL) {
-        fprintf(stderr, "open %s failed.\n", filename);
+        printf("open <%s> failed.\n", path);
         return buffer;
     }
     fseek(fp, 0L, SEEK_END);
@@ -66,7 +48,7 @@ static unsigned char *read_file(const char *base_folder,
     fseek(fp, 0, SEEK_SET);
     buffer = (unsigned char *)malloc(length);
     if (fread(buffer, length, 1, fp) != 1) {
-        fprintf(stderr, "read %s failed.\n", filename);
+        printf("read <%s> failed.\n", path);
         free(buffer);
         return NULL;
     }
@@ -113,25 +95,25 @@ void log_global(osd_scene *scene) {
 }
 
 void log_palette(int index, osd_palette *palette) {
-    u32 i;
+//    u32 i;
     LOG("palette[%d] \n\tpixel_format:%d, pixel_bits:%d, entry_count:%d, luts_addr:%#x\n",
         index,
         palette->pixel_format, palette->pixel_bits, palette->entry_count,
         (unsigned int)palette->luts_addr);
+#if 0
     for (i = 0; i < palette->entry_count; i ++) {
         LOG("\t%08x ", palette->lut[i]);
     }
     LOG("\n");
+#endif
 }
 
 void log_ingredient(int index, osd_ingredient *ingredient) {
-    osd_rectangle *rect;
-    osd_line *line;
     LOG("ingredient[%d] \n\ttype:%s(%d), palette:%d\n",
         index, ingredient_name[ingredient->type], ingredient->type, ingredient->palette_index);
     switch (ingredient->type) {
-    case OSD_INGREDIENT_RECTANGLE:
-        rect = &ingredient->data.rect;
+    case OSD_INGREDIENT_RECTANGLE: {
+        osd_rectangle *rect = &ingredient->data.rect;
         LOG("\tgradient_mode:%d, width:%d, height:%d\n"
             "\tborder_color:[%d,%d,%d,%d], border_weight:%d, border_style:%d\n"
             "\tbgcolor:[%d,%d]\n",
@@ -141,10 +123,19 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
             rect->border_color_right, rect->border_weight, rect->border_style,
             rect->bgcolor_start, rect->bgcolor_end);
         break;
-    case OSD_INGREDIENT_LINE:
-        line = &ingredient->data.line;
+    }
+    case OSD_INGREDIENT_LINE: {
+        osd_line *line = &ingredient->data.line;
         LOG("\tx1:%d, y1:%d, x2:%d, y2:%d\n", line->x1, line->y1, line->x2, line->y2);
         break;
+    }
+    case OSD_INGREDIENT_BITMAP: {
+        osd_bitmap *bitmap = &ingredient->data.bitmap;
+        LOG("\twidth:%d, height:%d, count:%d, size:%d, addr:%#x\n",
+            bitmap->width, bitmap->height, bitmap->bitmap_count,
+            bitmap->data_size, bitmap->data_addr);
+        break;
+    }
     default:
         printf("Unknown ingredient:%d\n", ingredient->type);
         assert(0);
@@ -169,19 +160,26 @@ void log_window(int index, osd_window *window) {
 }
 
 osd_scene *osd_scene_new(const char *target_folder) {
-    osd_binary *binary;
     osd_scene *scene;
     u32 count, i, j;
+    osd_binary *binary;
     assert(target_folder != NULL);
+
+    scene = MALLOC_OBJECT(osd_scene);
+
+    LOG("OSD_INGREDIENT_DATA_SIZE:%d", OSD_INGREDIENT_DATA_SIZE);
+    assert(OSD_INGREDIENT_DATA_SIZE == 4 * sizeof(u32));
 
     binary = osd_binary_new(target_folder);
     if (!binary) {
+        free(scene);
         return NULL;
     }
+    scene->binary = binary;
 
     // load scene
     assert(binary->global_size == OSD_SCENE_DATA_SIZE);
-    scene = MALLOC_OBJECT(osd_scene);
+
     memcpy(scene, binary->global, binary->global_size);
     log_global(scene);
 
@@ -195,8 +193,7 @@ osd_scene *osd_scene_new(const char *target_folder) {
         scene->palettes[i] = palette;
         if (palette->entry_count > 0) {
             u32 *lut_ram = (u32*)(binary->ram + palette->luts_addr - scene->ram_base_addr);
-            palette->lut = MALLOC_OBJECT_ARRAY(u32, palette->entry_count);
-            memcpy(palette->lut, lut_ram, palette->entry_count * 4);
+            palette->lut = lut_ram;
         }
         log_palette(i, palette);
     }
@@ -207,8 +204,14 @@ osd_scene *osd_scene_new(const char *target_folder) {
     count = binary->ingredients_size / OSD_INGREDIENT_DATA_SIZE;
     for (i = 0; i < count; i ++) {
         osd_ingredient *ingredient = MALLOC_OBJECT(osd_ingredient);
-        memcpy(ingredient, binary->ingredients + i * OSD_INGREDIENT_DATA_SIZE, OSD_INGREDIENT_DATA_SIZE);
+        memcpy(ingredient,
+               binary->ingredients + i * OSD_INGREDIENT_DATA_SIZE,
+               OSD_INGREDIENT_DATA_SIZE);
         scene->ingredients[i] = ingredient;
+        if (ingredient->type == OSD_INGREDIENT_BITMAP) {
+            osd_bitmap *bitmap = &ingredient->data.bitmap;
+            ingredient->ram_data = (u8*)(binary->ram + bitmap->data_addr - scene->ram_base_addr);
+        }
         log_ingredient(i, ingredient);
     }
 
@@ -230,7 +233,6 @@ osd_scene *osd_scene_new(const char *target_folder) {
         log_window(i, window);
     }
 
-    osd_binary_delete(binary);
     return scene;
 }
 
@@ -256,6 +258,8 @@ void osd_scene_delete(osd_scene *scene) {
         free(window);
         i ++;
     }
+
+    free(scene->binary);
 }
 
 
@@ -289,16 +293,19 @@ static int osd_line_style_check(u32 style, u32 x) {
 
 
 static u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
-                                    osd_ingredient *ingredient, u8 index) {
+                                    osd_ingredient *ingredient, u32 index) {
+    osd_palette *palette;
     u8 palette_index = ingredient->palette_index;
     if (palette_index == OSD_PALETTE_INDEX_INVALID) {
         palette_index = window->palette_index;
     }
     assert(palette_index != OSD_PALETTE_INDEX_INVALID);
-
-    return scene->palettes[palette_index]->lut[index];
-
+    palette = scene->palettes[palette_index];
+    assert(palette);
+    assert(index < palette->entry_count);
+    return palette->lut[index];
 }
+
 static int osd_rectangle_border_paint(osd_scene *scene, osd_window *window, osd_block *block,
                                       osd_ingredient *ingredient,
                                       u32 *window_line_buffer,
@@ -482,10 +489,30 @@ static void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *bloc
     }
 }
 
+static void osd_bitmap_paint(osd_scene *scene, osd_window *window, osd_block *block,
+                             osd_ingredient *ingredient,
+                             u32 *window_line_buffer,
+                             u32 y) {
+    osd_bitmap *bitmap = &ingredient->data.bitmap;
+    if (y < bitmap->height) {
+        u32 width = OSD_MIN(bitmap->width, window->width - block->x);
+        u32 start = ingredient->current_bitmap * bitmap->width * bitmap->height +
+                    bitmap->width * y;
+        u32 x;
+        for (x = start; x < start + width; x ++) {
+            u32 color = osd_ingredient_get_color(scene, window,
+                                                 ingredient,
+                                                 ingredient->ram_data[x]);
+            window_line_buffer[block->x + x - start] = color;
+        }
+    }
+}
+
 static u32 osd_ingredient_start_y(osd_ingredient *ingredient) {
     assert(ingredient);
     switch (ingredient->type) {
     case OSD_INGREDIENT_RECTANGLE:
+    case OSD_INGREDIENT_BITMAP:
         return 0;
     case OSD_INGREDIENT_LINE: {
         osd_line *line = &ingredient->data.line;
@@ -515,6 +542,10 @@ static u32 osd_ingredient_height(osd_ingredient *ingredient, osd_window *window)
             return line->y2 - line->y1 + 1;
         else
             return line->y1 - line->y2 + 1;
+    }
+    case OSD_INGREDIENT_BITMAP: {
+        osd_bitmap *bitmap = &ingredient->data.bitmap;
+        return bitmap->height;
     }
     default:
         assert(0);
@@ -550,6 +581,13 @@ static int osd_window_paint(osd_scene *scene, osd_window *window, u32 *window_li
                                window_y - block->y);
                 ++ paint;
                 break;
+            case OSD_INGREDIENT_BITMAP:
+                osd_bitmap_paint(scene, window, block, ingredient,
+                                 window_line_buffer,
+                                 window_y - block->y);
+                ++ paint;
+                break;
+
             default:
                 assert(0);
             }

@@ -9,12 +9,12 @@ class ImageUtil(object):
         image_file = ImageUtil.BASE_DIR + image_file
         im = Image.open(image_file)
         width, height = im.size
-        pix = im.load()
+        rgb_im = im.convert('RGB')
         data = []
         for y in range(height):
             for x in range(width):
-                r, g, b = pix[x, y]
-                data.append((r << 16) | (g << 8) | b)
+                r, g, b = rgb_im.getpixel((x, y))
+                data.append(ImageUtil.make_color(r, g, b))
         return width, height, data
 
     @staticmethod

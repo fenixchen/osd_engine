@@ -160,7 +160,8 @@ class Scene(object):
     def paint_line(self, y, line_buffer, painter):
         str_color = '{'
         for pixel in line_buffer:
-            str_color = str_color + (" #%06x" % pixel)
+            r, g, b = ImageUtil.rgb(pixel)
+            str_color = str_color + (" #%02x%02x%02x" % (r, g, b))
         str_color = str_color + '}'
         painter.set_pixel(0, y, str_color)
 
@@ -228,7 +229,6 @@ class Scene(object):
         offset = os.path.getsize(ram_filename)
         ram_file = open(ram_filename, "ab")
 
-        offset = 0
         for ingredient in self._ingredients:
             bins, ram = ingredient.to_binary(ram_base_addr + offset)
             file.write(bins)

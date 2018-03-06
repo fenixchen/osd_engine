@@ -175,6 +175,8 @@ class Rectangle(Plot):
         g_delta = (g_end - g_start) / color_steps
         b_delta = (b_end - b_start) / color_steps
 
+        color = bg_color_start
+
         for x in range(block_x + self._border_weight,
                        block_x + width - self._border_weight):
             if self._gradient_mode == GradientMode.SOLID:
@@ -184,9 +186,9 @@ class Rectangle(Plot):
             elif self._gradient_mode == GradientMode.TOP_TO_BOTTOM:
                 factor = y
             elif self._gradient_mode == GradientMode.TOP_LEFT_TO_BOTTOM_RIGHT:
-                factor = (x - (block_x + self._border_weight)) * y
+                factor = (x - block_x + self._border_weight) * y
             elif self._gradient_mode == GradientMode.BOTTOM_LEFT_TO_TOP_RIGHT:
-                factor = (x - (block_x + self._border_weight)) * (height - self._border_weight - y)
+                factor = (x - block_x - self._border_weight) * (height - self._border_weight - y)
             else:
                 raise Exception('Unknown gradient mode <%s>' % self._gradient_mode.name)
             color = ImageUtil.color_add(bg_color_start,
@@ -225,12 +227,14 @@ class Rectangle(Plot):
     def to_binary(self, ram_offset):
         logger.debug('Generate rectangle <%s>' % self._id)
         ram = b''
-        bins = struct.pack('<BBBx', IngredientType.RECTANGLE.value, self.palette_index(), self._gradient_mode.value)
+        bins = struct.pack('<BBxx', IngredientType.RECTANGLE.value, self.palette_index())
         bins += struct.pack('<HH',
                             self._width if self._width > 0 else 0xFFFF,
                             self._height if self._height > 0 else 0xFFFF)
         bins += struct.pack('<BBBB', self._border_color_top, self._border_color_bottom, self._border_color_left,
                             self._border_color_right)
-        bins += struct.pack('<BBBB', self._border_weight, self._border_style.value, self._bgcolor_start,
+        bins += struct.pack('<BBBB', self._border_weight,
+                            (self._gradient_mode.value << 4) | self._border_style.value,
+                            self._bgcolor_start,
                             self._bgcolor_end)
         return bins, ram

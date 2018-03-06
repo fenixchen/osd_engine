@@ -33,6 +33,8 @@ typedef struct _osd_flip osd_flip;
 typedef struct _osd_glyph osd_glyph;
 typedef struct _osd_bitmap osd_bitmap;
 
+typedef struct _osd_binary osd_binary;
+
 const u8 PIXEL_FORMAT_RGB = 1;
 const u8 PIXEL_FORMAT_GRAY_SCALE = 2;
 const u8 PIXEL_FORMAT_LUT = 3;
@@ -45,6 +47,24 @@ struct _osd_scene {
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
+    osd_binary *binary;
+};
+
+struct _osd_binary {
+    u8 *global;
+    u32 global_size;
+
+    u8 *palettes;
+    u32 palettes_size;
+
+    u8 *ingredients;
+    u32 ingredients_size;
+
+    u8 *windows;
+    u32 windows_size;
+
+    u8 *ram;
+    u32 ram_size;
 };
 
 #define OSD_PALETTE_DATA_SIZE OSD_OFFSET_OF(osd_palette, lut)
@@ -78,23 +98,22 @@ const u8 OSD_PALETTE_INDEX_INVALID = 0xFF;
 #define OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT 5
 
 struct _osd_rectangle {
-    u8 gradient_mode; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX
-    u8 reserved;
-
     u16 width;
     u16 height;
 
-    u8 border_color_top, border_color_bottom, border_color_left, border_color_right;
+    u8 border_color_top, border_color_bottom;
+    u8 border_color_left, border_color_right;
 
     u8 border_weight;
-    u8 border_style; //OSD_LINE_STYLE_XXX
+    u8 border_style: 4; //OSD_LINE_STYLE_XXX, lower 4 bit
+    u8 gradient_mode:4; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX, higher 4 bit
     u8 bgcolor_start, bgcolor_end;
-
 };
 
 struct _osd_line {
-    u16 reserved1;
-    u16 x1, y1, x2, y2;
+    u16 x1, y1;
+
+    u16 x2, y2;
 
     u8 weight;
     u8 style;	//OSD_LINE_STYLE_XXX
@@ -103,31 +122,28 @@ struct _osd_line {
 };
 
 struct _osd_glyph {
-    u16 reserved1;
+    u8 bitmap_left, bitmap_top;
 
-    u8 bitmap_left, bitmap_top, bitmap_width, bitmap_height;
-
+    u8 bitmap_width, bitmap_height;
     u8 bitmap_pitch;
     u8 color;
+
     u8 font_width;
     u8 reserved;
 
     u16 char_code;
     u16 data_size;
-
-    u8 *data; //data_size
 };
 
 struct _osd_bitmap {
-    u16 reserved1;
-
-    u16 width, height;
+    u16 width;
+    u16 height;
 
     u8 bitmap_count;
-    u8 reserved;
+    u8 reserved2;
     u16 data_size;
 
-    u8 *data; //data_size
+    u32 data_addr;
 };
 
 #define OSD_INGREDIENT_RECTANGLE 1
@@ -135,17 +151,22 @@ struct _osd_bitmap {
 #define OSD_INGREDIENT_GLYPH	 3
 #define OSD_INGREDIENT_BITMAP	 4
 
-#define OSD_INGREDIENT_DATA_SIZE sizeof(osd_ingredient)
+#define OSD_INGREDIENT_DATA_SIZE OSD_OFFSET_OF(osd_ingredient, ram_data)
 
 struct _osd_ingredient {
     u8 type; //OSD_INGREDIENT_XXX
     u8 palette_index;
+    u8 current_bitmap;
+    u8 reserved;
+
     union {
         osd_rectangle rect;
         osd_line line;
+        osd_bitmap bitmap;
         //osd_glyph glyph;
-        //osd_bitmap bitmap;
     } data;
+
+    u8 *ram_data;
 };
 
 struct _osd_move {
