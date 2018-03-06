@@ -19,7 +19,7 @@ class ImageUtil(object):
 
     @staticmethod
     def blend_pixel(dst, src, src_alpha):
-        if dst == 0 or src_alpha == 255:
+        if src_alpha == 255:
             return src
         elif src_alpha == 0:
             return dst

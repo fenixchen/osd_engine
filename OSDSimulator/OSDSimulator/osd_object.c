@@ -65,7 +65,7 @@ static u32 osd_blend_pixel(u32 dst, u32 src, u8 alpha) {
     u8 src_r, src_g, src_b;
     u8 new_r, new_g, new_b;
 
-    if (dst == 0 || alpha == 0xFF) {
+    if (alpha == 0xFF) {
         return src;
     }
     if (alpha == 0) {
@@ -699,7 +699,6 @@ void osd_scene_paint(osd_scene *scene, u32 frame, fn_set_pixel set_pixel, void *
     window_line_buffer = MALLOC_OBJECT_ARRAY(u32, width);
     for (y = 0; y < height; y ++) {
         memset(line_buffer, 0, sizeof(u32) * width);
-        memset(window_line_buffer, 0, sizeof(u32) * width);
         for (i = 0; scene->windows[i]; i ++) {
             osd_window *window = scene->windows[i];
             if (!window->visible) {
@@ -707,6 +706,7 @@ void osd_scene_paint(osd_scene *scene, u32 frame, fn_set_pixel set_pixel, void *
             }
             if (window->y <= y && y < window->y + window->height) {
                 u16 len = OSD_MIN(scene->width - window->x, window->width);
+                memset(window_line_buffer, 0, sizeof(u32) * width);
                 if (osd_window_paint(scene, window, window_line_buffer, y)) {
                     osd_merge_line(line_buffer, window_line_buffer, len, window->x, window->alpha);
                 }
