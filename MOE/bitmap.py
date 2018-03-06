@@ -29,9 +29,14 @@ class Bitmap(Ingredient):
         color_data = []
         for bitmap in bitmaps:
             self._width, self._height, data = ImageUtil.load(bitmap)
-            color_data.extend(data)
-        for color in color_data:
-            self._data.append(self._palette.get_color_index(color))
+            if self._palette.pixel_format == PixelFormat.LUT:
+                color_data.extend(data)
+            else:
+                self._data.extend(data)
+
+        if self._palette.pixel_format == PixelFormat.LUT:
+            for color in color_data:
+                self._data.append(self._palette.get_color_index(color))
         self._current = 0
 
         assert (len(self._data) == self._width * self._height * self._bitmap_count)
@@ -65,11 +70,12 @@ class Bitmap(Ingredient):
         bins = struct.pack('<BBxx', IngredientType.BITMAP.value, self._palette.object_index)
         bins += struct.pack('<HH', self._width, self._height)
         data_size = int(len(self._data) * pixel_bits / 8)
+        data_size = len(self._data)
         bins += struct.pack('<BxH', self._bitmap_count, data_size)
         bins += struct.pack('<I', ram_offset)
         bins += struct.pack('<xxxx')
-        if pixel_bits == 8:
-            ram = struct.pack('<%sB' % data_size, *self._data)
-        else:
-            raise Exception('Not implemented %d' % pixel_bits)
+        #if pixel_bits == 8:
+        ram = struct.pack('<%sB' % data_size, *self._data)
+        #else:
+        #    raise Exception('Not implemented %d' % pixel_bits)
         return bins, ram

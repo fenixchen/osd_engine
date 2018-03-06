@@ -270,10 +270,10 @@ class Scene(object):
 
         logger.debug('Target folder:%s' % target_folder)
 
-        if os.path.exists(target_folder):
-            shutil.rmtree(target_folder, ignore_errors=True)
+        #if os.path.exists(target_folder):
+        #    shutil.rmtree(target_folder, ignore_errors=True)
 
-        os.makedirs(target_folder)
+        #os.makedirs(target_folder)
 
         # create empty ram.bin
         with open(target_folder + "ram.bin", "wb") as f:

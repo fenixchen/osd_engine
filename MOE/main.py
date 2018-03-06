@@ -3,9 +3,16 @@
 import app
 from scene import Scene
 
-GEN_BINARY = True
 
 if __name__ == '__main__':
+    if False:
+        app.App().run()
+    else:
+        scene = Scene('Scene/button.yaml')
+        app.App(scene).run()
+        scene.generate_binary(target_folder='../Debug/hello.generated/',
+                              ram_base_addr=0xF0000000)
+    """
     if not GEN_BINARY:
         app = app.App(
             Scene('scene/line.yaml'),
@@ -21,3 +28,4 @@ if __name__ == '__main__':
         app.App(scene).run()
         scene.generate_binary(target_folder='../Debug/hello.generated/',
                               ram_base_addr=0xF0000000)
+    """

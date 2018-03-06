@@ -52,7 +52,7 @@ class Rectangle(Plot):
         if gradient_mode is not None:
             self._gradient_mode = GradientMode[gradient_mode]
         else:
-            self._gradient_mode = GradientMode.NONE
+            self._gradient_mode = GradientMode.SOLID
 
         if bgcolor is not None:
             if isinstance(bgcolor, int):
@@ -235,8 +235,8 @@ class Rectangle(Plot):
                             self._border_color_right)
         bins += struct.pack('<BBBB', self._border_weight,
                             (self._gradient_mode.value << 4) | self._border_style.value,
-                            self._bgcolor_start,
-                            self._bgcolor_end)
+                            0 if self._bgcolor_start is None else self._bgcolor_start,
+                            0 if self._bgcolor_end is None else self._bgcolor_end)
 
         bins += struct.pack('<xxxx')
         return bins, ram

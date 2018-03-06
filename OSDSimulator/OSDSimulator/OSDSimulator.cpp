@@ -139,7 +139,7 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
 static osd_scene *scene = NULL;
 
 void DoOpen(HWND hWnd) {
-#if 0
+#if 1
     OPENFILENAME ofn;       // common dialog box structure
     char szFile[260];       // buffer for file name
     // Initialize OPENFILENAME
@@ -274,7 +274,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd);
+    //DoOpen(hWnd);
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

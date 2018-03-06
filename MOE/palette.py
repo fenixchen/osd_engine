@@ -34,6 +34,10 @@ class Palette(OSDObject):
         return pixel_bits
 
     @property
+    def pixel_format(self):
+        return self._pixel_format
+
+    @property
     def id(self):
         return self._id
 

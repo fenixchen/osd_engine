@@ -4,64 +4,70 @@ OSD:
 
   Palettes:
     - Palette:
-        id: rgb24
-        colors: RGB24
+        id: palette0
+        colors: [0, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0x808080, 0xA0A0A0,
+        0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0xD0D0D0, 0xF0F0F0]
+
+    - Palette:
+        id: palette1
+        colors: []
+
 
   Ingredients:
     - Bitmap:
         id: arraw_right
-        palette: rgb24
-        bitmaps: 'images/arrow_right.jpg'
+        palette: palette1
+        bitmaps: 'images/arrow_right.bmp'
 
     - Glyph:
         id: char_M
         font_width: 14
-        color: 0x000000
+        color: 0
         char: 'M'
     - Glyph:
         id: char_E
         font_width: 14
-        color: 0x000000
+        color: 0
         char: 'E'
     - Glyph:
         id: char_N
         font_width: 14
-        color: 0x000000
+        color: 0
         char: 'N'
     - Glyph:
         id: char_U
         font_width: 14
-        color: 0x000000
+        color: 0
         char: 'U'
     - Glyph:
         id: char_1
         font_width: 14
-        color: 0x000000
+        color: 0
         char: '1'
     - Glyph:
         id: char_2
         font_width: 14
-        color: 0x000000
+        color: 0
         char: '2'
     - Glyph:
         id: char_3
         font_width: 14
-        color: 0x000000
+        color: 0
         char: '3'
     - Glyph:
         id: char_4
         font_width: 14
-        color: 0x000000
+        color: 0
         char: '4'
     - Glyph:
         id: char_5
         font_width: 14
-        color: 0x000000
+        color: 0
         char: '5'
     - Glyph:
         id: char_6
         font_width: 14
-        color: 0x000000
+        color: 0
         char: '6'
 
     - Rectangle:
@@ -69,8 +75,8 @@ OSD:
         width: parent
         height: 18
         border_weight: 1
-        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
-        bgcolor: [0x808080, 0xA0A0A0]
+        border_color: [1, 2, 3, 4]
+        bgcolor: [5, 6]
         gradient_mode: LEFT_TO_RIGHT
 
     - Rectangle:
@@ -78,8 +84,8 @@ OSD:
         width: parent
         height: 18
         border_weight: 1
-        border_color: [0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050]
-        bgcolor: [0xD0D0D0, 0xF0F0F0]
+        border_color: [7, 8, 9, 10]
+        bgcolor: [11, 12]
         gradient_mode: LEFT_TO_RIGHT
 
 
@@ -90,7 +96,7 @@ OSD:
         y: 140
         width: 42
         height: 18
-        palette: rgb24
+        palette: palette0
         blocks:
           - [b1, arraw_right, 0, 0]
 
@@ -100,7 +106,7 @@ OSD:
         y: 100
         width: 200
         height: 400
-        palette: rgb24
+        palette: palette0
         visible: true
         blocks:
           - [b1, rect_inactive, 0, 0]

@@ -1,8 +1,10 @@
 # -*- coding: UTF-8 -*-
 
 from tkinter import *
-
+import tkinter.filedialog
 from engine import *
+import scene
+import os
 
 logger = Log.get_logger("app")
 
@@ -24,13 +26,54 @@ TITLE_STRING = "Monitor OSD Engine Demo"
 class App(object):
     def __init__(self, *scenes):
         self._root = Tk()
-        self._root.title(TITLE_STRING)
+        self._root.wm_title(TITLE_STRING)
+        self._root.geometry('640x480')
+        self._menubar = Menu(self._root)
+        self._fmenu1 = Menu(self._root, tearoff=0)
+        self._fmenu1.add_command(label='Open', command=self.open)
+        self._fmenu1.add_command(label='Export binary...', command=self.export_binary)
+        self._fmenu1.add_separator()
+        self._fmenu1.add_command(label='Exit', command=self.quit)
+        self._menubar.add_cascade(label='File', menu=self._fmenu1)
+        self._root.config(menu=self._menubar)
+
         self._canvas = None
         self._image_on_canvas = None
 
         self._frame_index = 0
         self._scenes = scenes
         self._scene_index = 0
+
+    def quit(self):
+        self._root.quit()
+        self._root.destroy()
+        exit()
+
+    def open(self):
+        yaml_file = tkinter.filedialog.askopenfilename(
+            title='Select OSD YAML FIle',
+            filetypes=(("YAML files", "*.yaml"), ("all files", "*.*")))
+        if len(yaml_file) == 0:
+            return
+
+        self._frame_index = 0
+        s = scene.Scene(yaml_file)
+        self._scenes = [s]
+        self._root.geometry('%dx%d' % (s.width, s.height))
+        self._scene_index = 0
+        self._paint()
+
+    def export_binary(self):
+        if self._scene_index >= len(self._scenes):
+            return
+
+        bin_folder = tkinter.filedialog.askdirectory(title='Select binary folder')
+
+        if len(bin_folder) == 0:
+            return
+
+        s = self._scenes[self._scene_index]
+        s.generate_binary(target_folder=bin_folder, ram_base_addr=0xF000000)
 
     def mouse_click(self, event):
         if event.num == 1:
@@ -41,6 +84,9 @@ class App(object):
         self._canvas.after(0, self._paint)
 
     def _paint(self):
+        if self._scene_index >= len(self._scenes):
+            return
+
         scene = self._scenes[self._scene_index]
         if self._canvas is None:
             self._canvas = Canvas(self._root,
