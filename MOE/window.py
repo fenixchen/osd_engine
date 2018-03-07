@@ -44,8 +44,8 @@ class Block(object):
         return self._window
 
     @property
-    def start_y(self):
-        return self._ingredient.start_y() + self._y
+    def top_line(self):
+        return self._ingredient.top_line() + self._y
 
     def height(self, window):
         return self._ingredient.height(window)
@@ -149,7 +149,7 @@ class Window(OSDObject):
         painted = False
         window_line_buf = [0] * self._width
         for block in self._blocks:
-            if block.start_y <= window_y < block.start_y + block.height(self):
+            if block.top_line <= window_y < block.top_line + block.height(self):
                 block.ingredient.draw_line(window_line_buf,
                                            self, window_y - block.y,
                                            block.x)

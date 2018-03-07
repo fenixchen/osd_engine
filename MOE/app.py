@@ -1,10 +1,10 @@
 # -*- coding: UTF-8 -*-
 
-from tkinter import *
+import tkinter
 import tkinter.filedialog
-from engine import *
 import scene
-import os
+import engine
+from log import Log
 
 logger = Log.get_logger("app")
 
@@ -25,11 +25,11 @@ TITLE_STRING = "Monitor OSD Engine Demo"
 
 class App(object):
     def __init__(self, *scenes):
-        self._root = Tk()
+        self._root = tkinter.Tk()
         self._root.wm_title(TITLE_STRING)
         self._root.geometry('640x480')
-        self._menubar = Menu(self._root)
-        self._fmenu1 = Menu(self._root, tearoff=0)
+        self._menubar = tkinter.Menu(self._root)
+        self._fmenu1 = tkinter.Menu(self._root, tearoff=0)
         self._fmenu1.add_command(label='Open', command=self.open)
         self._fmenu1.add_command(label='Export binary...', command=self.export_binary)
         self._fmenu1.add_separator()
@@ -89,7 +89,7 @@ class App(object):
 
         scene = self._scenes[self._scene_index]
         if self._canvas is None:
-            self._canvas = Canvas(self._root,
+            self._canvas = tkinter.Canvas(self._root,
                                   width=scene.width,
                                   height=scene.height,
                                   bg="#000000")
@@ -97,7 +97,7 @@ class App(object):
             self._canvas.bind('<Button-1>', self.mouse_click)
             self._canvas.bind('<Button-3>', self.mouse_click)
             self._canvas.pack()
-        image = PhotoImage(width=scene.width, height=scene.height)
+        image = tkinter.PhotoImage(width=scene.width, height=scene.height)
 
         painter = Painter(image)
 
@@ -107,7 +107,7 @@ class App(object):
             scene.filename))
 
         if self._image_on_canvas is None:
-            self._image_on_canvas = self._canvas.create_image(0, 0, anchor=NW, image=image)
+            self._image_on_canvas = self._canvas.create_image(0, 0, anchor=tkinter.NW, image=image)
         else:
             self._canvas.itemconfig(self._image_on_canvas, image=image)
 
@@ -123,4 +123,4 @@ class App(object):
 
     def run(self):
         self._paint()
-        mainloop()
+        tkinter.mainloop()

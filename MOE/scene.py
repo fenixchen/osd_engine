@@ -11,6 +11,7 @@ from engine import *
 from font import Font
 from rectangle import Rectangle
 from line import Line
+from label import Label
 
 logger = Log.get_logger("engine")
 

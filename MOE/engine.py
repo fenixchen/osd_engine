@@ -4,7 +4,6 @@
 # local import
 from window import *
 from bitmap import *
-from plot import *
 from modifier import *
 from glyph import *
 from palette import *

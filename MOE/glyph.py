@@ -34,8 +34,11 @@ class Glyph(Ingredient):
     def width(self):
         return self._width
 
+    def top_line(self):
+        return self._top
+
     def height(self, window=None):
-        return self._height
+        return self._height + self._top
 
     def draw_line(self, line_buf, window, y, block_x):
         assert (0 <= y < self._height)

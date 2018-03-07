@@ -68,7 +68,7 @@ OSD:
         border_weight: 2
         border_color: [9, 10, 11, 12]
         bgcolor: [13, 14]
-        gradient_mode: SOLID
+        gradient_mode: NONE
 
     - Rectangle:
         id: button0_bg_down
@@ -77,7 +77,7 @@ OSD:
         border_weight: 2
         border_color: [15, 16, 17, 18]
         bgcolor: [19, 20]
-        gradient_mode: SOLID
+        gradient_mode: NONE
 
     - Rectangle:
         id: button1_bg

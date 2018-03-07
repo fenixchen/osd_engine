@@ -1,14 +1,14 @@
 # -*- coding:utf-8 -*-
 
-from plot import Plot
 from enumerate import *
 import struct
 from log import Log
+from ingredient import Ingredient
 
 logger = Log.get_logger("engine")
 
 
-class Line(Plot):
+class Line(Ingredient):
     def __init__(self, scene, id, color, weight, x1, y1, x2, y2,
                  style=LineStyle.SOLID.name,
                  palette=None):
@@ -26,14 +26,14 @@ class Line(Plot):
         else:
             return self._y1 - self._y2 + 1
 
-    def start_y(self):
+    def top_line(self):
         return min(self._y1, self._y2)
 
     def _check_style(self, x):
         if self._style == LineStyle.SOLID:
             return True
         elif self._style == LineStyle.DASH:
-            return (x % (Plot.DASH_WIDTH + 1)) < Plot.DASH_WIDTH
+            return (x % (DASH_WIDTH + 1)) < DASH_WIDTH
         elif self._style == LineStyle.DOT1:
             return (x % 2) == 0
         elif self._style == LineStyle.DOT2:
@@ -41,17 +41,17 @@ class Line(Plot):
         elif self._style == LineStyle.DOT3:
             return (x % 4) == 0
         elif self._style == LineStyle.DASH_DOT:
-            index = x % (Plot.DASH_WIDTH + 3)
-            return index < Plot.DASH_WIDTH or index == Plot.DASH_WIDTH + 1
+            index = x % (DASH_WIDTH + 3)
+            return index < DASH_WIDTH or index == DASH_WIDTH + 1
         elif self._style == LineStyle.DASH_DOT_DOT:
-            index = x % (Plot.DASH_WIDTH + 5)
-            return index < Plot.DASH_WIDTH or \
-                   index == Plot.DASH_WIDTH + 1 or \
-                   index == Plot.DASH_WIDTH + 3
+            index = x % (DASH_WIDTH + 5)
+            return index < DASH_WIDTH or \
+                   index == DASH_WIDTH + 1 or \
+                   index == DASH_WIDTH + 3
         else:
             raise Exception('Unknown style <%s>' % self._style)
 
-    def plot_line(self, window_line_buf, window, y, block_x):
+    def draw_line(self, window_line_buf, window, y, block_x):
         color = self.color(window, self._color)
         if self._y2 == self._y1:
             if self._y1 <= y < self._y1 + self._weight:

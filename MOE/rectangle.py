@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from plot import Plot
+from ingredient import Ingredient
 from enumerate import *
 from imageutil import ImageUtil
 import struct
@@ -9,7 +9,7 @@ from log import Log
 logger = Log.get_logger("engine")
 
 
-class Rectangle(Plot):
+class Rectangle(Ingredient):
     def __init__(self, scene, id,
                  width='parent', height='parent',
                  border_color=0, border_weight=0, bgcolor=None,
@@ -60,9 +60,13 @@ class Rectangle(Plot):
                 self._bgcolor_start = bgcolor
                 self._bgcolor_end = bgcolor
             elif isinstance(bgcolor, list):
-                assert len(bgcolor) == 2
-                self._bgcolor_start = bgcolor[0]
-                self._bgcolor_end = bgcolor[1]
+                assert len(bgcolor) > 0
+                if len(bgcolor) == 2:
+                    self._bgcolor_start = bgcolor[0]
+                    self._bgcolor_end = bgcolor[1]
+                elif len(bgcolor) == 1:
+                    self._bgcolor_start = bgcolor[0]
+                    self._bgcolor_end = bgcolor[0]
         else:
             self._bgcolor_start = None
             self._bgcolor_end = None
@@ -71,7 +75,7 @@ class Rectangle(Plot):
         if self._border_style == LineStyle.SOLID:
             return True
         elif self._border_style == LineStyle.DASH:
-            return (x % (Plot.DASH_WIDTH + 1)) < Plot.DASH_WIDTH - 1
+            return (x % (DASH_WIDTH + 1)) < DASH_WIDTH - 1
         elif self._border_style == LineStyle.DOT1:
             return (x % 2) == 0
         elif self._border_style == LineStyle.DOT2:
@@ -79,13 +83,13 @@ class Rectangle(Plot):
         elif self._border_style == LineStyle.DOT3:
             return (x % 4) == 0
         elif self._border_style == LineStyle.DASH_DOT:
-            index = x % (Plot.DASH_WIDTH + 3)
-            return index < Plot.DASH_WIDTH or index == Plot.DASH_WIDTH + 1
+            index = x % (DASH_WIDTH + 3)
+            return index < DASH_WIDTH or index == DASH_WIDTH + 1
         elif self._border_style == LineStyle.DASH_DOT_DOT:
-            index = x % (Plot.DASH_WIDTH + 5)
-            return index < Plot.DASH_WIDTH or \
-                   index == Plot.DASH_WIDTH + 1 or \
-                   index == Plot.DASH_WIDTH + 3
+            index = x % (DASH_WIDTH + 5)
+            return index < DASH_WIDTH or \
+                   index == DASH_WIDTH + 1 or \
+                   index == DASH_WIDTH + 3
         else:
             raise Exception('Unknown border_style <%s>' % self._border_style)
 
@@ -199,13 +203,16 @@ class Rectangle(Plot):
 
             window_line_buf[x] = color
 
-    def plot_line(self, window_line_buf, window, y, block_x):
+    def draw_line(self, window_line_buf, window, y, block_x):
         is_border = False
         if self._border_weight != 0:
             is_border = self._plot_border(window_line_buf, window, y, block_x)
 
         if not is_border and self._bgcolor_start != None:
             self._fill_rect(window_line_buf, window, y, block_x)
+
+    def top_line(self):
+        return 0
 
     def height(self, window):
         if self._height == -1:

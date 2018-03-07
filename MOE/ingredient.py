@@ -27,18 +27,21 @@ class Ingredient(OSDObject):
     def palette(self):
         return self._palette
 
+    def palette_index(self):
+        if self._palette is None:
+            return 0xFF
+        else:
+            return self._palette.object_index
+
     def color(self, window, color_index):
         if self._palette is None:
             return window.palette.color(color_index)
         else:
             return self._palette.color(color_index)
 
-    def start_y(self):
-        """
-        返回需要画的起始行
-        :return:
-        """
-        return 0
+    @abc.abstractmethod
+    def top_line(self):
+        raise Exception("not implemented")
 
     @abc.abstractmethod
     def height(self, window):

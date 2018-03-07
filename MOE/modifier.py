@@ -1,8 +1,6 @@
 # -*- coding:utf-8 -*-
 from bitmap import *
-from plot import *
 from window import *
-
 logger = Log.get_logger("engine")
 
 

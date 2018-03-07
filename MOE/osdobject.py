@@ -3,6 +3,7 @@
 import abc
 from enum import Enum
 
+
 class OSDObject(metaclass=abc.ABCMeta):
 
     def __init__(self):
@@ -10,7 +11,7 @@ class OSDObject(metaclass=abc.ABCMeta):
 
     @property
     def object_index(self):
-        assert self._object_index != None
+        assert self._object_index is not None
         return self._object_index
 
     @object_index.setter
