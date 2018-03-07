@@ -3,6 +3,7 @@
 import abc
 
 from osdobject import OSDObject
+from block import Block
 
 
 class Ingredient(OSDObject):
@@ -33,11 +34,15 @@ class Ingredient(OSDObject):
         else:
             return self._palette.object_index
 
-    def color(self, window, color_index):
+    def get_color(self, window, color_index):
         if self._palette is None:
             return window.palette.color(color_index)
         else:
             return self._palette.color(color_index)
+
+    def get_blocks(self, window, block_id, left, top):
+        block = Block(window, block_id, self, left, top)
+        return (block,)
 
     @abc.abstractmethod
     def top_line(self):

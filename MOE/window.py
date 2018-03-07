@@ -3,57 +3,9 @@
 from log import Log
 from osdobject import *
 import struct
+from block import Block
 
 logger = Log.get_logger("engine")
-
-
-class Block(object):
-    def __init__(self, window, id, ingredient, x, y):
-        self._window = window
-        self._id = id
-        self._x = x
-        self._y = y
-        self._ingredient = ingredient
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def full_id(self):
-        return self.window.id + '.' + self._id
-
-    @property
-    def x(self):
-        return self._x
-
-    @x.setter
-    def x(self, val):
-        self._x = val
-
-    @property
-    def y(self):
-        return self._y
-
-    @y.setter
-    def y(self, val):
-        self._y = val
-
-    @property
-    def window(self):
-        return self._window
-
-    @property
-    def top_line(self):
-        return self._ingredient.top_line() + self._y
-
-    def height(self, window):
-        return self._ingredient.height(window)
-
-    @property
-    def ingredient(self):
-        return self._ingredient
-
 
 class Window(OSDObject):
     def __init__(self, scene, id, x, y, width, height, palette, blocks,
@@ -71,10 +23,9 @@ class Window(OSDObject):
         for (block_id, id, left, top) in blocks:
             ingredient = self._scene.find_ingredient(id)
             if ingredient is not None:
-                block = Block(self, block_id, ingredient, left, top)
-                self._blocks.append(block)
+                self._blocks.extend(ingredient.get_blocks(self, block_id, left, top))
             else:
-                logger.warn('cannot find ingredient <%s>' % id)
+                raise Exception('cannot find ingredient <%s>' % id)
         self._alpha = alpha
 
     @property
@@ -149,9 +100,11 @@ class Window(OSDObject):
         painted = False
         window_line_buf = [0] * self._width
         for block in self._blocks:
-            if block.top_line <= window_y < block.top_line + block.height(self):
+            top = block.top_line() + block.y
+            if top <= window_y < top + block.height(self):
                 block.ingredient.draw_line(window_line_buf,
-                                           self, window_y - block.y,
+                                           self,
+                                           window_y - top,
                                            block.x)
                 painted = True
         if painted:
@@ -173,7 +126,7 @@ class Window(OSDObject):
             return self._palette.object_index
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate window <%s>' % self._id)
+        logger.debug('Generate %s <%s>' % (type(self), self._id))
         bins = struct.pack('<BBBB', self.palette_index(),
                            1 if self._visible else 0,
                            self._alpha,
@@ -190,4 +143,3 @@ class Window(OSDObject):
                 ram += struct.pack('<HHHH', i, block.ingredient.object_index, block.x, block.y)
                 i += 1
         return bins, ram
-

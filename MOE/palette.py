@@ -65,7 +65,7 @@ class Palette(OSDObject):
                (type(self), self._id, self._pixel_format, len(self._lut))
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate palette <%s>' % self._id)
+        logger.debug('Generate %s <%s>' % (type(self), self._id))
         lut_len = len(self._lut)
         bins = struct.pack('<BBH',
                            self._pixel_format.value,

@@ -50,7 +50,7 @@ class Bitmap(Ingredient):
             start = self._current * self._width * self._height + self._width * y
             for x in range(start, start + width):
                 index = self._data[x]
-                color = self.color(window, index)
+                color = self.get_color(window, index)
                 line_buf[block_x + x - start] = color
 
     def flip(self, loop):
@@ -64,7 +64,7 @@ class Bitmap(Ingredient):
                 self._bitmap_count, len(self._data))
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate Bitmap <%s>' % self._id)
+        logger.debug('Generate %s <%s>' % (type(self), self._id))
         ram = b''
         pixel_bits = self._palette.pixel_bits
         bins = struct.pack('<BBxx', IngredientType.BITMAP.value, self._palette.object_index)

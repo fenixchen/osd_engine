@@ -51,6 +51,17 @@ class Scene(object):
     def ticks(self):
         return self._ticks
 
+    def get_glyph(self, char, font_width):
+        for ingredient in self._ingredients:
+            if not isinstance(ingredient, Glyph):
+                continue
+            if ingredient.char == char and ingredient.font_width == font_width:
+                return ingredient
+        glyph = Glyph(self, 'char_%s' % char, font_width, char)
+        self._ingredients.append(glyph)
+        glyph.object_index = len(self._ingredients) - 1
+        return glyph
+
     def find_palette(self, id):
         for palette in self._palettes:
             if palette.id == id:

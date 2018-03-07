@@ -52,7 +52,7 @@ class Line(Ingredient):
             raise Exception('Unknown style <%s>' % self._style)
 
     def draw_line(self, window_line_buf, window, y, block_x):
-        color = self.color(window, self._color)
+        color = self.get_color(window, self._color)
         if self._y2 == self._y1:
             if self._y1 <= y < self._y1 + self._weight:
                 for x in range(block_x + self._x1, block_x + self._x2):

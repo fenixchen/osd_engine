@@ -23,7 +23,8 @@ class Font(object):
             flags |= 0x1000
         self._face.load_char(ch, flags)
         return self._face.glyph.bitmap_left, \
-               self._face.glyph.bitmap_top, \
+               (self._face.size.ascender >> 6) - self._face.glyph.bitmap_top, \
+               self._face.glyph.advance.x >> 6, \
                self._face.glyph.bitmap
 
 

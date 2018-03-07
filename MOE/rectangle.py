@@ -100,20 +100,20 @@ class Rectangle(Ingredient):
 
         if y < self._border_weight:
             # draw top border
-            color = self.color(window, self._border_color_top)
+            color = self.get_color(window, self._border_color_top)
             margin = self._border_weight - (self._border_weight - y)
             for x in range(block_x + margin, block_x + width - margin):
                 if self._check_border_style(x):
                     window_line_buf[x] = color
 
             # draw left border  + top border
-            color = self.color(window, self._border_color_left)
+            color = self.get_color(window, self._border_color_left)
             for x in range(block_x, block_x + y):
                 if self._check_border_style(y):
                     window_line_buf[x] = color
 
             # draw right border  + top border
-            color = self.color(window, self._border_color_right)
+            color = self.get_color(window, self._border_color_right)
             for x in range(block_x + width - y, block_x + width):
                 if self._check_border_style(y):
                     window_line_buf[x] = color
@@ -121,20 +121,20 @@ class Rectangle(Ingredient):
 
         elif y >= height - self._border_weight:
             # draw bottom border
-            color = self.color(window, self._border_color_bottom)
+            color = self.get_color(window, self._border_color_bottom)
             margin = (height - y)
             for x in range(block_x + margin, block_x + width - margin):
                 if self._check_border_style(x):
                     window_line_buf[x] = color
 
             # draw left border  + bottom border
-            color = self.color(window, self._border_color_left)
+            color = self.get_color(window, self._border_color_left)
             for x in range(block_x, block_x + height - y):
                 if self._check_border_style(y):
                     window_line_buf[x] = color
 
             # draw right border  + bottom border
-            color = self.color(window, self._border_color_right)
+            color = self.get_color(window, self._border_color_right)
             for x in range(block_x + width - (height - y), block_x + width):
                 if self._check_border_style(y):
                     window_line_buf[x] = color
@@ -142,12 +142,12 @@ class Rectangle(Ingredient):
             return True
 
         else:
-            color = self.color(window, self._border_color_left)
+            color = self.get_color(window, self._border_color_left)
             for x in range(block_x, block_x + self._border_weight):
                 if self._check_border_style(y):
                     window_line_buf[x] = color
 
-            color = self.color(window, self._border_color_right)
+            color = self.get_color(window, self._border_color_right)
             for x in range(block_x + width - self._border_weight, block_x + width):
                 if self._check_border_style(y):
                     window_line_buf[x] = color
@@ -161,8 +161,8 @@ class Rectangle(Ingredient):
         width = window.width if self._width == -1 else self._width
         height = window.height if self._height == -1 else self._height
 
-        bg_color_start = self.color(window, self._bgcolor_start)
-        bg_color_end = self.color(window, self._bgcolor_end)
+        bg_color_start = self.get_color(window, self._bgcolor_start)
+        bg_color_end = self.get_color(window, self._bgcolor_end)
 
         color_steps = 1
         if self._gradient_mode == GradientMode.LEFT_TO_RIGHT:
@@ -233,7 +233,7 @@ class Rectangle(Ingredient):
                    self._palette.id if self._palette is not None else 'None')
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate rectangle <%s>' % self._id)
+        logger.debug('Generate %s <%s>' % (type(self), self._id))
         ram = b''
         bins = struct.pack('<BBxx', IngredientType.RECTANGLE.value, self.palette_index())
         bins += struct.pack('<HH',

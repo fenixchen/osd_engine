@@ -11,20 +11,19 @@ OSD:
     - Rectangle:
         id: rect1
         border_color: [1, 2, 3, 4]
-        border_weight: 2
-        bgcolor: [5]
+        border_weight: 1
 
-    - Glyph:
-        id: char_P_24
-        font_width: 20
-        color: 1
-        char: 'P'
-  AAA:
     - Label:
         id: label0
-        text: 'Hello'
-        color: 5
-        font_width: 12
+        text: 'Hello world'
+        color: 2
+        font_width: 48
+
+    - Label:
+        id: label1
+        text: 'GO GO GO'
+        color: 1
+        font_width: 48
 
   Windows:
     - Window:
@@ -35,4 +34,6 @@ OSD:
         height: 300
         palette: palette1
         blocks:
-          - [b0, char_P_24, 0, 0]
+          - [r, rect1, 0, 0]
+          - [l, label0, 50, 50]
+          - [l, label1, 0, 0]
