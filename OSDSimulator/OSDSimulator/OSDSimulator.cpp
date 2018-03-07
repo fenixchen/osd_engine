@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "osd_object.h"
+#include "osd_types.h"
 
 #define MAX_LOADSTRING 100
 

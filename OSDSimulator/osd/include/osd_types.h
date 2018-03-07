@@ -1,5 +1,5 @@
-#ifndef _OSD_OBJECT_H
-#define _OSD_OBJECT_H
+#ifndef _OSD_TYPES_H
+#define _OSD_TYPES_H
 
 #ifdef __cplusplus
 #define EXTERNC extern "C"
@@ -7,10 +7,29 @@
 #define EXTERNC
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
+
+#ifndef OSD_MAX_PATH
+#define OSD_MAX_PATH 256
+#endif
+
+#define MALLOC_OBJECT(type) (type*)calloc(sizeof(type), 1)
+#define MALLOC_OBJECT_ARRAY(type, count) (type*)calloc(sizeof(type), count)
+#define FREE_OBJECT(obj) do { free(obj); obj = NULL; } while (0)
+
+#define OSD_LOG printf
+
+#define OSD_ERR printf
+
+#define OSD_ASSERT assert
 
 #define OSD_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
 
@@ -35,9 +54,9 @@ typedef struct _osd_bitmap osd_bitmap;
 
 typedef struct _osd_binary osd_binary;
 
-const u8 PIXEL_FORMAT_RGB = 1;
-const u8 PIXEL_FORMAT_GRAY_SCALE = 2;
-const u8 PIXEL_FORMAT_LUT = 3;
+#define PIXEL_FORMAT_RGB  1
+#define PIXEL_FORMAT_GRAY_SCALE 2
+#define PIXEL_FORMAT_LUT 3
 
 #define OSD_SCENE_DATA_SIZE OSD_OFFSET_OF(osd_scene, palettes)
 
@@ -77,7 +96,7 @@ struct _osd_palette {
     u32 *lut;
 };
 
-const u8 OSD_PALETTE_INDEX_INVALID = 0xFF;
+#define OSD_PALETTE_INDEX_INVALID 0xFF
 
 #define OSD_LINE_STYLE_DASH_WIDTH 10
 
@@ -184,8 +203,8 @@ struct _osd_flip {
     u8 loop;
 };
 
-const u8 OSD_MODIFIER_MOVE = 1;
-const u8 OSD_MODIFIER_FLIP = 2;
+#define OSD_MODIFIER_MOVE  1
+#define OSD_MODIFIER_FLIP 2
 struct _osd_modifier {
     u8 type;
     u8 interval;

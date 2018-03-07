@@ -16,6 +16,12 @@
     <Filter Include="osd">
       <UniqueIdentifier>{7f53abdb-35d5-479d-8c98-84c04a46917e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="osd\src">
+      <UniqueIdentifier>{f04a5c49-6162-4835-ae74-3a7b7d9ea172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="osd\include">
+      <UniqueIdentifier>{f4136328-e121-4ac4-a2dc-d8326a820037}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -39,8 +45,35 @@
     <ClInclude Include="OSDSimulator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="osd_object.h">
-      <Filter>osd</Filter>
+    <ClInclude Include="..\osd\src\osd_window.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_binary.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_bitmap.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_common.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_glyph.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_ingredient.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_line.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_log.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_rectangle.h">
+      <Filter>osd\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_types.h">
+      <Filter>osd\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,8 +83,35 @@
     <ClCompile Include="OSDSimulator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="osd_object.c">
-      <Filter>osd</Filter>
+    <ClCompile Include="..\osd\src\osd_binary.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_bitmap.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_common.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_glyph.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_ingredient.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_line.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_log.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_rectangle.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_scene.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_window.c">
+      <Filter>osd\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

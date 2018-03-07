@@ -8,5 +8,6 @@ xcopy *.ttf %DIST%\ /y
 xcopy *.bmp %DIST%\ /y
 xcopy D:\Python36\DLLs\tcl*.dll %DIST%\ /y
 xcopy D:\Python36\DLLs\tk*.dll %DIST%\ /y
-md %DIST%\jpg
-xcopy jpg\* %DIST%\jpg\ /y
+md %DIST%\scene
+xcopy scene\* %DIST%\scene\ /y /s
+pause

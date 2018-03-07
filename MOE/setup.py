@@ -8,7 +8,7 @@ import sys
 base = 'Win32GUI' if sys.platform=='win32' else None
 
 executables = [
-    Executable('app.py', base=base)
+    Executable('main.py', base=base)
 ]
 
 setup(name='OSD Demo',
