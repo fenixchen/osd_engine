@@ -173,7 +173,7 @@ class Window(OSDObject):
             return self._palette.object_index
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate rectangle <%s>' % self._id)
+        logger.debug('Generate window <%s>' % self._id)
         bins = struct.pack('<BBBB', self.palette_index(),
                            1 if self._visible else 0,
                            self._alpha,

@@ -1,0 +1,84 @@
+OSD:
+  width: 640
+  height: 480
+  ticks: 1
+  frames: 255
+  Palettes:
+    - Palette:
+        id: palette0
+        colors: []
+
+    - Palette:
+        id: palette1
+        colors: [0, 0xFF0000, 0x00FF00, 0x0000FF, 0x808000, 0x00FF00, 0x00FF80]
+
+  Ingredients:
+    - Bitmap:
+        id: bitmap_bird
+        palette: palette0
+        bitmaps: 'images/bird.bmp'
+
+    - Rectangle:
+        id: red_border
+        border_weight: 5
+        border_color: 3
+
+    - Rectangle:
+        id: blue_rect
+        bgcolor: [1, 3]
+        gradient_mode: LEFT_TO_RIGHT
+
+    - Rectangle:
+        id: green_rect
+        bgcolor: [5, 6]
+        gradient_mode: LEFT_TO_RIGHT
+
+  Windows:
+    - Window:
+        id: window0
+        x: 0
+        y: 0
+        width: 200
+        height: 200
+        palette: palette1
+        alpha: 200
+        zorder: 2
+        blocks:
+          - [b0, red_border, 0, 0]
+          - [bl, bitmap_bird, 50, 50]
+
+    - Window:
+        id: window1
+        x: 250
+        y: 250
+        width: 200
+        height: 200
+        palette: palette1
+        zorder: 3
+        blocks:
+          - [b0, blue_rect, 0, 0]
+
+
+    - Window:
+        id: window2
+        x: 250
+        y: 10
+        width: 200
+        height: 200
+        palette: palette1
+        zorder: 1
+        blocks:
+          - [b0, green_rect, 0, 0]
+
+  Modifiers:
+    - Move:
+        id: move0
+        active: true
+        interval: 1
+        limit: 20
+        windows: [window0]
+        blocks: [window0.bl]
+        x_delta: 5
+        y_delta: 10
+        w_delta: 10
+        h_delta: 10

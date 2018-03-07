@@ -74,8 +74,10 @@ class Bitmap(Ingredient):
         bins += struct.pack('<BxH', self._bitmap_count, data_size)
         bins += struct.pack('<I', ram_offset)
         bins += struct.pack('<xxxx')
-        #if pixel_bits == 8:
-        ram = struct.pack('<%sB' % data_size, *self._data)
-        #else:
-        #    raise Exception('Not implemented %d' % pixel_bits)
+        if pixel_bits <= 8:
+            ram = struct.pack('<%sB' % data_size, *self._data)
+        elif pixel_bits == 16:
+            ram = struct.pack('<%sH' % data_size, *self._data)
+        else:
+            raise Exception('Not implemented %d' % pixel_bits)
         return bins, ram

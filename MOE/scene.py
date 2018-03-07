@@ -178,7 +178,7 @@ class Scene(object):
                 if not window.visible:
                     continue
                 if window.y <= y < window.y + window.height:
-                    window_line_buffer  = window.draw_line(y)
+                    window_line_buffer = window.draw_line(y)
                     if window_line_buffer is not None:
                         self.merge_line(line_buffer, window_line_buffer, window.x, window.alpha)
                         painted = True
@@ -196,13 +196,15 @@ class Scene(object):
         return str
 
     def _debug_file(self, filename):
-        logger.debug('Generate <%s>, size [%d]' % (filename, os.path.getsize(filename)))
-        with open(filename, "rb") as f:
-            logger.debug('\n' + hexdump.hexdump(f.read(), result='return'))
+        if False:
+            logger.debug('Generate <%s>, size [%d]' % (filename, os.path.getsize(filename)))
+            with open(filename, "rb") as f:
+                logger.debug('\n' + hexdump.hexdump(f.read(), result='return'))
 
     def _generate_global_bin(self, filename, ram_base_addr):
         bins = struct.pack('<HHI', self._width, self._height, ram_base_addr)
         with open(filename, "wb") as f:
+            f.truncate()
             f.write(bins)
         self._debug_file(filename)
         return bins
@@ -270,14 +272,14 @@ class Scene(object):
 
         logger.debug('Target folder:%s' % target_folder)
 
-        #if os.path.exists(target_folder):
+        # if os.path.exists(target_folder):
         #    shutil.rmtree(target_folder, ignore_errors=True)
 
-        #os.makedirs(target_folder)
+        # os.makedirs(target_folder)
 
         # create empty ram.bin
         with open(target_folder + "ram.bin", "wb") as f:
-            pass
+            f.truncate()
 
         self._generate_global_bin(target_folder + "global.bin", ram_base_addr)
 
@@ -286,40 +288,3 @@ class Scene(object):
         self._generate_ingredients_bin(target_folder + "ingredients.bin", target_folder + "ram.bin", ram_base_addr)
 
         self._generate_windows_bin(target_folder + "windows.bin", target_folder + "ram.bin", ram_base_addr)
-
-        """
-        file_offset = 0
-        global_data = []
-        object_index = 0
-
-        ram_filename = target_folder + "/ram.bin"
-        ram_file = open(ram_filename, "wb+")
-
-        
-        objects_list = (self._palettes, ) #self._ingredients, self._windows, self._modifiers)
-
-        for objects in objects_list:
-            items = objects if isinstance(objects, list) else objects.values()
-            for item in items:
-                obj_bins = item.to_binary()
-                object_id = OSDObject.make_object_id(item.type(), object_index)
-                bins = struct.pack('<II', object_id, len(obj_bins))
-                bytes += item.to_binary()
-                global_data.append(dict(
-                    object_id=object_id,
-                    id=item.id,
-                    offset=file_offset,
-                    size=len(bytes)))
-                file_offset += len(bytes)
-                bin_file.write(bytes)
-
-        with open(target_folder + '/global.yaml', 'w') as meta_file:
-            yaml.dump(global_data,
-                      meta_file,
-                      default_flow_style=False,
-                      indent=4)
-        bin_file.close()
-
-        with open(bin_filename, 'rb') as f:
-            hexdump.hexdump(f.read())
-        """

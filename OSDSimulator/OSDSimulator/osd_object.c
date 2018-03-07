@@ -28,7 +28,7 @@ const char *ingredient_name[] = {
 #define WINDOWS_FILE	"windows.bin"
 #define INGREDIENT_FILE	"ingredients.bin"
 #define MODIFIERS_FILE	"modifiers.bin"
-#define RAM_FILE	"ram.bin"
+#define RAM_FILE		"ram.bin"
 
 static unsigned char *read_file(const char *base_folder,
                                 const char *filename,
@@ -332,7 +332,8 @@ static int osd_line_style_check(u32 style, u32 x) {
 
 
 static u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
-                                    osd_ingredient *ingredient, u32 index) {
+                                    osd_ingredient *ingredient,
+                                    u32 index) {
     osd_palette *palette;
     u8 palette_index = ingredient->palette_index;
     if (palette_index == OSD_PALETTE_INDEX_INVALID) {
@@ -345,7 +346,36 @@ static u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
     return palette->lut[index];
 }
 
-static int osd_rectangle_border_paint(osd_scene *scene, osd_window *window, osd_block *block,
+
+static u32 osd_ingredient_get_color2(osd_scene *scene, osd_window *window,
+                                     osd_ingredient *ingredient,
+                                     u8 *color_ram,
+                                     u32 index) {
+    u32 color_index;
+    osd_palette *palette;
+    u8 palette_index = ingredient->palette_index;
+    if (palette_index == OSD_PALETTE_INDEX_INVALID) {
+        palette_index = window->palette_index;
+    }
+    assert(palette_index != OSD_PALETTE_INDEX_INVALID);
+    palette = scene->palettes[palette_index];
+    assert(palette);
+    if (palette->pixel_bits == 8) {
+        color_index = color_ram[index * 2];
+    } else if (palette->pixel_bits == 16) {
+        color_index = (color_ram[index * 2 + 1] << 8) | color_ram[index * 2];
+    } else {
+        assert(0);
+    }
+    assert(color_index < palette->entry_count);
+    return palette->lut[color_index];
+}
+
+
+
+static int osd_rectangle_border_paint(osd_scene *scene,
+                                      osd_window *window,
+                                      osd_block *block,
                                       osd_ingredient *ingredient,
                                       u32 *window_line_buffer,
                                       u32 y) {
@@ -547,9 +577,10 @@ static void osd_bitmap_paint(osd_scene *scene, osd_window *window, osd_block *bl
                     bitmap->width * y;
         u32 x;
         for (x = start; x < start + width; x ++) {
-            u32 color = osd_ingredient_get_color(scene, window,
-                                                 ingredient,
-                                                 ingredient->ram_data[x]);
+            u32 color = osd_ingredient_get_color2(scene, window,
+                                                  ingredient,
+                                                  ingredient->ram_data,
+                                                  x);
             window_line_buffer[block->x + x - start] = color;
         }
     }

@@ -13,6 +13,8 @@
 
 #define MAX_LOADSTRING 100
 
+
+#define LOAD_DIRECT 1
 // 全局变量:
 HINSTANCE hInst;								// 当前实例
 TCHAR szTitle[MAX_LOADSTRING];					// 标题栏文本
@@ -138,8 +140,12 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
 
 static osd_scene *scene = NULL;
 
+
+
 void DoOpen(HWND hWnd) {
-#if 1
+#if LOAD_DIRECT == 1
+    char szFile[260] = "hello.generated\\global.bin";
+#else
     OPENFILENAME ofn;       // common dialog box structure
     char szFile[260];       // buffer for file name
     // Initialize OPENFILENAME
@@ -159,8 +165,6 @@ void DoOpen(HWND hWnd) {
     if (!GetOpenFileName(&ofn)) {
         return;
     }
-#else
-    char szFile[260] = "hello.generated\\global.bin";
 #endif
     PathRemoveFileSpec(szFile);
     if (scene) {
@@ -274,7 +278,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_CREATE:
         SetStdOutToNewConsole();
-    //DoOpen(hWnd);
+#if LOAD_DIRECT == 1
+        DoOpen(hWnd);
+#endif
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

@@ -10,8 +10,9 @@ logger = Log.get_logger("engine")
 
 
 class Rectangle(Plot):
-    def __init__(self, scene, id, width, height, border_color=0,
-                 border_weight=0, bgcolor=None,
+    def __init__(self, scene, id,
+                 width='parent', height='parent',
+                 border_color=0, border_weight=0, bgcolor=None,
                  gradient_mode=GradientMode.SOLID.name,
                  border_style=LineStyle.SOLID.name,
                  palette=None):

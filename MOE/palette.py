@@ -14,6 +14,7 @@ class Palette(OSDObject):
         self._id = id
         self._scene = scene
         self._lut = []
+        self._lut_map = {}
         self._pixel_bits = 0
         if isinstance(colors, str):
             if colors == 'RGB24':
@@ -25,6 +26,9 @@ class Palette(OSDObject):
         else:
             self._pixel_format = PixelFormat.LUT
             self._lut = colors
+
+        for i, color in enumerate(self._lut):
+            self._lut_map[color] = i
 
     @property
     def pixel_bits(self):
@@ -42,13 +46,12 @@ class Palette(OSDObject):
         return self._id
 
     def get_color_index(self, color):
-        index = 0
-        for c in self._lut:
-            if c == color:
-                return index
-            index += 1
-        self._lut.append(color)
-        return index
+        if color in self._lut_map:
+            return self._lut_map[color]
+        else:
+            self._lut.append(color)
+            self._lut_map[color] = len(self._lut) - 1
+            return len(self._lut) - 1
 
     def color(self, index, based_color=None):
         if self._pixel_format == PixelFormat.RGB:

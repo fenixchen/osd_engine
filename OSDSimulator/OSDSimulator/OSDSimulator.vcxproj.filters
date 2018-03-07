@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="osd">
-      <UniqueIdentifier>{649df56a-37fe-4547-a108-09ad81c71e8b}</UniqueIdentifier>
+      <UniqueIdentifier>{7f53abdb-35d5-479d-8c98-84c04a46917e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

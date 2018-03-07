@@ -8,13 +8,14 @@ if __name__ == '__main__':
     if False:
         app.App().run()
     else:
-        scene = Scene('Scene/button.yaml')
-        app.App(scene).run()
+        scene = Scene('Scene/move.yaml')
         scene.generate_binary(target_folder='../Debug/hello.generated/',
                               ram_base_addr=0xF0000000)
+        app.App(scene).run()
     """
     if not GEN_BINARY:
         app = app.App(
+            Scene('Scene/animation.yaml'),
             Scene('scene/line.yaml'),
             Scene('scene/rect.yaml'),
             Scene('scene/progressbar.yaml'),

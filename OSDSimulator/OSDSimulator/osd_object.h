@@ -74,7 +74,6 @@ struct _osd_palette {
     u8 pixel_bits; // 0, 1, 2, 4, 8, 16
     u16 entry_count;
     u32 luts_addr;
-
     u32 *lut;
 };
 
@@ -164,7 +163,7 @@ struct _osd_ingredient {
     u8 type; //OSD_INGREDIENT_XXX
     u8 palette_index;
     u8 current_bitmap;
-    u8 reserved;
+    u8 flags;
 
     union {
         osd_rectangle rect;
