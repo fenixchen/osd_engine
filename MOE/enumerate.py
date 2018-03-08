@@ -9,10 +9,11 @@ class IngredientType(Enum):
     LINE = 2
     GLYPH = 3
     BITMAP = 4
+    LABEL = 5
 
 
 class PixelFormat(Enum):
-    INVALIED = 0
+    INVALID = 0
     RGB = 1
     GRAY_SCALE = 2
     LUT = 3
@@ -46,16 +47,6 @@ class LineStyle(Enum):
         return self.value
 
 
-OSD_SCENE_MAX_PALETE_COUNT = 8
-
-OSD_SCENE_MAX_INGREDIENT_COUNT = 256
-
-OSD_SCENE_MAX_WINDOW_COUNT = 32
-
-OSD_WINDOW_MAX_BLOCK_COUNT = 32
-
-OSD_MODIFIER_MAX_WINDOW_COUNT = 4
-
-OSD_MODIFIER_MAX_BLOCK_COUNT = 4
-
 DASH_WIDTH = 10
+
+OSD_INGREDIENT_DATA_SIZE = 5 * 4

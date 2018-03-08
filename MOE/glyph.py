@@ -17,7 +17,7 @@ class Glyph(Ingredient):
 
     def __init__(self, scene, id, font_width, char, palette=None, color=None):
         super().__init__(scene, id, palette)
-        self._left, self._top, self._advance_x, bitmap = FONT.load_char(char, font_width)
+        self._left, self._top, self._advance_x, self._advance_y, bitmap = FONT.load_char(char, font_width)
         self._height = bitmap.rows
         self._width = bitmap.width
         self._data = bitmap.buffer[:]
@@ -35,8 +35,12 @@ class Glyph(Ingredient):
         return self._font_width
 
     @property
-    def width(self):
+    def advance_x(self):
         return self._advance_x
+
+    @property
+    def advance_y(self):
+        return self._advance_y
 
     @property
     def color(self):
@@ -56,7 +60,7 @@ class Glyph(Ingredient):
         if not 0 <= y < self._height:
             return
         color = self.get_color(window, self._color)
-        width = min(self._width, window.width - block_x)
+        width = min(self._width, window.width - block_x - self._left)
         for x in range(self._pitch * y, self._pitch * y + width):
             index = self._data[x]
             if index == 0:
@@ -69,7 +73,7 @@ class Glyph(Ingredient):
         return ret
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s <%s>' % (type(self), self._id))
+        logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
         bins = struct.pack('<BBxx', IngredientType.GLYPH.value,
                            0xFF if self._palette is None else self._palette.object_index)

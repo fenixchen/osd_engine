@@ -119,35 +119,30 @@ class Scene(object):
 
         logger.debug('Width:%d, Height:%d' % (self._width, self._height))
 
-        object_index = 0
+
         for item in config['Palettes']:
             obj = self._create_object(item)
             self._palettes.append(obj)
-            obj.object_index = object_index
-            object_index += 1
+            obj.object_index = len(self._palettes) - 1
 
         object_index = 0
         for item in config['Ingredients']:
             obj = self._create_object(item)
             self._ingredients.append(obj)
-            obj.object_index = object_index
-            object_index += 1
+            obj.object_index = len(self._ingredients) - 1
 
         object_index = 0
         for item in config['Windows']:
             obj = self._create_object(item)
             self._windows.append(obj)
-            obj.object_index = object_index
-            object_index += 1
+            obj.object_index = len(self._windows) - 1
         self.sort_windows()
 
         if 'Modifiers' in config:
-            object_index = 0
             for item in config['Modifiers']:
                 obj = self._create_object(item)
                 self._modifiers.append(obj)
-                obj.object_index = object_index
-                object_index += 1
+                obj.object_index = len(self._modifiers) - 1
 
     def sort_windows(self):
         self._windows.sort(key=lambda window: window.zorder, reverse=False)
@@ -245,6 +240,7 @@ class Scene(object):
 
         for ingredient in self._ingredients:
             bins, ram = ingredient.to_binary(ram_base_addr + offset)
+            assert len(bins) == OSD_INGREDIENT_DATA_SIZE
             file.write(bins)
             if len(ram) > 0:
                 ram_file.write(ram)

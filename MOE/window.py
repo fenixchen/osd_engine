@@ -100,7 +100,7 @@ class Window(OSDObject):
         painted = False
         window_line_buf = [0] * self._width
         for block in self._blocks:
-            top = block.top_line() + block.y
+            top = block.top_line()
             if top <= window_y < top + block.height(self):
                 block.ingredient.draw_line(window_line_buf,
                                            self,

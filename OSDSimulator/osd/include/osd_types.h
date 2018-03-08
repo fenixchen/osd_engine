@@ -34,7 +34,7 @@ typedef unsigned int u32;
 #define OSD_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
 
 #define OSD_SCENE_MAX_PALETE_COUNT 8
-#define OSD_SCENE_MAX_INGREDIENT_COUNT 256
+#define OSD_SCENE_MAX_INGREDIENT_COUNT 2048
 #define OSD_SCENE_MAX_WINDOW_COUNT 32
 
 typedef struct _osd_block osd_block;
@@ -175,6 +175,7 @@ struct _osd_bitmap {
 #define OSD_INGREDIENT_LINE		 2
 #define OSD_INGREDIENT_GLYPH	 3
 #define OSD_INGREDIENT_BITMAP	 4
+#define OSD_INGREDIENT_LABEL	 5
 
 #define OSD_INGREDIENT_DATA_SIZE OSD_OFFSET_OF(osd_ingredient, ram_data)
 

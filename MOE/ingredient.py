@@ -42,7 +42,7 @@ class Ingredient(OSDObject):
 
     def get_blocks(self, window, block_id, left, top):
         block = Block(window, block_id, self, left, top)
-        return (block,)
+        return block,
 
     @abc.abstractmethod
     def top_line(self):

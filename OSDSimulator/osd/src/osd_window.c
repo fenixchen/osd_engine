@@ -13,16 +13,16 @@ int osd_window_paint(osd_scene *scene,
 
     for (i = 0; i < window->block_count; i ++) {
         osd_ingredient *ingredient;
-        u32 block_y_start, block_height;
+        u32 block_start_y, block_height;
         osd_block *block = &window->blocks[i];
         ingredient = scene->ingredients[block->ingredient_index];
         assert(ingredient);
-        block_y_start = block->y + osd_ingredient_start_y(ingredient);
+        block_start_y = block->y + osd_ingredient_start_y(ingredient);
         block_height = osd_ingredient_height(ingredient, window);
-        if (block_y_start <= window_y && window_y < block_y_start + block_height) {
+        if (block_start_y <= window_y && window_y < block_start_y + block_height) {
             osd_ingredient_paint(scene, window, block, ingredient,
                                  window_line_buffer,
-                                 window_y - block->y);
+                                 window_y - block_start_y);
             ++ paint;
         }
     }

@@ -56,7 +56,8 @@ u32 osd_ingredient_start_y(osd_ingredient *ingredient) {
         return OSD_MIN(line->y1, line->y2);
     }
     case OSD_INGREDIENT_GLYPH: {
-        return 0;
+        osd_glyph *glyph = &ingredient->data.glyph;
+        return glyph->top;
     }
     default:
         assert(0);

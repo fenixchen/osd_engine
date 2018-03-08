@@ -65,6 +65,9 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
                 glyph->color, glyph->char_code, glyph->data_size, glyph->data_addr);
         break;
     }
+    case OSD_INGREDIENT_LABEL: {
+        break;
+    }
     default:
         OSD_ERR("Unknown ingredient:%d\n", ingredient->type);
         assert(0);

@@ -17,14 +17,17 @@ class Font(object):
         if self._face is None:
             self._face = freetype.Face(Font.BASE_DIR + "Fonts/Vera.ttf")
         assert (self._face is not None)
-        self._face.set_char_size(width * 64)
+        self._face.set_char_size(0, width * 64)
         flags = 0x4
         if not self._gray_scale:
             flags |= 0x1000
         self._face.load_char(ch, flags)
+        bitmap_top = (self._face.size.ascender >> 6) - self._face.glyph.bitmap_top
+        height = self._face.bbox.yMax - self._face.bbox.yMin
         return self._face.glyph.bitmap_left, \
-               (self._face.size.ascender >> 6) - self._face.glyph.bitmap_top, \
+               bitmap_top, \
                self._face.glyph.advance.x >> 6, \
+               height >> 6, \
                self._face.glyph.bitmap
 
 
