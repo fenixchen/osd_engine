@@ -2,8 +2,8 @@
 
 import abc
 
-from osdobject import OSDObject
 from block import Block
+from osdobject import OSDObject
 
 
 class Ingredient(OSDObject):
@@ -44,9 +44,8 @@ class Ingredient(OSDObject):
         block = Block(window, block_id, self, left, top)
         return block,
 
-    @abc.abstractmethod
     def top_line(self):
-        raise Exception("not implemented")
+        return 0
 
     @abc.abstractmethod
     def height(self, window):

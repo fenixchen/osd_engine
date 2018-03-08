@@ -1,13 +1,10 @@
 # -*- coding:utf-8 -*-
 
 
-# local import
-from window import *
-from bitmap import *
-from modifier import *
 from glyph import *
+# local import
+from modifier import *
 from palette import *
-from imageutil import *
 
 logger = Log.get_logger("engine")
 

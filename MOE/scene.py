@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 
 import os
-import shutil
 
 import hexdump
 import yaml
@@ -9,9 +8,14 @@ import yaml
 from app import *
 from engine import *
 from font import Font
+from glyph import Glyph
+from form import Form
 from rectangle import Rectangle
+from bitmap import Bitmap
 from line import Line
 from label import Label
+from button import Button
+from edit import Edit
 
 logger = Log.get_logger("engine")
 
@@ -51,6 +55,11 @@ class Scene(object):
     def ticks(self):
         return self._ticks
 
+    def add_ingredient(self, ingredient):
+        logger.debug(ingredient)
+        self._ingredients.append(ingredient)
+        ingredient.object_index = len(self._ingredients) - 1
+
     def get_glyph(self, char, font_width):
         for ingredient in self._ingredients:
             if not isinstance(ingredient, Glyph):
@@ -58,8 +67,7 @@ class Scene(object):
             if ingredient.char == char and ingredient.font_width == font_width:
                 return ingredient
         glyph = Glyph(self, 'char_%s' % char, font_width, char)
-        self._ingredients.append(glyph)
-        glyph.object_index = len(self._ingredients) - 1
+        self.add_ingredient(glyph)
         return glyph
 
     def find_palette(self, id):
@@ -119,19 +127,15 @@ class Scene(object):
 
         logger.debug('Width:%d, Height:%d' % (self._width, self._height))
 
-
         for item in config['Palettes']:
             obj = self._create_object(item)
             self._palettes.append(obj)
             obj.object_index = len(self._palettes) - 1
 
-        object_index = 0
         for item in config['Ingredients']:
             obj = self._create_object(item)
-            self._ingredients.append(obj)
-            obj.object_index = len(self._ingredients) - 1
+            self.add_ingredient(obj)
 
-        object_index = 0
         for item in config['Windows']:
             obj = self._create_object(item)
             self._windows.append(obj)

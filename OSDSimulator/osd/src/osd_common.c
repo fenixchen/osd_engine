@@ -85,7 +85,7 @@ int osd_line_style_check(u32 style, u32 x) {
     return 0;
 }
 
-u32 osd_color_add(u32 color, u8 r_delta, u8 g_delta, u8 b_delta) {
+u32 osd_color_add(u32 color, int r_delta, int g_delta, int b_delta) {
     u8 r = OSD_COLOR_CLIP(OSD_R(color) + r_delta);
     u8 g = OSD_COLOR_CLIP(OSD_G(color) + g_delta);
     u8 b = OSD_COLOR_CLIP(OSD_B(color) + b_delta);

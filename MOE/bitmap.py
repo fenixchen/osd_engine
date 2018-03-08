@@ -1,11 +1,12 @@
 # -*- coding:utf-8 -*-
 
 
+import struct
+
+from enumerate import *
 from imageutil import ImageUtil
 from ingredient import Ingredient
 from log import Log
-import struct
-from enumerate import *
 
 logger = Log.get_logger("engine")
 

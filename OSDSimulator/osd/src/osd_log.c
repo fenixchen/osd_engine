@@ -8,6 +8,10 @@ const char *ingredient_name[] = {
     "LINE",
     "GLYPH",
     "BITMAP",
+    "LABEL",
+    "FORM",
+    "BUTTON",
+    "EDIT"
 };
 
 void log_global(osd_scene *scene) {
@@ -65,9 +69,11 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
                 glyph->color, glyph->char_code, glyph->data_size, glyph->data_addr);
         break;
     }
-    case OSD_INGREDIENT_LABEL: {
+    case OSD_INGREDIENT_LABEL:
+    case OSD_INGREDIENT_FORM:
+    case OSD_INGREDIENT_BUTTON:
+    case OSD_INGREDIENT_EDIT:
         break;
-    }
     default:
         OSD_ERR("Unknown ingredient:%d\n", ingredient->type);
         assert(0);

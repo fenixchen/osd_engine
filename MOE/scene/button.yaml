@@ -1,208 +1,76 @@
 OSD:
   width: 640
   height: 480
-  frames: 1
-  ticks: 20
   Palettes:
     - Palette:
         id: palette0
-        colors: [0, 0x00FF00, 0x0000FF, 0xFF0000, 0xFFFF00, 0xFFFF00, 0x00FFFF,
-        0xFF00FF, 0x0FFFF0, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0x808080, 0,
-        0x505050, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x808080, 0, 0xF0F0F0, 0x505050,
-        0xF0F0F0, 0x505050, 0xFF0000, 0x0000FF, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0xFF0000, 0x0000FF,
-        0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0xFF0000, 0x0000FF, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0xFF0000, 0x0000FF]
+        colors: [0, 0xFFFFFF, 0x505050, 0xF0F0F0, 0xE0E0E0, 0x808080, 0x800000]
 
   Ingredients:
-    - Glyph:
-        id: char_P_24
-        font_width: 20
+    - Button:
+        id: button0
+        text: 'Normal'
+        pressed: False
+
+    - Button:
+        id: button1
+        text: 'Pressed'
+        pressed: True
+
+    - Rectangle:
+        id: rect1
+        width: 300
+        height: 200
+        border_weight: 1
+        border_color: 6
+
+    - Label:
+        id: label1
+        text: 'Name:'
         color: 1
-        char: 'P'
+        font_width: 18
 
-    - Glyph:
-        id: char_U_24
-        font_width: 20
-        color: 2
-        char: 'U'
+    - Label:
+        id: label2
+        text: 'Address:'
+        color: 1
+        font_width: 18
 
-    - Glyph:
-        id: char_S_24
-        font_width: 20
-        color: 3
-        char: 'S'
+    - Edit:
+        id: edit0
+        text: ''
+        width: 180
 
-    - Glyph:
-        id: char_H_24
-        font_width: 20
-        color: 4
-        char: 'H'
+    - Edit:
+        id: edit1
+        text: ''
+        width: 180
 
-    - Glyph:
-        id: char_D_24
-        font_width: 20
-        color: 5
-        char: 'D'
+    - Button:
+        id: button2
+        text: 'Submit'
 
-    - Glyph:
-        id: char_O_24
-        font_width: 20
-        color: 6
-        char: 'O'
+    - Button:
+        id: button3
+        text: 'Cancel'
 
-    - Glyph:
-        id: char_W_24
-        font_width: 20
-        color: 7
-        char: 'W'
-
-    - Glyph:
-        id: char_N_24
-        font_width: 20
-        color: 8
-        char: 'N'
-
-    - Rectangle:
-        id: button0_bg_up
-        width: parent
-        height: parent
-        border_weight: 2
-        border_color: [9, 10, 11, 12]
-        bgcolor: [13, 14]
-        gradient_mode: NONE
-
-    - Rectangle:
-        id: button0_bg_down
-        width: parent
-        height: parent
-        border_weight: 2
-        border_color: [15, 16, 17, 18]
-        bgcolor: [19, 20]
-        gradient_mode: NONE
-
-    - Rectangle:
-        id: button1_bg
-        width: parent
-        height: parent
-        border_weight: 2
-        border_color: [21, 22, 23, 24]
-        bgcolor: [25, 26]
-        gradient_mode: LEFT_TO_RIGHT
-
-
-    - Rectangle:
-        id: button2_bg
-        width: parent
-        height: parent
-        border_weight: 2
-        border_color: [27, 28, 29, 30]
-        bgcolor: [31, 32]
-        gradient_mode: TOP_TO_BOTTOM
-
-    - Rectangle:
-        id: button3_bg
-        width: parent
-        height: parent
-        border_weight: 2
-        border_color: [33, 34, 35, 36]
-        bgcolor: [37, 38]
-        gradient_mode: TOP_LEFT_TO_BOTTOM_RIGHT
-
-    - Rectangle:
-        id: button4_bg
-        width: parent
-        height: parent
-        border_weight: 2
-        border_color: [39, 40, 41, 42]
-        bgcolor: [43, 44]
-        gradient_mode: BOTTOM_LEFT_TO_TOP_RIGHT
 
   Windows:
     - Window:
-        id: button0_up
+        id: window0
         x: 20
         y: 20
-        width: 85
-        height: 30
+        width: 500
+        height: 400
         palette: palette0
         visible: true
         blocks:
-          - [b4, button0_bg_up, 0, 0]
-          - [b0, char_P_24, 15, 7]
-          - [b1, char_U_24, 30, 7]
-          - [b2, char_S_24, 45, 7]
-          - [b3, char_H_24, 60, 7]
-
-    - Window:
-        id: button0_down
-        x: 140
-        y: 20
-        width: 85
-        height: 30
-        palette: palette0
-        visible: true
-        blocks:
-          - [b4, button0_bg_down, 0, 0]
-          - [b0, char_D_24, 15, 7]
-          - [b0, char_O_24, 30, 7]
-          - [b0, char_W_24, 45, 7]
-          - [b0, char_N_24, 65, 7]
-
-    - Window:
-        id: button1
-        x: 20
-        y: 70
-        width: 85
-        height: 30
-        palette: palette0
-        visible: true
-        blocks:
-          - [b4, button1_bg, 0, 0]
-          - [b0, char_P_24, 15, 7]
-          - [b1, char_U_24, 30, 7]
-          - [b2, char_S_24, 45, 7]
-          - [b3, char_H_24, 60, 7]
-
-    - Window:
-        id: button2
-        x: 140
-        y: 70
-        width: 85
-        height: 30
-        palette: palette0
-        visible: true
-        blocks:
-          - [b4, button2_bg, 0, 0]
-          - [b0, char_P_24, 15, 7]
-          - [b1, char_U_24, 30, 7]
-          - [b2, char_S_24, 45, 7]
-          - [b3, char_H_24, 60, 7]
-
-    - Window:
-        id: button3
-        x: 260
-        y: 70
-        width: 85
-        height: 30
-        palette: palette0
-        visible: true
-        blocks:
-          - [b4, button3_bg, 0, 0]
-          - [b0, char_P_24, 15, 7]
-          - [b1, char_U_24, 30, 7]
-          - [b2, char_S_24, 45, 7]
-          - [b3, char_H_24, 60, 7]
-
-    - Window:
-        id: button
-        x: 380
-        y: 70
-        width: 85
-        height: 30
-        palette: palette0
-        visible: true
-        blocks:
-          - [b4, button4_bg, 0, 0]
-          - [b0, char_P_24, 15, 7]
-          - [b1, char_U_24, 30, 7]
-          - [b2, char_S_24, 45, 7]
-          - [b3, char_H_24, 60, 7]
+          - ['', button0, 100, 0]
+          - ['', button1, 380, 0]
+          - ['', rect1, 150, 150]
+          - ['', label1, 160, 180]
+          - ['', label2, 160, 220]
+          - ['', edit0, 240, 180]
+          - ['', edit0, 240, 220]
+          - ['', button2, 200, 300]
+          - ['', button3, 320, 300]

@@ -176,6 +176,9 @@ struct _osd_bitmap {
 #define OSD_INGREDIENT_GLYPH	 3
 #define OSD_INGREDIENT_BITMAP	 4
 #define OSD_INGREDIENT_LABEL	 5
+#define OSD_INGREDIENT_FORM		 6
+#define OSD_INGREDIENT_BUTTON	 7
+#define OSD_INGREDIENT_EDIT		 8
 
 #define OSD_INGREDIENT_DATA_SIZE OSD_OFFSET_OF(osd_ingredient, ram_data)
 

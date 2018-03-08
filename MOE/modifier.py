@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 from bitmap import *
 from window import *
+from block import Block
+
 logger = Log.get_logger("engine")
 
 

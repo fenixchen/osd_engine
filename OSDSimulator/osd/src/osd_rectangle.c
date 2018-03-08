@@ -132,9 +132,9 @@ static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, 
             assert(0);
         }
         color = osd_color_add(bg_color_start,
-                              (u8)(r_delta * factor),
-                              (u8)(g_delta * factor),
-                              (u8)(b_delta * factor));
+                              (int)r_delta * factor,
+                              (int)g_delta * factor,
+                              (int)b_delta * factor);
         window_line_buffer[x] = color;
     }
 }

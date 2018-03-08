@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 
 
+import struct
+
+from enumerate import *
 from font import Font
 from imageutil import ImageUtil
 from ingredient import Ingredient
 from log import Log
-import struct
-from enumerate import *
 
 FONT = Font()
 
@@ -77,7 +78,11 @@ class Glyph(Ingredient):
         ram = b''
         bins = struct.pack('<BBxx', IngredientType.GLYPH.value,
                            0xFF if self._palette is None else self._palette.object_index)
-        bins += struct.pack('<BBBB', self._left, self._top, self._width, self._height)
+        try:
+            bins += struct.pack('<BBBB', self._left, self._top, self._width, self._height)
+        except:
+            print(bins)
+
         bins += struct.pack('<BBBx', self._pitch, self._color, self._font_width)
 
         data_size = len(self._data)

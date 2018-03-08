@@ -24,7 +24,7 @@ class Font(object):
         self._face.load_char(ch, flags)
         bitmap_top = (self._face.size.ascender >> 6) - self._face.glyph.bitmap_top
         height = self._face.bbox.yMax - self._face.bbox.yMin
-        return self._face.glyph.bitmap_left, \
+        return max(0, self._face.glyph.bitmap_left), \
                bitmap_top, \
                self._face.glyph.advance.x >> 6, \
                height >> 6, \

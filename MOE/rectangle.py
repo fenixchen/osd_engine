@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
 
-from ingredient import Ingredient
+import struct
+
 from enumerate import *
 from imageutil import ImageUtil
-import struct
+from ingredient import Ingredient
 from log import Log
 
 logger = Log.get_logger("engine")
@@ -104,7 +105,7 @@ class Rectangle(Ingredient):
             margin = self._border_weight - (self._border_weight - y)
             for x in range(block_x + margin, block_x + width - margin):
                 if self._check_border_style(x):
-                    window_line_buf[x] = color
+                        window_line_buf[x] = color
 
             # draw left border  + top border
             color = self.get_color(window, self._border_color_left)
@@ -233,7 +234,7 @@ class Rectangle(Ingredient):
                    self._palette.id if self._palette is not None else 'None')
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s <%s>' % (type(self), self._id))
+        logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
         bins = struct.pack('<BBxx', IngredientType.RECTANGLE.value, self.palette_index())
         bins += struct.pack('<HH',

@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 
 import abc
-from enum import Enum
 
 
 class OSDObject(metaclass=abc.ABCMeta):

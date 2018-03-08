@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
 
-from enumerate import *
 import struct
-from log import Log
+
+from enumerate import *
 from ingredient import Ingredient
+from log import Log
 
 logger = Log.get_logger("engine")
 

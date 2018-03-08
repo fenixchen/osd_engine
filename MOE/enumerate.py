@@ -10,6 +10,9 @@ class IngredientType(Enum):
     GLYPH = 3
     BITMAP = 4
     LABEL = 5
+    FORM = 6
+    BUTTON = 7
+    EDIT = 8
 
 
 class PixelFormat(Enum):

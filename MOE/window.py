@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 
+import struct
+
 from log import Log
 from osdobject import *
-import struct
-from block import Block
 
 logger = Log.get_logger("engine")
 
