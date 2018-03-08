@@ -3,7 +3,7 @@
 import app
 from scene import Scene
 
-TEST_ALL = False
+TEST_ALL = True
 if __name__ == '__main__':
     if TEST_ALL:
         app = app.App(
@@ -11,7 +11,7 @@ if __name__ == '__main__':
             Scene('Scene/form.yaml'),
             Scene('Scene/label.yaml'),
             Scene('Scene/animation.yaml'),
-            Scene('scene/button.yaml'),
+            Scene('scene/color.yaml'),
             Scene('scene/hello.yaml'),
             Scene('scene/line.yaml'),
             Scene('scene/menu.yaml'),
