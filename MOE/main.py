@@ -21,7 +21,7 @@ if __name__ == '__main__':
         )
         app.run()
     else:
-        scene = Scene('Scene/button.yaml')
+        scene = Scene('Scene/character.yaml')
         app.App(scene).run()
         scene.generate_binary(target_folder='../Debug/hello.generated/',
                               ram_base_addr=0xF0000000)

@@ -9,6 +9,7 @@ from app import *
 from engine import *
 from font import Font
 from glyph import Glyph
+from charactor import Character
 from form import Form
 from rectangle import Rectangle
 from bitmap import Bitmap
@@ -29,6 +30,7 @@ class Scene(object):
         self._ingredients = []
         self._palettes = []
         self._modifiers = []
+        self._glyphs = []
         self._fonts = []
         self._width = -1
         self._height = -1
@@ -130,20 +132,22 @@ class Scene(object):
         self._modifiers.append(new_modifier)
         new_modifier.object_index = len(self._modifiers) - 1
 
-    def get_glyph(self, char, font, font_size):
+    def get_glyph(self, char_code, font, font_size):
         if font_size is None:
             font_size = self.default_font_size
         if font is None:
             font = self.default_font
-        for ingredient in self._ingredients:
-            if not isinstance(ingredient, Glyph):
-                continue
-            elif ingredient.char == char and \
-                    ingredient.font_size == font_size and \
-                    ingredient.font == font:
-                return ingredient
-        glyph = Glyph(self, None, char, font, font_size)
-        self.add_ingredient(glyph)
+        else:
+            font = self.find_font(font)
+
+        for glyph in self._glyphs:
+            if glyph.char_code == char_code and \
+                    glyph.font == font and \
+                    glyph.font_size == font_size:
+                return glyph
+
+        glyph = Glyph(char_code, font, font_size)
+        self._glyphs.append(glyph)
         return glyph
 
     def find_block(self, id):
@@ -211,7 +215,6 @@ class Scene(object):
                 self._default_font_size = int(config['default_font_size'])
             else:
                 self._default_font_size = 16
-
 
         if 'Ingredients' in config:
             for item in config['Ingredients']:
@@ -292,12 +295,29 @@ class Scene(object):
                 logger.debug('\n' + hexdump.hexdump(f.read(), result='return'))
 
     def _generate_global_bin(self, filename, ram_base_addr):
-        bins = struct.pack('<HHI', self._width, self._height, ram_base_addr)
+        bins = struct.pack('<HH', self._width, self._height)
+        bins += struct.pack('<I', ram_base_addr)
+        bins += struct.pack('<BBBB',
+                            OSD_GLYPH_HEADER_SIZE, OSD_PALETTE_DATA_SIZE,
+                            OSD_INGREDIENT_DATA_SIZE, OSD_WINDOW_DATA_SIZE)
         with open(filename, "wb") as f:
             f.truncate()
             f.write(bins)
         self._debug_file(filename)
         return bins
+
+    def _generate_glyhs_bin(self, ram_filename, ram_base_addr):
+        offset = os.path.getsize(ram_filename)
+        ram_file = open(ram_filename, "ab")
+
+        for glyph in self._glyphs:
+            ram = glyph.to_binary(ram_base_addr + offset)
+            ram_file.write(ram)
+            offset += len(ram)
+
+        ram_file.close()
+
+        self._debug_file(ram_filename)
 
     def _generate_palettes_bin(self, filename, ram_filename, ram_base_addr):
         file = open(filename, "wb")
@@ -373,6 +393,8 @@ class Scene(object):
             f.truncate()
 
         self._generate_global_bin(target_folder + "global.bin", ram_base_addr)
+
+        self._generate_glyhs_bin(target_folder + "ram.bin", ram_base_addr)
 
         self._generate_palettes_bin(target_folder + "palettes.bin", target_folder + "ram.bin", ram_base_addr)
 

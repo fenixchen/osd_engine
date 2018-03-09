@@ -12,41 +12,38 @@ from log import Log
 logger = Log.get_logger("engine")
 
 
-class Glyph(Ingredient):
+class Glyph(object):
 
-    def __init__(self, scene, id, char, font=None, font_size=None, palette=None, color=None):
-        if font is None:
-            self._font = scene.default_font
-        elif isinstance(font, Font):
-            self._font = font
-        else:
-            self._font = scene.find_font(font)
+    def __init__(self, char_code, font, font_size):
 
-        if font_size is None:
-            self._font_size = scene.default_font_size
-        else:
-            self._font_size = font_size
+        self._left, self._top, self._advance_x, self._advance_y, bitmap = \
+            font.load_char(char_code, font_size)
 
-        if id is None:
-            id = "glyph_%s_%s_%d" % (self._font.id, ord(char), self._font_size)
-
-        super().__init__(scene, id, palette)
-
-        self._left, self._top, self._advance_x, self._advance_y, bitmap = self._font.load_char(char, font_size)
+        self._font = font
+        self._font_size = font_size
         self._height = bitmap.rows
         self._width = bitmap.width
         self._data = bitmap.buffer[:]
         self._pitch = bitmap.pitch
-        self._char = char
-        self._color = color
+        self._char_code = char_code
+        self._ram_offset = None
+
+    @property
+    def ram_offset(self):
+        assert self._ram_offset is not None
+        return self._ram_offset
 
     @property
     def font(self):
         return self._font
 
     @property
-    def char(self):
-        return self._char
+    def font_size(self):
+        return self._font_size
+
+    @property
+    def char_code(self):
+        return self._char_code
 
     @property
     def font_size(self):
@@ -61,50 +58,49 @@ class Glyph(Ingredient):
         return self._advance_y
 
     @property
-    def color(self):
-        return self._color
+    def left(self):
+        return self._left
 
-    @color.setter
-    def color(self, c):
-        self._color = c
-
-    def top_line(self):
+    @property
+    def top(self):
         return self._top
 
-    def height(self, window=None):
+    @property
+    def height(self):
         return self._height
 
-    def draw_line(self, line_buf, window, y, block_x):
-        if not 0 <= y < self._height:
-            return
-        color = self.get_color(window, self._color)
-        width = min(self._width, window.width - block_x - self._left)
-        for x in range(self._pitch * y, self._pitch * y + width):
-            index = self._data[x]
-            if index == 0:
-                continue
-            col = block_x + x - self._pitch * y + self._left
-            line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, index)
+    @property
+    def width(self):
+        return self._width
+
+    @property
+    def pitch(self):
+        return self._pitch
+
+    @property
+    def data(self):
+        return self._data
 
     def __str__(self):
-        ret = "id: %s, left:%d, top:%d, adv:%d, %d x %d, size:%d" % (
-            self._id, self._left, self._top, self._advance_x, self._width, self._height, len(self._data))
+        ret = "left:%d, top:%d, adv(%d,%d), %d x %d, size:%d" % (
+            self._left, self._top, self._advance_x, self._advance_y,
+            self._width, self._height, len(self._data))
         return ret
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
-        ram = b''
-        bins = struct.pack('<BBxx', IngredientType.GLYPH.value,
-                           0xFF if self._palette is None else self._palette.object_index)
-        bins += struct.pack('<BBBB', self._left, self._top, self._width, self._height)
+        logger.debug('Generate %s %s-%s-%d' % (
+            type(self), self._font.id, self._char_code, self._font_size))
 
-        bins += struct.pack('<BBBx', self._pitch, self._color,
-                            self._font_size if self._font_size is not None else self.scene.default_font_size)
+        self._ram_offset = ram_offset
+
+        ram = struct.pack('<BBBB', self._left, self._top, self._width, self._height)
+
+        ram += struct.pack('<HBB', ord(self._char_code), self._font.object_index, self._font_size)
 
         data_size = len(self._data)
-        bins += struct.pack('<HH', ord(self._char), data_size)
+        assert(data_size <= 0xFFFF)
 
-        bins += struct.pack('<I', ram_offset)
+        ram += struct.pack('<BBH', self._pitch, self.advance_x, data_size)
 
-        ram = struct.pack('<%sB' % data_size, *self._data)
-        return bins, ram
+        ram += struct.pack('<%sB' % data_size, *self._data)
+        return ram

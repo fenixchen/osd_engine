@@ -14,7 +14,7 @@ class IngredientType(Enum):
     INVALID = 0
     RECTANGLE = 1
     LINE = 2
-    GLYPH = 3
+    CHARACTER = 3
     BITMAP = 4
     LABEL = 5
     FORM = 6
@@ -59,4 +59,14 @@ class LineStyle(Enum):
 
 DASH_WIDTH = 10
 
-OSD_INGREDIENT_DATA_SIZE = 5 * 4
+# all size are bytes based
+
+OSD_GLOBAL_DATA_SIZE = 3 * 4  # struct _osd_scene
+
+OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_scene
+
+OSD_PALETTE_DATA_SIZE = 2 * 4  # struct _osd_palette
+
+OSD_INGREDIENT_DATA_SIZE = 4 * 4  # struct _osd_ingredient
+
+OSD_WINDOW_DATA_SIZE = 4 * 4  # struct _osd_window

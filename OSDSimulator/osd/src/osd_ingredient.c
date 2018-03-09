@@ -2,7 +2,7 @@
 #include "osd_rectangle.h"
 #include "osd_line.h"
 #include "osd_bitmap.h"
-#include "osd_glyph.h"
+#include "osd_character.h"
 
 u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
                              osd_ingredient *ingredient,
@@ -55,9 +55,9 @@ u32 osd_ingredient_start_y(osd_ingredient *ingredient) {
         osd_line *line = &ingredient->data.line;
         return OSD_MIN(line->y1, line->y2);
     }
-    case OSD_INGREDIENT_GLYPH: {
-        osd_glyph *glyph = &ingredient->data.glyph;
-        return glyph->top;
+    case OSD_INGREDIENT_CHARACTER: {
+        osd_character *character = &ingredient->data.character;
+        return ((osd_glyph*)ingredient->ram_data)->top;
     }
     default:
         assert(0);
@@ -88,8 +88,8 @@ u32 osd_ingredient_height(osd_ingredient *ingredient, osd_window *window) {
         osd_bitmap *bitmap = &ingredient->data.bitmap;
         return bitmap->height;
     }
-    case OSD_INGREDIENT_GLYPH: {
-        osd_glyph *glyph = &ingredient->data.glyph;
+    case OSD_INGREDIENT_CHARACTER: {
+        osd_glyph *glyph = (osd_glyph *)ingredient->ram_data;
         return glyph->height;
     }
     default:
@@ -121,10 +121,10 @@ void osd_ingredient_paint(osd_scene *scene,
                          window_line_buffer,
                          y);
         break;
-    case OSD_INGREDIENT_GLYPH:
-        osd_glyph_paint(scene, window, block, ingredient,
-                        window_line_buffer,
-                        y);
+    case OSD_INGREDIENT_CHARACTER:
+        osd_character_paint(scene, window, block, ingredient,
+                            window_line_buffer,
+                            y);
         break;
     default:
         assert(0);

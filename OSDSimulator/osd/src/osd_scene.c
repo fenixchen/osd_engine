@@ -18,7 +18,7 @@ osd_scene *osd_scene_new(const char *target_folder) {
     scene = MALLOC_OBJECT(osd_scene);
 
     OSD_LOG("OSD_INGREDIENT_DATA_SIZE:%d", OSD_INGREDIENT_DATA_SIZE);
-    assert(OSD_INGREDIENT_DATA_SIZE == 5 * sizeof(u32));
+    assert(OSD_INGREDIENT_DATA_SIZE == 4 * sizeof(u32));
 
     binary = osd_binary_new(target_folder);
     if (!binary) {
@@ -61,9 +61,9 @@ osd_scene *osd_scene_new(const char *target_folder) {
         if (ingredient->type == OSD_INGREDIENT_BITMAP) {
             osd_bitmap *bitmap = &ingredient->data.bitmap;
             ingredient->ram_data = (u8*)(binary->ram + bitmap->data_addr - scene->ram_base_addr);
-        } else if (ingredient->type == OSD_INGREDIENT_GLYPH) {
-            osd_glyph *glyph = &ingredient->data.glyph;
-            ingredient->ram_data = (u8*)(binary->ram + glyph->data_addr - scene->ram_base_addr);
+        } else if (ingredient->type == OSD_INGREDIENT_CHARACTER) {
+            osd_character *character = &ingredient->data.character;
+            ingredient->ram_data = (u8*)(binary->ram + character->glyph_addr - scene->ram_base_addr);
         }
         log_ingredient(i, ingredient);
     }

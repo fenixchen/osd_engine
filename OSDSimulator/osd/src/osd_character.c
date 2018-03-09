@@ -3,11 +3,12 @@
 #include "osd_line.h"
 
 
-void osd_glyph_paint(osd_scene *scene, osd_window *window, osd_block *block,
-                     osd_ingredient *ingredient,
-                     u32 *window_line_buffer,
-                     u32 y) {
-    osd_glyph *glyph = &ingredient->data.glyph;
+void osd_character_paint(osd_scene *scene, osd_window *window, osd_block *block,
+                         osd_ingredient *ingredient,
+                         u32 *window_line_buffer,
+                         u32 y) {
+    osd_character *character = &ingredient->data.character;
+    osd_glyph *glyph = (osd_glyph *)ingredient->ram_data;
     if (y < glyph->height) {
         u32 width = OSD_MIN(glyph->width, window->width - block->x);
         u32 x;
@@ -16,7 +17,7 @@ void osd_glyph_paint(osd_scene *scene, osd_window *window, osd_block *block,
             if (alpha != 0) {
                 u32 color = osd_ingredient_get_color(scene, window,
                                                      ingredient,
-                                                     glyph->color);
+                                                     character->color);
                 u32 index = block->x + x - glyph->pitch * y;
 
                 window_line_buffer[index] = osd_blend_pixel(window_line_buffer[index], color, alpha);

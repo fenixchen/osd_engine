@@ -57,9 +57,6 @@
     <ClInclude Include="..\osd\src\osd_common.h">
       <Filter>osd\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\osd\src\osd_glyph.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
     <ClInclude Include="..\osd\src\osd_ingredient.h">
       <Filter>osd\src</Filter>
     </ClInclude>
@@ -74,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="..\osd\include\osd_types.h">
       <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\src\osd_character.h">
+      <Filter>osd\src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,9 +92,6 @@
     <ClCompile Include="..\osd\src\osd_common.c">
       <Filter>osd\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\osd\src\osd_glyph.c">
-      <Filter>osd\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\osd\src\osd_ingredient.c">
       <Filter>osd\src</Filter>
     </ClCompile>
@@ -111,6 +108,9 @@
       <Filter>osd\src</Filter>
     </ClCompile>
     <ClCompile Include="..\osd\src\osd_window.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_character.c">
       <Filter>osd\src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -49,6 +49,7 @@ typedef struct _osd_line osd_line;
 typedef struct _osd_move osd_move;
 typedef struct _osd_flip osd_flip;
 
+typedef struct _osd_character osd_character;
 typedef struct _osd_glyph osd_glyph;
 typedef struct _osd_bitmap osd_bitmap;
 
@@ -63,6 +64,12 @@ typedef struct _osd_binary osd_binary;
 struct _osd_scene {
     u16 width, height;
     u32 ram_base_addr;
+
+    u8 glyph_header_size;
+    u8 palette_data_size;
+    u8 ingredient_data_size;
+    u8 window_data_size;
+
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
@@ -92,7 +99,9 @@ struct _osd_palette {
     u8 pixel_format;
     u8 pixel_bits; // 0, 1, 2, 4, 8, 16
     u16 entry_count;
+
     u32 luts_addr;
+
     u32 *lut;
 };
 
@@ -126,8 +135,6 @@ struct _osd_rectangle {
     u8 border_style: 4; //OSD_LINE_STYLE_XXX, lower 4 bit
     u8 gradient_mode:4; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX, higher 4 bit
     u8 bgcolor_start, bgcolor_end;
-
-    u32 pad32;
 };
 
 struct _osd_line {
@@ -139,23 +146,31 @@ struct _osd_line {
     u8 style;	//OSD_LINE_STYLE_XXX
     u8 color;
     u8 reserved2;
-
-    u32 pad32;
 };
 
 struct _osd_glyph {
     u8 left, top;
     u8 width, height;
 
-    u8 pitch;
-    u8 color;
-    u8 font_width;
-    u8 reserved;
-
     u16 char_code;
+    u8 font_id;
+    u8 font_size;
+
+    u8 pitch;
+    u8 advance_x;
     u16 data_size;
 
-    u32 data_addr;
+    u8	data[];
+};
+
+struct _osd_character {
+    u8 color;
+    u8 reserved1;
+    u16 reserved2;
+
+    u32 glyph_addr;
+
+    u32 reserved3;
 };
 
 struct _osd_bitmap {
@@ -167,13 +182,11 @@ struct _osd_bitmap {
     u16 data_size;
 
     u32 data_addr;
-
-    u32 pad32;
 };
 
 #define OSD_INGREDIENT_RECTANGLE 1
 #define OSD_INGREDIENT_LINE		 2
-#define OSD_INGREDIENT_GLYPH	 3
+#define OSD_INGREDIENT_CHARACTER 3
 #define OSD_INGREDIENT_BITMAP	 4
 #define OSD_INGREDIENT_LABEL	 5
 #define OSD_INGREDIENT_FORM		 6
@@ -192,7 +205,7 @@ struct _osd_ingredient {
         osd_rectangle rect;
         osd_line line;
         osd_bitmap bitmap;
-        osd_glyph glyph;
+        osd_character character;
     } data;
 
     u8 *ram_data;
@@ -241,9 +254,11 @@ struct _osd_window {
     u8 z_order;
 
     u16 x, y;
+
     u16 width, height;
 
     u32 block_count;
+
     u32 blocks_addr;
 
     osd_block *blocks;

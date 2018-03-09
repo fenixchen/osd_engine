@@ -84,7 +84,7 @@
     <ClInclude Include="..\osd\src\osd_binary.h" />
     <ClInclude Include="..\osd\src\osd_bitmap.h" />
     <ClInclude Include="..\osd\src\osd_common.h" />
-    <ClInclude Include="..\osd\src\osd_glyph.h" />
+    <ClInclude Include="..\osd\src\osd_character.h" />
     <ClInclude Include="..\osd\src\osd_ingredient.h" />
     <ClInclude Include="..\osd\src\osd_line.h" />
     <ClInclude Include="..\osd\src\osd_log.h" />
@@ -99,7 +99,7 @@
     <ClCompile Include="..\osd\src\osd_binary.c" />
     <ClCompile Include="..\osd\src\osd_bitmap.c" />
     <ClCompile Include="..\osd\src\osd_common.c" />
-    <ClCompile Include="..\osd\src\osd_glyph.c" />
+    <ClCompile Include="..\osd\src\osd_character.c" />
     <ClCompile Include="..\osd\src\osd_ingredient.c" />
     <ClCompile Include="..\osd\src\osd_line.c" />
     <ClCompile Include="..\osd\src\osd_log.c" />

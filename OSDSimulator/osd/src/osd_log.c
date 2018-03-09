@@ -6,7 +6,7 @@ const char *ingredient_name[] = {
     "INVALID",
     "RECTANGLE",
     "LINE",
-    "GLYPH",
+    "CHARACTER",
     "BITMAP",
     "LABEL",
     "FORM",
@@ -61,12 +61,14 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
                 bitmap->data_size, bitmap->data_addr);
         break;
     }
-    case OSD_INGREDIENT_GLYPH: {
-        osd_glyph *glyph = &ingredient->data.glyph;
+    case OSD_INGREDIENT_CHARACTER: {
+        osd_glyph *glyph = (osd_glyph *)ingredient->ram_data;
+        osd_character *character = &ingredient->data.character;
         OSD_LOG("\tleft:%d, top:%d, width:%d, height:%d\n"
-                "\tcolor:%d, char:%c, size:%d, addr:%#x\n",
+                "\tchar:%c, color:%d, size:%d, addr:%#x\n",
                 glyph->left, glyph->top, glyph->width, glyph->height,
-                glyph->color, glyph->char_code, glyph->data_size, glyph->data_addr);
+                glyph->char_code, character->color,
+                glyph->data_size, character->glyph_addr);
         break;
     }
     case OSD_INGREDIENT_LABEL:

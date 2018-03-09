@@ -247,5 +247,4 @@ class Rectangle(Ingredient):
                             0 if self._bgcolor_start is None else self._bgcolor_start,
                             0 if self._bgcolor_end is None else self._bgcolor_end)
 
-        bins += struct.pack('<xxxx')
         return bins, ram
