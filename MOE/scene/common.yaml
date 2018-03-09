@@ -1,0 +1,8 @@
+OSD:
+  Fonts:
+    - Font:
+        id: eng
+        file: [fonts/consola.ttf, fonts/consolab.ttf, fonts/consolai.ttf, fonts/consolaz.ttf]
+    - Font:
+        id: chn
+        file: fonts/song.ttf

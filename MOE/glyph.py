@@ -9,31 +9,48 @@ from imageutil import ImageUtil
 from ingredient import Ingredient
 from log import Log
 
-FONT = Font()
-
 logger = Log.get_logger("engine")
 
 
 class Glyph(Ingredient):
 
-    def __init__(self, scene, id, font_width, char, palette=None, color=None):
+    def __init__(self, scene, id, char, font=None, font_size=None, palette=None, color=None):
+        if font is None:
+            self._font = scene.default_font
+        elif isinstance(font, Font):
+            self._font = font
+        else:
+            self._font = scene.find_font(font)
+
+        if font_size is None:
+            self._font_size = scene.default_font_size
+        else:
+            self._font_size = font_size
+
+        if id is None:
+            id = "glyph_%s_%s_%d" % (self._font.id, ord(char), self._font_size)
+
         super().__init__(scene, id, palette)
-        self._left, self._top, self._advance_x, self._advance_y, bitmap = FONT.load_char(char, font_width)
+
+        self._left, self._top, self._advance_x, self._advance_y, bitmap = self._font.load_char(char, font_size)
         self._height = bitmap.rows
         self._width = bitmap.width
         self._data = bitmap.buffer[:]
         self._pitch = bitmap.pitch
         self._char = char
-        self._font_width = font_width
         self._color = color
+
+    @property
+    def font(self):
+        return self._font
 
     @property
     def char(self):
         return self._char
 
     @property
-    def font_width(self):
-        return self._font_width
+    def font_size(self):
+        return self._font_size
 
     @property
     def advance_x(self):
@@ -70,7 +87,8 @@ class Glyph(Ingredient):
             line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, index)
 
     def __str__(self):
-        ret = "id: %s, left:%d, top:%d, adv:%d, %d x %d, size:%d" % (self._id, self._left, self._top, self._advance_x, self._width, self._height, len(self._data))
+        ret = "id: %s, left:%d, top:%d, adv:%d, %d x %d, size:%d" % (
+            self._id, self._left, self._top, self._advance_x, self._width, self._height, len(self._data))
         return ret
 
     def to_binary(self, ram_offset):
@@ -78,12 +96,10 @@ class Glyph(Ingredient):
         ram = b''
         bins = struct.pack('<BBxx', IngredientType.GLYPH.value,
                            0xFF if self._palette is None else self._palette.object_index)
-        try:
-            bins += struct.pack('<BBBB', self._left, self._top, self._width, self._height)
-        except:
-            print(bins)
+        bins += struct.pack('<BBBB', self._left, self._top, self._width, self._height)
 
-        bins += struct.pack('<BBBx', self._pitch, self._color, self._font_width)
+        bins += struct.pack('<BBBx', self._pitch, self._color,
+                            self._font_size if self._font_size is not None else self.scene.default_font_size)
 
         data_size = len(self._data)
         bins += struct.pack('<HH', ord(self._char), data_size)

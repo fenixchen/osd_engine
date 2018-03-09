@@ -12,9 +12,9 @@ logger = Log.get_logger("engine")
 
 
 class Label(Ingredient):
-    def __init__(self, scene, id, text, color, font_width, vertical=False, palette=None):
+    def __init__(self, scene, id, text, color, font=None, font_size=None, vertical=False, palette=None):
         super().__init__(scene, id, palette)
-        self._text = Text(scene, text, color, font_width, vertical)
+        self._text = Text(scene, text, color, font, font_size, vertical)
 
     def top_line(self):
         raise Exception("Should never be called")

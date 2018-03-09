@@ -90,9 +90,9 @@ class App(object):
         scene = self._scenes[self._scene_index]
         if self._canvas is None:
             self._canvas = tkinter.Canvas(self._root,
-                                  width=scene.width,
-                                  height=scene.height,
-                                  bg="#000000")
+                                          width=scene.width,
+                                          height=scene.height,
+                                          bg="#000000")
 
             self._canvas.bind('<Button-1>', self.mouse_click)
             self._canvas.bind('<Button-3>', self.mouse_click)

@@ -1,7 +1,9 @@
 OSD:
   width: 640
   height: 480
-
+  Includes:
+    - Include:
+        file: common.yaml
   Palettes:
     - Palette:
         id: palette0
@@ -23,7 +25,7 @@ OSD:
 
     - Glyph:
         id: char_P
-        font_width: 48
+        font_size: 48
         color: 8
         char: 'P'
 

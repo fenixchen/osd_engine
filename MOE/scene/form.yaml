@@ -1,7 +1,9 @@
 OSD:
   width: 640
   height: 480
-
+  Includes:
+    - Include:
+        file: common.yaml
   Palettes:
     - Palette:
         id: palette1

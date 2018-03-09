@@ -7,11 +7,12 @@ from osdobject import *
 
 logger = Log.get_logger("engine")
 
+
 class Window(OSDObject):
     def __init__(self, scene, id, x, y, width, height, palette, blocks,
                  zorder=0, alpha=255, visible=True):
+        super().__init__(scene, id)
         self._scene = scene
-        self._id = id
         self._x = x
         self._y = y
         self._width = width
@@ -27,10 +28,6 @@ class Window(OSDObject):
             else:
                 raise Exception('cannot find ingredient <%s>' % id)
         self._alpha = alpha
-
-    @property
-    def id(self):
-        return self._id
 
     @property
     def zorder(self):

@@ -3,6 +3,9 @@ OSD:
   height: 480
   frames: 1
   ticks: 20
+  Includes:
+    - Include:
+        file: common.yaml
   Palettes:
     - Palette:
         id: palette0
@@ -15,49 +18,49 @@ OSD:
   Ingredients:
     - Glyph:
         id: char_P_24
-        font_width: 20
+        font_size: 20
         color: 1
         char: 'P'
 
     - Glyph:
         id: char_U_24
-        font_width: 20
+        font_size: 20
         color: 2
         char: 'U'
 
     - Glyph:
         id: char_S_24
-        font_width: 20
+        font_size: 20
         color: 3
         char: 'S'
 
     - Glyph:
         id: char_H_24
-        font_width: 20
+        font_size: 20
         color: 4
         char: 'H'
 
     - Glyph:
         id: char_D_24
-        font_width: 20
+        font_size: 20
         color: 5
         char: 'D'
 
     - Glyph:
         id: char_O_24
-        font_width: 20
+        font_size: 20
         color: 6
         char: 'O'
 
     - Glyph:
         id: char_W_24
-        font_width: 20
+        font_size: 20
         color: 7
         char: 'W'
 
     - Glyph:
         id: char_N_24
-        font_width: 20
+        font_size: 20
         color: 8
         char: 'N'
 

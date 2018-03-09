@@ -3,6 +3,13 @@
 from enum import Enum
 
 
+class FontStyle(Enum):
+    NORMAL = 0
+    BOLD = 1
+    ITALIC = 2,
+    BOLD_ITALIC = 3
+
+
 class IngredientType(Enum):
     INVALID = 0
     RECTANGLE = 1

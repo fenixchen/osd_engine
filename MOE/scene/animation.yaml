@@ -3,6 +3,11 @@ OSD:
   height: 480
   ticks: 20
   frames: 255
+
+  Includes:
+    - Include:
+        file: common.yaml
+
   Palettes:
     - Palette:
         id: palette0

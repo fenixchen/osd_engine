@@ -12,8 +12,6 @@ from block import Block
 
 logger = Log.get_logger("engine")
 
-EDIT_TEXT_FONT_WIDTH = 16
-
 EDIT_TEXT_COLOR = 0
 
 EDIT_BORDER_LOW_LIGHT = 2
@@ -22,19 +20,23 @@ EDIT_BORDER_HIGH_LIGHT = 3
 
 EDIT_BORDER_WEIGHT = 1
 
+EDIT_MIN_WIDTH = 30
+
+EDIT_MIN_HEIGHT = 20
+
 
 class Edit(Ingredient):
-    def __init__(self, scene, id, text,
+    def __init__(self, scene, id, text, font=None, font_size=None,
                  width=None, height=None, palette=None):
         super().__init__(scene, id, palette)
-        self._title = Text(scene, text, EDIT_TEXT_COLOR, EDIT_TEXT_FONT_WIDTH, False)
+        self._title = Text(scene, text, EDIT_TEXT_COLOR, font, font_size)
         if width is None:
-            self._width = self._title.width
+            self._width = max(self._title.width, EDIT_MIN_WIDTH)
         else:
             self._width = width
 
         if height is None:
-            self._height = self._title.height
+            self._height = max(self._title.height, EDIT_MIN_HEIGHT)
         else:
             self._height = height
         border_color = [EDIT_BORDER_LOW_LIGHT,

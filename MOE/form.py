@@ -12,15 +12,14 @@ from block import Block
 
 logger = Log.get_logger("engine")
 
-
 FORM_HEIGHT = 24
-FORM_TITLE_FONT_WIDTH = 16
+
 
 class Form(Ingredient):
-    def __init__(self, scene, id, title, bgcolor, width = 0, height = 0,
+    def __init__(self, scene, id, title, bgcolor, width=0, height=0,
                  palette=None):
         super().__init__(scene, id, palette)
-        self._title = Text(scene, title, 1, FORM_TITLE_FONT_WIDTH, False)
+        self._title = Text(scene, title, 1)
         self._bgcolor = bgcolor
         self._width = width
         self._height = height

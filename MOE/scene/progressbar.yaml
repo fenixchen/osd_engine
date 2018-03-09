@@ -1,7 +1,9 @@
 OSD:
   width: 640
   height: 480
-
+  Includes:
+    - Include:
+        file: common.yaml
   Palettes:
     - Palette:
         id: palette0
@@ -11,42 +13,42 @@ OSD:
   Ingredients:
     - Glyph:
         id: char_percent
-        font_width: 14
+        font_size: 14
         color: 0
         char: '%'
     - Glyph:
         id: char_1
-        font_width: 14
+        font_size: 14
         color: 0
         char: '1'
     - Glyph:
         id: char_2
-        font_width: 14
+        font_size: 14
         color: 0
         char: '2'
     - Glyph:
         id: char_3
-        font_width: 14
+        font_size: 14
         color: 0
         char: '3'
     - Glyph:
         id: char_4
-        font_width: 14
+        font_size: 14
         color: 0
         char: '4'
     - Glyph:
         id: char_5
-        font_width: 14
+        font_size: 14
         color: 0
         char: '5'
     - Glyph:
         id: char_6
-        font_width: 14
+        font_size: 14
         color: 0
         char: '6'
     - Glyph:
         id: char_7
-        font_width: 14
+        font_size: 14
         color: 0
         char: '7'
 

@@ -4,9 +4,18 @@ import abc
 
 
 class OSDObject(metaclass=abc.ABCMeta):
-
-    def __init__(self):
+    def __init__(self, scene, id):
         self._object_index = None
+        self._scene = scene
+        self._id = id
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def scene(self):
+        return self._scene
 
     @property
     def object_index(self):

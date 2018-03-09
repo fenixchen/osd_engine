@@ -12,8 +12,6 @@ from block import Block
 
 logger = Log.get_logger("engine")
 
-BUTTON_TEXT_FONT_WIDTH = 16
-
 BUTTON_TEXT_COLOR = 0
 
 BUTTON_BORDER_LOW_LIGHT = 2
@@ -26,20 +24,23 @@ BUTTON_BGCOLOR_START = 4
 
 BUTTON_BGCOLOR_END = 5
 
+BUTTON_EXTRA_WIDTH = 10
+
+BUTTON_EXTRA_HEIGHT = 10
+
 
 class Button(Ingredient):
-    def __init__(self, scene, id, text,
-                 pressed=False,
-                 width=None, height=None, palette=None):
+    def __init__(self, scene, id, text, font=None, font_size=None,
+                 pressed=False, width=None, height=None, palette=None):
         super().__init__(scene, id, palette)
-        self._title = Text(scene, text, BUTTON_TEXT_COLOR, BUTTON_TEXT_FONT_WIDTH, False)
+        self._title = Text(scene, text, BUTTON_TEXT_COLOR, font, font_size)
         if width is None:
-            self._width = self._title.width
+            self._width = self._title.width + BUTTON_EXTRA_WIDTH
         else:
             self._width = width
 
         if height is None:
-            self._height = self._title.height
+            self._height = self._title.height + BUTTON_EXTRA_WIDTH
         else:
             self._height = height
         self._pressed = pressed
@@ -76,7 +77,9 @@ class Button(Ingredient):
 
     def get_blocks(self, window, block_id, left, top):
         blocks = [Block(window, '', self._rect, left, top)]
-        blocks.extend(self._title.get_blocks(window, block_id, left + 4, top + 4))
+        blocks.extend(self._title.get_blocks(window, block_id,
+                                             left + BUTTON_EXTRA_WIDTH // 2,
+                                             top + BUTTON_EXTRA_HEIGHT // 2))
         return blocks
 
     def to_binary(self, ram_offset):

@@ -105,7 +105,7 @@ class Rectangle(Ingredient):
             margin = self._border_weight - (self._border_weight - y)
             for x in range(block_x + margin, block_x + width - margin):
                 if self._check_border_style(x):
-                        window_line_buf[x] = color
+                    window_line_buf[x] = color
 
             # draw left border  + top border
             color = self.get_color(window, self._border_color_left)

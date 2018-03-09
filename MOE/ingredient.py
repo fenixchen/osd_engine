@@ -9,20 +9,11 @@ from osdobject import OSDObject
 class Ingredient(OSDObject):
 
     def __init__(self, scene, id, palette):
-        self._scene = scene
-        self._id = id
+        super().__init__(scene, id)
         if palette is None:
             self._palette = None
         else:
             self._palette = scene.find_palette(palette)
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def scene(self):
-        return self._scene
 
     @property
     def palette(self):

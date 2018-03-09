@@ -1,7 +1,9 @@
 OSD:
   width: 640
   height: 480
-
+  Includes:
+    - Include:
+        file: common.yaml
   Palettes:
     - Palette:
         id: palette1
@@ -13,36 +15,35 @@ OSD:
         border_color: [1, 2, 3, 4]
         border_weight: 1
 
-
     - Label:
         id: label0
         text: 'Hello world (16pt)'
         color: 1
-        font_width: 16
+        font_size: 16
 
     - Label:
         id: label1
         text: 'Hello world (24pt)'
         color: 2
-        font_width: 24
+        font_size: 24
 
     - Label:
         id: label2
         text: 'Hello world (32pt)'
         color: 3
-        font_width: 32
+        font_size: 32
 
     - Label:
         id: label3
         text: 'Hello world (40pt)'
         color: 4
-        font_width: 40
+        font_size: 40
 
     - Label:
         id: label4
         text: 'Hello world (48pt)'
         color: 5
-        font_width: 48
+        font_size: 48
 
   Windows:
     - Window:

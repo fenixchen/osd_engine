@@ -1,6 +1,14 @@
 OSD:
   width: 640
   height: 480
+  default_palette: palette0
+  default_font: chn
+  default_font_size: 16
+
+  Includes:
+    - Include:
+        file: common.yaml
+
   Palettes:
     - Palette:
         id: palette0
@@ -26,15 +34,14 @@ OSD:
 
     - Label:
         id: label1
-        text: 'Name:'
+        text: '姓名:'
         color: 1
-        font_width: 18
+        font: chn
 
     - Label:
         id: label2
         text: 'Address:'
         color: 1
-        font_width: 18
 
     - Edit:
         id: edit0
@@ -52,7 +59,7 @@ OSD:
 
     - Button:
         id: button3
-        text: 'Cancel'
+        text: 'Reset'
 
 
   Windows:

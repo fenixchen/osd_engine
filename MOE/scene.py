@@ -29,11 +29,27 @@ class Scene(object):
         self._ingredients = []
         self._palettes = []
         self._modifiers = []
+        self._fonts = []
         self._width = -1
         self._height = -1
         self._frames = 1
         self._ticks = 20
-        self.load(yaml_file)
+        self._default_font_size = 16
+        self._default_font = None
+        self._default_palette = None
+        self.load(yaml_file, True)
+
+    @property
+    def default_font(self):
+        return self._default_font
+
+    @property
+    def default_font_size(self):
+        return self._default_font_size
+
+    @property
+    def default_palette(self):
+        return self._default_palette
 
     @property
     def filename(self):
@@ -55,26 +71,31 @@ class Scene(object):
     def ticks(self):
         return self._ticks
 
-    def add_ingredient(self, ingredient):
-        logger.debug(ingredient)
-        self._ingredients.append(ingredient)
-        ingredient.object_index = len(self._ingredients) - 1
+    def find_font(self, id):
+        for font in self._fonts:
+            if font.id == id:
+                return font
+        raise Exception('Cannot find font <%s>' % id)
 
-    def get_glyph(self, char, font_width):
-        for ingredient in self._ingredients:
-            if not isinstance(ingredient, Glyph):
-                continue
-            if ingredient.char == char and ingredient.font_width == font_width:
-                return ingredient
-        glyph = Glyph(self, 'char_%s' % char, font_width, char)
-        self.add_ingredient(glyph)
-        return glyph
+    def add_font(self, new_font):
+        for font in self._fonts:
+            if font.id == new_font.id:
+                raise Exception('Duplicated font <%s>' % new_font.id)
+        self._fonts.append(new_font)
+        new_font.object_index = len(self._fonts) - 1
 
     def find_palette(self, id):
         for palette in self._palettes:
             if palette.id == id:
                 return palette
-        raise Exception('cannot find palette <%s>' % id)
+        raise Exception('Cannot find palette <%s>' % id)
+
+    def add_palette(self, new_palette):
+        for palette in self._palettes:
+            if palette.id == new_palette.id:
+                raise Exception('Duplicated palette <%s>' % new_palette.id)
+        self._palettes.append(new_palette)
+        new_palette.object_index = len(self._palettes) - 1
 
     def find_ingredient(self, id):
         for ingredient in self._ingredients:
@@ -82,11 +103,48 @@ class Scene(object):
                 return ingredient;
         raise Exception('cannot find ingredient <%s>' % id)
 
+    def add_ingredient(self, new_ingredient):
+        for ingredient in self._ingredients:
+            if ingredient.id == new_ingredient.id:
+                raise Exception('Duplicated ingredient <%s>' % new_ingredient.id)
+        self._ingredients.append(new_ingredient)
+        new_ingredient.object_index = len(self._ingredients) - 1
+
     def find_window(self, id):
         for window in self._windows:
             if window.id == id:
                 return window
-        raise Exception('cannot find window <%s>' % id)
+        raise Exception('Cannot find window <%s>' % id)
+
+    def add_window(self, new_window):
+        for window in self._windows:
+            if window.id == new_window.id:
+                raise Exception('Duplicated window <%s>' % new_window.id)
+        self._windows.append(new_window)
+        new_window.object_index = len(self._windows) - 1
+
+    def add_modifier(self, new_modifier):
+        for modifier in self._modifiers:
+            if modifier.id == new_modifier.id:
+                raise Exception('Duplicated modifier <%s>' % new_modifier.id)
+        self._modifiers.append(new_modifier)
+        new_modifier.object_index = len(self._modifiers) - 1
+
+    def get_glyph(self, char, font, font_size):
+        if font_size is None:
+            font_size = self.default_font_size
+        if font is None:
+            font = self.default_font
+        for ingredient in self._ingredients:
+            if not isinstance(ingredient, Glyph):
+                continue
+            elif ingredient.char == char and \
+                    ingredient.font_size == font_size and \
+                    ingredient.font == font:
+                return ingredient
+        glyph = Glyph(self, None, char, font, font_size)
+        self.add_ingredient(glyph)
+        return glyph
 
     def find_block(self, id):
         ids = id.split('.')
@@ -96,60 +154,81 @@ class Scene(object):
                 return window.find_block(ids[1])
         raise Exception('cannot find block <%s>' % id)
 
-    def load(self, yaml_file):
+    def _set_base_dir(self):
+        Scene._BASE_DIR = os.path.dirname(self._yaml_file) + '/'
+        ImageUtil.BASE_DIR = Scene._BASE_DIR
+        Font.BASE_DIR = Scene._BASE_DIR
+        logger.debug('BASE_DIR: <%s>' % Scene._BASE_DIR)
+
+    def load(self, yaml_file, root):
         if not os.path.isfile(yaml_file) or not os.access(yaml_file, os.R_OK):
             raise Exception('%s does not exist or cannot read' % yaml_file)
 
-        self._yaml_file = os.path.abspath(yaml_file).replace('\\', '/')
-        logger.debug('Loading OSD yaml file: <%s>' % self._yaml_file)
+        if root:
+            self._yaml_file = os.path.abspath(yaml_file).replace('\\', '/')
+            logger.debug('Loading OSD yaml file: <%s>' % self._yaml_file)
+            self._set_base_dir()
+        else:
+            logger.debug('Loading included OSD yaml file: <%s>' % yaml_file)
 
-        Scene._BASE_DIR = os.path.dirname(self._yaml_file) + '/'
-
-        logger.debug('BASE_DIR: <%s>' % Scene._BASE_DIR)
-
-        ImageUtil.BASE_DIR = Scene._BASE_DIR
-        Font.BASE_DIR = Scene._BASE_DIR
-
-        self._yaml_file = yaml_file
-        with open(self._yaml_file) as f:
+        config = None
+        with open(yaml_file, "r", encoding='UTF-8') as f:
             content = f.read()
             config = yaml.load(content)
+
         if config is None:
             raise Exception('cannot load yaml file %s' % self._yaml_file)
 
         config = config['OSD']
-        assert (config is not None and
-                config['width'] is not None and
-                config['height'] is not None)
-        self._width = config['width']
-        self._height = config['height']
-        self._frames = 1 if 'frames' not in config else int(config['frames'])
+        assert config is not None
+        if root:
+            self._width = config['width'] if 'width' in config else 640
+            self._height = config['height'] if 'height' in config else 480
+            self._frames = 1 if 'frames' not in config else int(config['frames'])
+            logger.debug('Width:%d, Height:%d' % (self._width, self._height))
 
-        logger.debug('Width:%d, Height:%d' % (self._width, self._height))
+        if 'Includes' in config:
+            for item in config['Includes']:
+                include_file = Scene._BASE_DIR + item['Include']['file']
+                self.load(include_file, False)
 
-        for item in config['Palettes']:
-            obj = self._create_object(item)
-            self._palettes.append(obj)
-            obj.object_index = len(self._palettes) - 1
+        if 'Fonts' in config:
+            for item in config['Fonts']:
+                self.add_font(self._create_object(item))
 
-        for item in config['Ingredients']:
-            obj = self._create_object(item)
-            self.add_ingredient(obj)
+        if 'Palettes' in config:
+            for item in config['Palettes']:
+                self.add_palette(self._create_object(item))
 
-        for item in config['Windows']:
-            obj = self._create_object(item)
-            self._windows.append(obj)
-            obj.object_index = len(self._windows) - 1
-        self.sort_windows()
+        assert len(self._fonts) > 0
+        if root:
+            if 'default_font' in config:
+                self._default_font = self.find_font(config['default_font'])
+            else:
+                self._default_font = self._fonts[0]
+
+            if 'default_font_size' in config:
+                self._default_font_size = int(config['default_font_size'])
+            else:
+                self._default_font_size = 16
+
+
+        if 'Ingredients' in config:
+            for item in config['Ingredients']:
+                self.add_ingredient(self._create_object(item))
+
+        if 'Windows' in config:
+            for item in config['Windows']:
+                self.add_window(self._create_object(item))
 
         if 'Modifiers' in config:
             for item in config['Modifiers']:
-                obj = self._create_object(item)
-                self._modifiers.append(obj)
-                obj.object_index = len(self._modifiers) - 1
+                self.add_modifier(self._create_object(item))
 
-    def sort_windows(self):
-        self._windows.sort(key=lambda window: window.zorder, reverse=False)
+        logger.debug('OSD YAML file <%s> Loaded' % yaml_file)
+
+        if root:
+            self._windows.sort(key=lambda window: window.zorder, reverse=False)
 
     def _create_object(self, item):
         assert (len(item.keys()) > 0)
