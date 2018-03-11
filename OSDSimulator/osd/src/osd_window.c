@@ -15,6 +15,9 @@ int osd_window_paint(osd_scene *scene,
         osd_ingredient *ingredient;
         u32 block_start_y, block_height;
         osd_block *block = &window->blocks[i];
+        if (!block->visible) {
+            continue;
+        }
         ingredient = scene->ingredients[block->ingredient_index];
         assert(ingredient);
         block_start_y = block->y + osd_ingredient_start_y(ingredient);

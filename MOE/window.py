@@ -22,10 +22,21 @@ class Window(OSDObject):
         self._palette = scene.find_palette(palette)
         self._blocks = []
         if blocks is not None:
-            for (block_id, id, left, top) in blocks:
-                ingredient = self._scene.find_ingredient(id)
+            for i, block_info in enumerate(blocks):
+                if len(block_info) == 4:
+                    (block_id, ingredient_id, left, top) = block_info
+                    visible = True
+                else:
+                    (block_id, ingredient_id, left, top, visible) = block_info
+
+                ingredient = self._scene.find_ingredient(ingredient_id)
                 if ingredient is not None:
-                    self._blocks.extend(ingredient.get_blocks(self, block_id, left, top))
+                    if len(block_id) == 0:
+                        block_id = '%s_block_%d' % (self.id, i)
+                    blocks = ingredient.get_blocks(self, block_id, left, top)
+                    for block in blocks:
+                        block.visible = visible
+                    self._blocks.extend(blocks)
                 else:
                     raise Exception('cannot find ingredient <%s>' % id)
         self._alpha = alpha
@@ -102,6 +113,8 @@ class Window(OSDObject):
         painted = False
         window_line_buf = [0] * self._width
         for block in self._blocks:
+            if not block.visible:
+                continue
             top = block.top_line()
             if top <= window_y < top + block.height(self):
                 block.ingredient.draw_line(window_line_buf,
@@ -142,6 +155,7 @@ class Window(OSDObject):
             bins += struct.pack('<I', ram_offset)
             i = 0
             for block in self._blocks:
-                ram += struct.pack('<HHHH', i, block.ingredient.object_index, block.x, block.y)
+                block_flags = block.visible
+                ram += struct.pack('<HHHH', block_flags, block.ingredient.object_index, block.x, block.y)
                 i += 1
         return bins, ram

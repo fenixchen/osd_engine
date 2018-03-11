@@ -94,7 +94,7 @@ void log_window(int index, osd_window *window) {
             window->block_count, (unsigned int)window->blocks);
     for (i = 0; i < window->block_count; i ++) {
         osd_block *block = &window->blocks[i];
-        OSD_LOG("\t\tblock[%d] ingredient:%d, x:%d, y:%d\n",
-                block->block_index, block->ingredient_index, block->x, block->y);
+        OSD_LOG("\t\tblock[%d] visible:%d, ingredient:%d, x:%d, y:%d\n",
+                i, block->visible, block->ingredient_index, block->x, block->y);
     }
 }

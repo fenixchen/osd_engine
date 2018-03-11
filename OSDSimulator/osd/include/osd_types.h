@@ -238,7 +238,8 @@ struct _osd_modifier {
 };
 
 struct _osd_block {
-    u16 block_index;
+    u16 visible: 1; //lowest bits
+    u16 reserved: 15;
     u16 ingredient_index;
     u16 x;
     u16 y;

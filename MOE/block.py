@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+
 class Block(object):
     def __init__(self, window, id, ingredient, x, y):
         self._window = window
@@ -7,6 +8,15 @@ class Block(object):
         self._x = x
         self._y = y
         self._ingredient = ingredient
+        self._visible = True
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, v):
+        self._visible = v
 
     @property
     def id(self):
