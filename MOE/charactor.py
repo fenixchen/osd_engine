@@ -29,7 +29,11 @@ class Character(Ingredient):
             self._font_size = font_size
 
         if id is None:
-            id = "character_%s_%s_%d" % (self._font.id, ord(char_code), self._font_size)
+            if isinstance(char_code, str):
+                code = ord(char_code)
+            else:
+                code = char_code
+            id = "character_%s_%s_%d" % (self._font.id, code, self._font_size)
 
         super().__init__(scene, id, palette)
 
@@ -69,7 +73,7 @@ class Character(Ingredient):
 
     def __str__(self):
         ret = "%s(id: %s, font:%s, font_size:%d, char_code:%s, color:%d)" % (
-            type(self), self._id, self._font.id, self.glyph.font_size, ord(self.glyph.char_code), self.color)
+            type(self), self._id, self._font.id, self.glyph.font_size, self.glyph.code, self.color)
         return ret
 
     def to_binary(self, ram_offset):

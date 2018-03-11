@@ -1,0 +1,38 @@
+OSD:
+  width: 800
+  height: 600
+  Includes:
+    - Include:
+        file: common.yaml
+
+  Palettes:
+    - Palette:
+        id: palette0
+        colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080]
+
+  Ingredients:
+    - Label:
+        id: label_symbol
+        text: 0x2a
+        font: webdings
+        color: 2
+        font_size: 48
+
+    - Rectangle:
+        id: rect_border
+        border_weight: 1
+        border_color: 6
+        bgcolor: 1
+
+  Windows:
+    - Window:
+        id: window0
+        x: 100
+        y: 100
+        width: 100
+        height: 100
+        palette: palette0
+        zorder: 0
+        blocks:
+          - ['', rect_border, 0, 0]
+          - ['', label_symbol, 10, 10]

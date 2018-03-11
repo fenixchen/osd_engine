@@ -12,10 +12,17 @@ class Text(object):
         self._font_size = font_size
         self._vertical = vertical
         self._characters = []
-        for char in self._text:
-            character = scene.get_character(char, color, font, font_size)
+        if isinstance(self._text, str):
+            for char in self._text:
+                character = scene.get_character(char, color, font, font_size)
+                assert character is not None
+                self._characters.append(character)
+        elif isinstance(self._text, int):
+            character = scene.get_character(self._text, color, font, font_size)
             assert character is not None
             self._characters.append(character)
+        else:
+            raise Exception('unknown type <%s>' % type(self._text))
 
     def get_blocks(self, window, block_id, left, top):
         blocks = []

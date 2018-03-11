@@ -6,3 +6,19 @@ OSD:
     - Font:
         id: chn
         file: fonts/song.ttf
+    - Font:
+        id: webdings
+        file: fonts/webdings.ttf
+        charmap: 0
+    - Font:
+        id: wingding
+        file: fonts/wingding.ttf
+        charmap: 0
+    - Font:
+        id: wingding2
+        file: fonts/WINGDNG2.TTF
+        charmap: 0
+    - Font:
+        id: wingding3
+        file: fonts/WINGDNG3.TTF
+        charmap: 0

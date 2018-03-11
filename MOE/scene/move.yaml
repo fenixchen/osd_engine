@@ -1,7 +1,7 @@
 OSD:
   width: 640
   height: 480
-  ticks: 1
+  ticks: 20
   frames: 255
   Includes:
     - Include:

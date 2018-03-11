@@ -27,7 +27,7 @@ class App(object):
     def __init__(self, *scenes):
         self._root = tkinter.Tk()
         self._root.wm_title(TITLE_STRING)
-        self._root.geometry('640x480')
+        self._root.geometry('800x600')
         self._menubar = tkinter.Menu(self._root)
         self._fmenu1 = tkinter.Menu(self._root, tearoff=0)
         self._fmenu1.add_command(label='Open', command=self.open)

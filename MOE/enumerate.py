@@ -69,4 +69,4 @@ OSD_PALETTE_DATA_SIZE = 2 * 4  # struct _osd_palette
 
 OSD_INGREDIENT_DATA_SIZE = 4 * 4  # struct _osd_ingredient
 
-OSD_WINDOW_DATA_SIZE = 4 * 4  # struct _osd_window
+OSD_WINDOW_DATA_SIZE = 5 * 4  # struct _osd_window

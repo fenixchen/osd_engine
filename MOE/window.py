@@ -21,13 +21,18 @@ class Window(OSDObject):
         self._visible = visible
         self._palette = scene.find_palette(palette)
         self._blocks = []
-        for (block_id, id, left, top) in blocks:
-            ingredient = self._scene.find_ingredient(id)
-            if ingredient is not None:
-                self._blocks.extend(ingredient.get_blocks(self, block_id, left, top))
-            else:
-                raise Exception('cannot find ingredient <%s>' % id)
+        if blocks is not None:
+            for (block_id, id, left, top) in blocks:
+                ingredient = self._scene.find_ingredient(id)
+                if ingredient is not None:
+                    self._blocks.extend(ingredient.get_blocks(self, block_id, left, top))
+                else:
+                    raise Exception('cannot find ingredient <%s>' % id)
         self._alpha = alpha
+
+    @property
+    def blocks(self):
+        return self._blocks
 
     @property
     def zorder(self):

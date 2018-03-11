@@ -13,7 +13,7 @@ logger = Log.get_logger("engine")
 class Font(OSDObject):
     BASE_DIR = ''
 
-    def __init__(self, scene, id, file, gray_scale=True):
+    def __init__(self, scene, id, file, charmap=None, gray_scale=True):
         super().__init__(scene, id)
         self._file = file
         self._gray_scale = gray_scale
@@ -21,12 +21,18 @@ class Font(OSDObject):
         if isinstance(file, list):
             assert len(file) == 4
             for i, f in enumerate(file):
-                self._faces.append(freetype.Face(Font.BASE_DIR + file[i]))
+                face = freetype.Face(Font.BASE_DIR + file[i])
+                if charmap is not None:
+                    face.set_charmap(charmap)
+                self._faces.append(face)
                 assert self._faces[i] is not None
         else:
-            self._faces.append(freetype.Face(Font.BASE_DIR + file))
+            face = freetype.Face(Font.BASE_DIR + file)
+            self._faces.append(face)
+            if charmap is not None:
+                face.set_charmap(charmap)
             for i in range(3):
-                self._faces.append(self._faces[0])
+                self._faces.append(face)
 
     def load_char(self, char, font_size):
         face = self._faces[0]
