@@ -64,13 +64,18 @@ class Character(Ingredient):
 
         width = min(glyph.width, window.width - block_x - glyph.left)
 
-        for x in range(glyph.pitch * y, glyph.pitch * y + width):
-            intensity = glyph.data[x]
-            if intensity == 0:
-                continue
-            col = block_x + x - glyph.pitch * y + glyph.left
-            line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
-
+        col = block_x + glyph.left
+        for x in range(width):
+            if glyph.monochrome:
+                intensity = glyph.data[y * glyph.pitch + (x >> 3)]
+                intensity = intensity & (128 >> (x & 7))
+                if intensity > 0:
+                    line_buf[col] = color
+            else:
+                intensity = glyph.data[y * glyph.pitch + x]
+                if intensity > 0:
+                    line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
+            col += 1
     def __str__(self):
         ret = "%s(id: %s, font:%s, font_size:%d, char_code:%s, color:%d)" % (
             type(self), self._id, self._font.id, self.glyph.font_size, self.glyph.code, self.color)

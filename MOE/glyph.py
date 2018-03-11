@@ -15,9 +15,8 @@ logger = Log.get_logger("engine")
 class Glyph(object):
 
     def __init__(self, char_code, font, font_size):
-        self._left, self._top, self._advance_x, self._advance_y, bitmap = \
+        self._left, self._top, self._advance_x, self._advance_y, self._monochrome, bitmap = \
             font.load_char(char_code, font_size)
-
         self._font = font
         self._font_size = font_size
         self._height = bitmap.rows
@@ -26,6 +25,10 @@ class Glyph(object):
         self._pitch = bitmap.pitch
         self._char_code = char_code
         self._ram_offset = None
+
+    @property
+    def monochrome(self):
+        return self._monochrome
 
     @property
     def id(self):

@@ -24,7 +24,7 @@ if TEST_ALL:
         'scene/progressbar.yaml',
         'scene/move.yaml']
 else:
-    yamls = ['Scene/tv.yaml']
+    yamls = ['Scene/monitor.yaml']
 
 if __name__ == '__main__':
     scenes = []

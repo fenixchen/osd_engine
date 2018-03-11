@@ -1,6 +1,7 @@
 OSD:
   width: 800
   height: 600
+
   Includes:
     - Include:
         file: common.yaml

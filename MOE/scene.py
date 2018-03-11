@@ -459,36 +459,40 @@ class Scene(object):
     def _log_binary_size(self, binary_size):
         total_size = 0
 
-        size = 0
+        glyph_size = 0
         for i, glyph in enumerate(self._glyphs):
             s = binary_size[glyph]
-            logger.info('[%04d] %-16s => %d', i, glyph.id, s)
-            size += s
-        logger.info('[****] <glyph> size:%d', size)
-        total_size += size
+            logger.info('[%04d] %-16s => %d, %d', i, glyph.id, s, glyph_size)
+            glyph_size += s
+        logger.info('[****] <glyph> size:%d', glyph_size)
+        total_size += glyph_size
 
-        size = 0
+        palette_size = 0
         for i, palette in enumerate(self._palettes):
             s = binary_size[palette]
             logger.info('[%04d] %-16s => %d', i, palette.id, s)
-            size += s
-        logger.info('[****] <palette> size:%d', size)
-        total_size += size
+            palette_size += s
+        logger.info('[****] <palette> size:%d', palette_size)
+        total_size += palette_size
 
-        size = 0
+        ingredient_size = 0
         for i, ingredient in enumerate(self._ingredients):
             s = binary_size[ingredient]
             logger.info('[%04d] %-16s => %d', i, ingredient.id, s)
-            size += s
-        logger.info('[****] <ingredient> size:%d', size)
-        total_size += size
+            ingredient_size += s
+        logger.info('[****] <ingredient> size:%d', ingredient_size)
+        total_size += ingredient_size
 
-        size = 0
+        window_size = 0
         for i, window in enumerate(self._windows):
             s = binary_size[window]
             logger.info('[%04d] %-16s block(%04d) => %d', i, window.id, len(window.blocks), s)
-            size += s
-        logger.info('[****] <window> size:%d', size)
-        total_size += size
+            window_size += s
+        logger.info('[****] <window> size:%d', window_size)
+        total_size += window_size
 
         logger.info('[****] <RAM TOTAL> size:%d', total_size)
+        logger.info('[****] <glyph> size:%d', glyph_size)
+        logger.info('[****] <palette> size:%d', palette_size)
+        logger.info('[****] <ingredient> size:%d', ingredient_size)
+        logger.info('[****] <window> size:%d', window_size)

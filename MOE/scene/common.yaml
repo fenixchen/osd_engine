@@ -22,3 +22,7 @@ OSD:
         id: wingding3
         file: fonts/WINGDNG3.TTF
         charmap: 0
+    - Font:
+        id: mono
+        monochrome: True
+        file: fonts/Tamzen8x16b.pcf

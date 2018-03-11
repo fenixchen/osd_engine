@@ -13,8 +13,8 @@ OSD:
   Ingredients:
     - Label:
         id: label_symbol
-        text: 0x2a
-        font: webdings
+        text: 'A'
+        font: eng
         color: 2
         font_size: 48
 
