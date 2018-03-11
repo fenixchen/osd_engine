@@ -15,7 +15,6 @@ logger = Log.get_logger("engine")
 class Glyph(object):
 
     def __init__(self, char_code, font, font_size):
-
         self._left, self._top, self._advance_x, self._advance_y, bitmap = \
             font.load_char(char_code, font_size)
 
@@ -82,14 +81,15 @@ class Glyph(object):
         return self._data
 
     def __str__(self):
-        ret = "left:%d, top:%d, adv(%d,%d), %d x %d, size:%d" % (
-            self._left, self._top, self._advance_x, self._advance_y,
+        ret = "%s(font:%s, font_size:%d, left:%d, char:%d, top:%d, pitch:%d, adv(%d,%d), %d x %d, size:%d)" % (
+            type(self), self._font.id, self._font_size, ord(self._char_code),
+            self._left, self._top, self._pitch, self._advance_x, self._advance_y,
             self._width, self._height, len(self._data))
         return ret
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s %s-%s-%d' % (
-            type(self), self._font.id, self._char_code, self._font_size))
+        logger.debug('Generate %s <%s-%s-%d>' % (
+            type(self), self._font.id, ord(self._char_code), self._font_size))
 
         self._ram_offset = ram_offset
 
@@ -98,7 +98,7 @@ class Glyph(object):
         ram += struct.pack('<HBB', ord(self._char_code), self._font.object_index, self._font_size)
 
         data_size = len(self._data)
-        assert(data_size <= 0xFFFF)
+        assert (data_size <= 0xFFFF)
 
         ram += struct.pack('<BBH', self._pitch, self.advance_x, data_size)
 

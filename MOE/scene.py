@@ -132,11 +132,42 @@ class Scene(object):
         self._modifiers.append(new_modifier)
         new_modifier.object_index = len(self._modifiers) - 1
 
-    def get_glyph(self, char_code, font, font_size):
+    def get_character(self, char_code, color, font, font_size):
+        '''
+        find character, create it if not found
+        '''
         if font_size is None:
             font_size = self.default_font_size
         if font is None:
             font = self.default_font
+        else:
+            font = self.find_font(font)
+        for ingredient in self._ingredients:
+            if not isinstance(ingredient, Character):
+                continue
+            character = ingredient
+            glyph = character.glyph
+            if character.color == color and \
+                    glyph.char_code == char_code and \
+                    glyph.font == font and \
+                    glyph.font_size == font_size:
+                return character
+        character_id = 'character_%s_%d_%d_%d' % (font.id, font_size, ord(char_code), color)
+        character = Character(self, character_id, char_code, color, font, font_size)
+        logger.debug(character)
+        self.add_ingredient(character)
+        return character
+
+    def get_glyph(self, char_code, font, font_size):
+        """
+        find glyph, create it if not found
+        """
+        if font_size is None:
+            font_size = self.default_font_size
+        if font is None:
+            font = self.default_font
+        elif isinstance(font, Font):
+            font = font
         else:
             font = self.find_font(font)
 
@@ -147,6 +178,7 @@ class Scene(object):
                 return glyph
 
         glyph = Glyph(char_code, font, font_size)
+        logger.debug(glyph)
         self._glyphs.append(glyph)
         return glyph
 
@@ -383,10 +415,8 @@ class Scene(object):
 
         logger.debug('Target folder:%s' % target_folder)
 
-        # if os.path.exists(target_folder):
-        #    shutil.rmtree(target_folder, ignore_errors=True)
-
-        # os.makedirs(target_folder)
+        if not os.path.exists(target_folder):
+            os.makedirs(target_folder)
 
         # create empty ram.bin
         with open(target_folder + "ram.bin", "wb") as f:

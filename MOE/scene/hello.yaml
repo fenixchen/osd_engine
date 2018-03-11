@@ -23,12 +23,6 @@ OSD:
         bgcolor: [5, 6]
         gradient_mode: TOP_TO_BOTTOM
 
-    - Glyph:
-        id: char_P
-        font_size: 48
-        color: 8
-        char: 'P'
-
     - Bitmap:
         id: bitmap0
         palette: palette0
@@ -66,4 +60,3 @@ OSD:
           - [b1, line1, 180, 180]
           - [b2, line2, 180, 180]
           - [b3, bitmap0, 200, 0]
-          - [b4, char_P, 80, 80]

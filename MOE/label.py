@@ -37,7 +37,6 @@ class Label(Ingredient):
         bins += struct.pack('<xxxx')
         bins += struct.pack('<xxxx')
         bins += struct.pack('<xxxx')
-        bins += struct.pack('<xxxx')
         return bins, ram
 
     def __str__(self):

@@ -99,7 +99,7 @@ static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, 
         break;
     case OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT:
     case OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT:
-        color_steps = (width - rect->border_weight * 2) * height - rect->border_weight * 2;
+        color_steps = (width - rect->border_weight * 2) * (height - rect->border_weight * 2);
         break;
     default:
         assert(0);
@@ -126,15 +126,15 @@ static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, 
             factor = (x - (block->x + rect->border_weight)) * y;
             break;
         case OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT:
-            factor = (x - (block->x + rect->border_weight)) * (rect->height - rect->border_weight - y);
+            factor = (x - (block->x + rect->border_weight)) * (height - rect->border_weight - y);
             break;
         default:
             assert(0);
         }
         color = osd_color_add(bg_color_start,
-                              (int)r_delta * factor,
-                              (int)g_delta * factor,
-                              (int)b_delta * factor);
+                              (int)(r_delta * factor),
+                              (int)(g_delta * factor),
+                              (int)(b_delta * factor));
         window_line_buffer[x] = color;
     }
 }

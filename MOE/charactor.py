@@ -35,7 +35,10 @@ class Character(Ingredient):
 
         self._glyph = scene.get_glyph(char_code, font, font_size)
         self._color = color
-        self._char_code = char_code
+
+    @property
+    def glyph(self):
+        return self._glyph
 
     @property
     def color(self):
@@ -65,8 +68,8 @@ class Character(Ingredient):
             line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
 
     def __str__(self):
-        ret = "%s(id: %s, font:%s, color:%d, char_code:%s)" % (
-            type(self), self._id, self._font.id, self.color, self._char_code)
+        ret = "%s(id: %s, font:%s, font_size:%d, char_code:%s, color:%d)" % (
+            type(self), self._id, self._font.id, self.glyph.font_size, ord(self.glyph.char_code), self.color)
         return ret
 
     def to_binary(self, ram_offset):

@@ -20,62 +20,30 @@ OSD:
         id: arraw_right
         palette: palette1
         bitmaps: 'images/arrow_right.bmp'
-
-    - Glyph:
-        id: char_M
-        font_size: 14
+    - Label:
+        id: label0
+        text: 'menu0'
         color: 0
-        char: 'M'
-    - Glyph:
-        id: char_E
-        font_size: 14
+    - Label:
+        id: label1
+        text: 'menu1'
         color: 0
-        char: 'E'
-    - Glyph:
-        id: char_N
-        font_size: 14
+    - Label:
+        id: label2
+        text: 'menu2'
         color: 0
-        char: 'N'
-    - Glyph:
-        id: char_U
-        font_size: 14
+    - Label:
+        id: label3
+        text: 'menu3'
         color: 0
-        char: 'U'
-    - Glyph:
-        id: char_1
-        font_size: 14
+    - Label:
+        id: label4
+        text: 'menu4'
         color: 0
-        char: '1'
-    - Glyph:
-        id: char_2
-        font_size: 14
-        color: 0
-        char: '2'
-    - Glyph:
-        id: char_3
-        font_size: 14
-        color: 0
-        char: '3'
-    - Glyph:
-        id: char_4
-        font_size: 14
-        color: 0
-        char: '4'
-    - Glyph:
-        id: char_5
-        font_size: 14
-        color: 0
-        char: '5'
-    - Glyph:
-        id: char_6
-        font_size: 14
-        color: 0
-        char: '6'
 
     - Rectangle:
         id: rect_inactive
-        width: parent
-        height: 18
+        height: 25
         border_weight: 1
         border_color: [1, 2, 3, 4]
         bgcolor: [5, 6]
@@ -83,8 +51,7 @@ OSD:
 
     - Rectangle:
         id: rect_active
-        width: parent
-        height: 18
+        height: 25
         border_weight: 1
         border_color: [7, 8, 9, 10]
         bgcolor: [11, 12]
@@ -97,10 +64,10 @@ OSD:
         x: 50
         y: 140
         width: 42
-        height: 18
+        height: 40
         palette: palette0
         blocks:
-          - [b1, arraw_right, 0, 0]
+          - [b1, arraw_right, 0, 10]
 
     - Window:
         id: menu0
@@ -111,39 +78,14 @@ OSD:
         palette: palette0
         visible: true
         blocks:
-          - [b1, rect_inactive, 0, 0]
-          - [b1, char_M,     5,  5]
-          - [b1, char_E,     20, 5]
-          - [b1, char_N,     35, 5]
-          - [b1, char_U,     50, 5]
-          - [b1, char_1,     65, 5]
-
-          - [b1, rect_inactive, 0, 20]
-          - [b1, char_M,     5,  25]
-          - [b1, char_E,     20, 25]
-          - [b1, char_N,     35, 25]
-          - [b1, char_U,     50, 25]
-          - [b1, char_2,     65, 25]
-
-
-          - [b1, rect_active,   0, 40]
-          - [b1, char_M,     5,  45]
-          - [b1, char_E,     20, 45]
-          - [b1, char_N,     35, 45]
-          - [b1, char_U,     50, 45]
-          - [b1, char_3,     65, 45]
-
-          - [b1, rect_inactive, 0, 60]
-          - [b1, char_M,     5,  65]
-          - [b1, char_E,     20, 65]
-          - [b1, char_N,     35, 65]
-          - [b1, char_U,     50, 65]
-          - [b1, char_4,     65, 65]
-
-          - [b1, rect_inactive, 0, 80]
-          - [b1, char_M,     5,  85]
-          - [b1, char_E,     20, 85]
-          - [b1, char_N,     35, 85]
-          - [b1, char_U,     50, 85]
-          - [b1, char_5,     65, 85]
+          - ['', rect_inactive, 0, 0]
+          - ['', label0,     5,  5]
+          - ['', rect_inactive, 0, 25]
+          - ['', label1,     5,  30]
+          - ['', rect_active, 0, 50]
+          - ['', label2,     5,  55]
+          - ['', rect_inactive, 0, 75]
+          - ['', label3,     5,  80]
+          - ['', rect_inactive, 0, 100]
+          - ['', label4,     5,  105]
 

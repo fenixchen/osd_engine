@@ -11,46 +11,46 @@ OSD:
         0xF0F0F0, 0xF0F0F0, 0x505050, 0x000080, 0x0000F0, 0xF0F0F0, 0xF0F0F0, 0xF0F0F0, 0xF0F0F0, 0x800000, 0xF00000]
 
   Ingredients:
-    - Glyph:
+    - Label:
         id: char_percent
         font_size: 14
         color: 0
-        char: '%'
-    - Glyph:
+        text: '%'
+    - Label:
         id: char_1
         font_size: 14
         color: 0
-        char: '1'
-    - Glyph:
+        text: '1'
+    - Label:
         id: char_2
         font_size: 14
         color: 0
-        char: '2'
-    - Glyph:
+        text: '2'
+    - Label:
         id: char_3
         font_size: 14
         color: 0
-        char: '3'
-    - Glyph:
+        text: '3'
+    - Label:
         id: char_4
         font_size: 14
         color: 0
-        char: '4'
-    - Glyph:
+        text: '4'
+    - Label:
         id: char_5
         font_size: 14
         color: 0
-        char: '5'
-    - Glyph:
+        text: '5'
+    - Label:
         id: char_6
         font_size: 14
         color: 0
-        char: '6'
-    - Glyph:
+        text: '6'
+    - Label:
         id: char_7
         font_size: 14
         color: 0
-        char: '7'
+        text: '7'
 
     - Rectangle:
         id: rect1

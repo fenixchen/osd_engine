@@ -11,19 +11,19 @@ class Text(object):
         self._color = color
         self._font_size = font_size
         self._vertical = vertical
-        self._glyphs = []
+        self._characters = []
         for char in self._text:
-            glyph = scene.get_glyph(char, font, font_size)
-            assert glyph is not None
-            glyph.color = color
-            self._glyphs.append(glyph)
+            character = scene.get_character(char, color, font, font_size)
+            assert character is not None
+            self._characters.append(character)
 
     def get_blocks(self, window, block_id, left, top):
         blocks = []
         i = 0
-        for glyph in self._glyphs:
+        for character in self._characters:
+            glyph = character.glyph
             sub_id = '%s_%d' % (block_id, i)
-            block = Block(window, sub_id, glyph, left, top)
+            block = Block(window, sub_id, character, left, top)
             blocks.append(block)
             if self._vertical:
                 top += glyph.advance_y
@@ -35,14 +35,16 @@ class Text(object):
     @property
     def width(self):
         w = 0
-        for glyph in self._glyphs:
+        for character in self._characters:
+            glyph = character.glyph
             w += glyph.advance_x
         return w
 
     @property
     def height(self):
         h = 0
-        for glyph in self._glyphs:
+        for character in self._characters:
+            glyph = character.glyph
             h = max(h, glyph.advance_y)
         return h
 

@@ -13,7 +13,7 @@ void osd_character_paint(osd_scene *scene, osd_window *window, osd_block *block,
         u32 width = OSD_MIN(glyph->width, window->width - block->x);
         u32 x;
         for (x = glyph->pitch * y; x < glyph->pitch * y + width; x ++) {
-            u8 alpha = ingredient->ram_data[x];
+            u8 alpha = glyph->data[x];
             if (alpha != 0) {
                 u32 color = osd_ingredient_get_color(scene, window,
                                                      ingredient,

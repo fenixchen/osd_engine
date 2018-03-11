@@ -30,7 +30,7 @@ BUTTON_EXTRA_HEIGHT = 10
 
 
 class Button(Ingredient):
-    def __init__(self, scene, id, text, font=None, font_size=None,
+    def __init__(self, scene, id, text, font=None, font_size=None, bgcolor=None,
                  pressed=False, width=None, height=None, palette=None):
         super().__init__(scene, id, palette)
         self._title = Text(scene, text, BUTTON_TEXT_COLOR, font, font_size)
@@ -56,13 +56,19 @@ class Button(Ingredient):
                             BUTTON_BORDER_HIGH_LIGHT,
                             BUTTON_BORDER_LOW_LIGHT
                             ]
+        if bgcolor is None:
+            bgcolor_start = BUTTON_BGCOLOR_START
+            bgcolor_end = BUTTON_BGCOLOR_END
+        else:
+            bgcolor_start = bgcolor
+            bgcolor_end = bgcolor
         self._rect = Rectangle(scene=scene,
                                id='button_%s_rect' % id,
                                width=self._width,
                                height=self._height,
                                border_color=border_color,
                                border_weight=BUTTON_BORDER_WEIGHT,
-                               bgcolor=[BUTTON_BGCOLOR_START, BUTTON_BGCOLOR_END],
+                               bgcolor=[bgcolor_start, bgcolor_end],
                                gradient_mode='TOP_TO_BOTTOM')
         scene.add_ingredient(self._rect)
 
@@ -86,7 +92,6 @@ class Button(Ingredient):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
         bins = struct.pack('<Bxxx', IngredientType.BUTTON.value)
-        bins += struct.pack('<xxxx')
         bins += struct.pack('<xxxx')
         bins += struct.pack('<xxxx')
         bins += struct.pack('<xxxx')

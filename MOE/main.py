@@ -2,26 +2,32 @@
 
 import app
 from scene import Scene
+import os
 
 TEST_ALL = False
+
+if TEST_ALL:
+    yamls = ['Scene/button.yaml',
+             'Scene/color.yaml',
+             'Scene/form.yaml',
+             'Scene/label.yaml',
+             'Scene/animation.yaml',
+             'scene/hello.yaml',
+             'scene/line.yaml',
+             'scene/menu.yaml',
+             'scene/rect.yaml',
+             'scene/progressbar.yaml',
+             'scene/move.yaml']
+else:
+    yamls = ['Scene/button.yaml']
+
 if __name__ == '__main__':
-    if TEST_ALL:
-        app = app.App(
-            Scene('Scene/button.yaml'),
-            Scene('Scene/form.yaml'),
-            Scene('Scene/label.yaml'),
-            Scene('Scene/animation.yaml'),
-            Scene('scene/color.yaml'),
-            Scene('scene/hello.yaml'),
-            Scene('scene/line.yaml'),
-            Scene('scene/menu.yaml'),
-            Scene('scene/rect.yaml'),
-            Scene('scene/progressbar.yaml'),
-            Scene('scene/move.yaml')
-        )
-        app.run()
-    else:
-        scene = Scene('Scene/character.yaml')
-        app.App(scene).run()
+    scenes = []
+    for yaml in yamls:
+        scene = Scene(yaml)
+        scenes.append(scene)
         scene.generate_binary(target_folder='../Debug/hello.generated/',
                               ram_base_addr=0xF0000000)
+
+    application = app.App(*scenes)
+    application.run()
