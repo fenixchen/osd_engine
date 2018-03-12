@@ -12,4 +12,6 @@ typedef void (*fn_set_pixel)(void *arg, int x, int y, u32 color);
 EXTERNC void osd_scene_paint(osd_scene *scene, u32 frame,
                              fn_set_pixel set_pixel, void *arg);
 
+EXTERNC int osd_scene_timer(osd_scene *scene);
+
 #endif

@@ -1,0 +1,72 @@
+OSD:
+  width: 800
+  height: 600
+  Includes:
+    - Include:
+        file: common.yaml
+  Palettes:
+    - Palette:
+        id: palette1
+        colors: [0x000000, 0xFFFFFF, 0xAAAAAA, 0xFF0000, 0x202020, 0xFF00FF, 0x404040, 0xA0A0A0,
+        0xFFFFFF, 0xFFE2C6, 0x9400D3]
+
+  Ingredients:
+    - Rectangle:
+        id: rect_title
+        height: 40
+        bgcolor: [6, 7]
+        gradient_mode: TOP_TO_BOTTOM
+
+    - Rectangle:
+        id: rect_content
+        height: 130
+        bgcolor: 4
+
+    - Rectangle:
+        id: rect_bottom
+        height: 30
+        bgcolor: 2
+
+    - Label:
+        id: label_title
+        text: '[屏幕保护]'
+        color: 9
+
+    - Label:
+        id: label_bottom
+        text: 'NO SIGNAL'
+        color: 0
+
+    - Label:
+        id: label_center_1
+        text: '电源将在'
+        color: 10
+
+    - Label:
+        id: label_center_2
+        text: '99'
+        color: 5
+
+    - Label:
+        id: label_center_3
+        text: '秒以后关闭。。。'
+        color: 10
+
+  Windows:
+    - Window:
+        id: window0
+        x: 100
+        y: 100
+        width: 300
+        height: 200
+        palette: palette1
+        zorder: 1
+        blocks:
+          - ['', rect_title, 0, 0]
+          - ['', rect_content, 0, 40]
+          - ['', rect_bottom, 0, 170]
+          - ['', label_title, 110, 10]
+          - ['', label_bottom, 220, 178]
+          - ['', label_center_1, 60, 100]
+          - ['', label_center_2, 130, 100]
+          - ['', label_center_3, 150, 100]

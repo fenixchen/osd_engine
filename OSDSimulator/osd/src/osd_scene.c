@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <time.h>
 
 #include "osd_scene.h"
 #include "osd_common.h"
@@ -160,4 +161,47 @@ void osd_scene_paint(osd_scene *scene, u32 frame, fn_set_pixel set_pixel, void *
     }
     FREE_OBJECT(window_line_buffer);
     FREE_OBJECT(line_buffer);
+}
+
+static int get_rand_boolean(void) {
+    int r;
+    static int first = 1;
+    if (first) {
+        srand((unsigned)time(NULL));
+        first = 0;
+    }
+    r = rand();
+    return rand() > (RAND_MAX / 2);
+}
+
+#define MOVE_STEP 10
+int osd_scene_timer(osd_scene *scene) {
+    osd_window *window = scene->windows[0];
+    int x, y, max_x, max_y;
+    osd_rect rect;
+
+    static int x_dir, y_dir;
+    static int first = 1;
+    if (first) {
+        first = 0;
+        x_dir = get_rand_boolean() ? 1 : -1;
+        y_dir = get_rand_boolean() ? 1 : -1;
+    }
+
+    rect = window->get_rect(window);
+    max_x = scene->hw->width - rect.width - 1;
+    max_y = scene->hw->height - rect.height - 1;
+
+    x = OSD_MIN(OSD_MAX(0, (int)rect.x + MOVE_STEP * x_dir), max_x);
+    y = OSD_MIN(OSD_MAX(0, (int)rect.y + MOVE_STEP * y_dir), max_y);
+    window->move_to(window, x, y);
+
+    if (x == 0 || x == max_x) {
+        x_dir = -x_dir;
+    }
+
+    if (y == 0 || y == max_y) {
+        y_dir = -y_dir;
+    }
+    return 1;
 }

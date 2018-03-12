@@ -25,8 +25,9 @@ if TEST_ALL:
         'scene/move.yaml']
 else:
     #yamls = ['Scene/monitor.yaml']
-    yamls = ['Scene/symbol.yaml']
+    #yamls = ['Scene/symbol.yaml']
     #yamls = ['Scene/tv.yaml']
+    yamls = ['Scene/screensaver.yaml']
 
 if __name__ == '__main__':
     scenes = []

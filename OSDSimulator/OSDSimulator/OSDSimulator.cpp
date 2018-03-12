@@ -183,7 +183,11 @@ void DoTimer(HWND hWnd) {
     //g_color = g_color + 10;
     //KillTimer(hWnd, 0);
     //InvalidateRect(hWnd, NULL, FALSE);
-
+    if (scene) {
+        if (osd_scene_timer(scene)) {
+            InvalidateRect(hWnd, NULL, FALSE);
+        }
+    }
 }
 
 void FnSetPixel(void *arg, int x, int y, u32 color) {
@@ -283,6 +287,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_CREATE:
         SetStdOutToNewConsole();
+        SetTimer(hWnd, 0, 200, NULL);
 #if LOAD_DIRECT == 1
         DoOpen(hWnd);
 #endif

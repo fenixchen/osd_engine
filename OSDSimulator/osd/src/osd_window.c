@@ -93,6 +93,12 @@ static void osd_window_destroy(osd_window *self) {
     FREE_OBJECT(self);
 }
 
+static void osd_window_move_to(osd_window *self, int x, int y) {
+    TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
+    priv->hw->x = x;
+    priv->hw->y = y;
+}
+
 osd_window *osd_window_create(osd_window_hw *hw, u8 *ram, u32 ram_base_addr) {
     u32 i;
     osd_block *block;
@@ -107,6 +113,7 @@ osd_window *osd_window_create(osd_window_hw *hw, u8 *ram, u32 ram_base_addr) {
     self->paint = osd_window_paint;
     self->get_palette_index = osd_window_get_palette_index;
     self->get_alpha = osd_window_get_alpha;
+    self->move_to = osd_window_move_to;
     self->dump = osd_window_dump;
 
     priv->hw = hw;
