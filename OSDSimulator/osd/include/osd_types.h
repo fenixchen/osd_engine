@@ -1,33 +1,13 @@
 #ifndef _OSD_TYPES_H
 #define _OSD_TYPES_H
 
-#ifdef __cplusplus
-#define EXTERNC extern "C"
-#else
-#define EXTERNC
-#endif
-
-#ifdef WIN32
-#include <vld.h>
-#endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
+#include "tv_types.h"
 
 
 #ifndef OSD_MAX_PATH
 #define OSD_MAX_PATH 256
 #endif
 
-#define MALLOC_OBJECT(type) (type*)calloc(sizeof(type), 1)
-#define MALLOC_OBJECT_ARRAY(type, count) (type*)calloc(sizeof(type), count)
-#define FREE_OBJECT(obj) do { free(obj); obj = NULL; } while (0)
 
 #define OSD_LOG printf
 
@@ -83,23 +63,6 @@ struct _osd_scene {
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
     osd_binary *binary;
-};
-
-struct _osd_binary {
-    u8 *global;
-    u32 global_size;
-
-    u8 *palettes;
-    u32 palettes_size;
-
-    u8 *ingredients;
-    u32 ingredients_size;
-
-    u8 *windows;
-    u32 windows_size;
-
-    u8 *ram;
-    u32 ram_size;
 };
 
 #define OSD_PALETTE_DATA_SIZE OSD_OFFSET_OF(osd_palette, lut)
@@ -258,9 +221,10 @@ struct _osd_block {
 };
 
 
-#define OSD_WINDOW_DATA_SIZE OSD_OFFSET_OF(osd_window, blocks)
+#define OSD_WINDOW_DATA_SIZE sizeof(osd_window_hw)
+typedef struct _osd_window_hw osd_window_hw;
 
-struct _osd_window {
+struct _osd_window_hw {
     u8 palette_index;
     u8 visible;
     u8 alpha;
@@ -273,11 +237,7 @@ struct _osd_window {
     u32 block_count;
 
     u32 blocks_addr;
-
-    osd_block *blocks;
 };
-
-
 
 #define OSD_RGB(r, g, b) ((u32)(((u8)(r)|((u16)((u8)(g))<<8))|(((u32)(u8)(b))<<16)))
 #define OSD_R(color) ((u8)(color) & 0xFF)
@@ -290,6 +250,14 @@ struct _osd_window {
 #define OSD_MIN(x, y) ((x) < (y) ? (x) : (y))
 
 #define OSD_COLOR_CLIP(color) OSD_MIN(OSD_MAX(0, color), 0xFF)
+
+
+typedef struct _osd_rect osd_rect;
+
+struct _osd_rect {
+    u32 x, y;
+    u32 width, height;
+};
 
 #endif
 

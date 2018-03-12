@@ -3,9 +3,23 @@
 
 #include "osd_types.h"
 
+typedef struct _osd_binary_priv osd_binary_priv;
 
-osd_binary *osd_binary_new(const char *target_folder);
+typedef enum _binary_type {
+    BINARY_TYPE_GLOBAL = 0,
+    BINARY_TYPE_PALETTE = 1,
+    BINARY_TYPE_INGREDIENT = 2,
+    BINARY_TYPE_WINDOW = 3,
+    BINARY_TYPE_RAM = 4,
+} binary_type;
 
-void osd_binary_delete(osd_binary *binary);
+struct _osd_binary {
+    osd_binary_priv *priv;
+    void (*destroy)(osd_binary *self);
+    u32 (*data_size)(osd_binary *self, binary_type type);
+    u8* (*data)(osd_binary *self, binary_type type);
+};
+
+osd_binary *osd_binary_create(const char *target_folder);
 
 #endif

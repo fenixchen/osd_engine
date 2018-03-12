@@ -1,6 +1,7 @@
 #include "osd_common.h"
 #include "osd_ingredient.h"
 #include "osd_line.h"
+#include "osd_window.h"
 
 void osd_bitmap_paint(osd_scene *scene, osd_window *window, osd_block *block,
                       osd_ingredient *ingredient,
@@ -8,7 +9,7 @@ void osd_bitmap_paint(osd_scene *scene, osd_window *window, osd_block *block,
                       u32 y) {
     osd_bitmap *bitmap = &ingredient->data.bitmap;
     if (y < bitmap->height) {
-        u32 width = OSD_MIN(bitmap->width, window->width - block->x);
+        u32 width = OSD_MIN(bitmap->width, window->get_rect(window).width - block->x);
         u32 start = ingredient->current_bitmap * bitmap->width * bitmap->height +
                     bitmap->width * y;
         u32 x;

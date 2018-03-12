@@ -82,6 +82,8 @@
   <ItemGroup>
     <ClInclude Include="..\osd\include\osd_scene.h" />
     <ClInclude Include="..\osd\include\osd_types.h" />
+    <ClInclude Include="..\osd\include\osd_window.h" />
+    <ClInclude Include="..\osd\include\tv_types.h" />
     <ClInclude Include="..\osd\src\osd_binary.h" />
     <ClInclude Include="..\osd\src\osd_bitmap.h" />
     <ClInclude Include="..\osd\src\osd_common.h" />
@@ -90,7 +92,6 @@
     <ClInclude Include="..\osd\src\osd_line.h" />
     <ClInclude Include="..\osd\src\osd_log.h" />
     <ClInclude Include="..\osd\src\osd_rectangle.h" />
-    <ClInclude Include="..\osd\src\osd_window.h" />
     <ClInclude Include="OSDSimulator.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

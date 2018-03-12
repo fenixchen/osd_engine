@@ -80,7 +80,7 @@ int osd_line_style_check(u32 style, u32 x) {
                || index  == OSD_LINE_STYLE_DASH_WIDTH + 3;
     }
     default:
-        assert(0);
+        TV_ASSERT(0);
     }
     return 0;
 }

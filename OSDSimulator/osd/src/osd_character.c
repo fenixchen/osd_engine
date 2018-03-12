@@ -1,6 +1,7 @@
 #include "osd_common.h"
 #include "osd_ingredient.h"
 #include "osd_line.h"
+#include "osd_window.h"
 
 
 void osd_character_paint(osd_scene *scene, osd_window *window, osd_block *block,
@@ -16,7 +17,7 @@ void osd_character_paint(osd_scene *scene, osd_window *window, osd_block *block,
     color = osd_ingredient_get_color(scene, window,
                                      ingredient,
                                      character->color);
-    width = OSD_MIN(glyph->width, window->width - block->x);
+    width = OSD_MIN(glyph->width, window->get_rect(window).width - block->x);
     offset = glyph->pitch * y;
     col = block->x + glyph->left;
     for (x = 0; x < width; x ++) {

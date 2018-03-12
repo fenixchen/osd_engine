@@ -1,6 +1,7 @@
 #include "osd_common.h"
 #include "osd_ingredient.h"
 #include "osd_rectangle.h"
+#include "osd_window.h"
 
 static int osd_rectangle_border_paint(osd_scene *scene,
                                       osd_window *window,
@@ -9,9 +10,13 @@ static int osd_rectangle_border_paint(osd_scene *scene,
                                       u32 *window_line_buffer,
                                       u32 y) {
     u32 x, color, margin;
+    osd_rect window_rect;
     osd_rectangle *rect = &ingredient->data.rect;
-    u16 width = rect->width == 0xFFFF ? window->width : rect->width;
-    u16 height = rect->height == 0xFFFF ? window->height : rect->height;
+    u16 width, height;
+    window_rect = window->get_rect(window);
+    width = rect->width == 0xFFFF ? window_rect.width : rect->width;
+    height = rect->height == 0xFFFF ?window_rect.height : rect->height;
+
     if (y < rect->border_weight) {
         color = osd_ingredient_get_color(scene, window, ingredient, rect->border_color_top);
         margin = rect->border_weight - (rect->border_weight - y);
@@ -75,10 +80,15 @@ static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, 
         u32 y) {
     u32 x, bg_color_start, bg_color_end, color, color_steps;
     double r_delta, g_delta, b_delta;
+    osd_rect window_rect;
+    u16 width, height;
 
     osd_rectangle *rect = &ingredient->data.rect;
-    u16 width = rect->width == 0xFFFF ? window->width : rect->width;
-    u16 height = rect->height == 0xFFFF ? window->height : rect->height;
+    window_rect = window->get_rect(window);
+
+    width = rect->width == 0xFFFF ? window_rect.width : rect->width;
+    height = rect->height == 0xFFFF ?window_rect.height : rect->height;
+
     if (rect->bgcolor_start == 0) {
         return;
     }
@@ -102,7 +112,7 @@ static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, 
         color_steps = (width - rect->border_weight * 2) * (height - rect->border_weight * 2);
         break;
     default:
-        assert(0);
+        TV_ASSERT(0);
     }
     r_delta = (OSD_R(bg_color_end) - OSD_R(bg_color_start)) / (double)color_steps;
     g_delta = (OSD_G(bg_color_end) - OSD_G(bg_color_start)) / (double)color_steps;
@@ -129,7 +139,7 @@ static void osd_rectangle_backgroud_paint(osd_scene *scene, osd_window *window, 
             factor = (x - (block->x + rect->border_weight)) * (height - rect->border_weight - y);
             break;
         default:
-            assert(0);
+            TV_ASSERT(0);
         }
         color = osd_color_add(bg_color_start,
                               (int)(r_delta * factor),

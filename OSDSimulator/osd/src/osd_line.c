@@ -1,6 +1,7 @@
 #include "osd_common.h"
 #include "osd_ingredient.h"
 #include "osd_line.h"
+#include "osd_window.h"
 
 void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *block,
                     osd_ingredient *ingredient,
@@ -32,7 +33,7 @@ void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *block,
         u32 px = x1 + (u32)(slope * (y - y1));
         if (osd_line_style_check(line->style, y)) {
             for (x = 0; x < line->weight; x++) {
-                assert(block->x + px + x <= window->width);
+                TV_ASSERT(block->x + px + x <= window->get_rect(window).width);
                 window_line_buffer[block->x + px + x] = color;
             }
         }

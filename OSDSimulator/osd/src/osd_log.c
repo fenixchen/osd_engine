@@ -78,23 +78,7 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
         break;
     default:
         OSD_ERR("Unknown ingredient:%d\n", ingredient->type);
-        assert(0);
+        TV_ASSERT(0);
     }
 }
 
-void log_window(int index, osd_window *window) {
-    u32 i;
-    OSD_LOG("window[%d] \n"
-            "\tpalette:%d, visible:%d, alpha:%d, z_order:%d\n"
-            "\tx:%d, y:%d, width:%d, height:%d\n"
-            "\tblock_count:%d, block_addr:%#x\n",
-            index,
-            window->palette_index, window->visible, window->alpha, window->z_order,
-            window->x, window->y, window->width, window->height,
-            window->block_count, (unsigned int)window->blocks);
-    for (i = 0; i < window->block_count; i ++) {
-        osd_block *block = &window->blocks[i];
-        OSD_LOG("\t\tblock[%d] visible:%d, ingredient:%d, x:%d, y:%d\n",
-                i, block->visible, block->ingredient_index, block->x, block->y);
-    }
-}

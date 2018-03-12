@@ -45,9 +45,6 @@
     <ClInclude Include="OSDSimulator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\osd\src\osd_window.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
     <ClInclude Include="..\osd\src\osd_binary.h">
       <Filter>osd\src</Filter>
     </ClInclude>
@@ -76,6 +73,12 @@
       <Filter>osd\src</Filter>
     </ClInclude>
     <ClInclude Include="..\osd\include\osd_scene.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\tv_types.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_window.h">
       <Filter>osd\include</Filter>
     </ClInclude>
   </ItemGroup>
