@@ -65,10 +65,10 @@ void log_ingredient(int index, osd_ingredient *ingredient) {
         osd_glyph *glyph = (osd_glyph *)ingredient->ram_data;
         osd_character *character = &ingredient->data.character;
         OSD_LOG("\tleft:%d, top:%d, width:%d, height:%d\n"
-                "\tchar:%c, color:%d, size:%d, addr:%#x\n",
+                "\tchar:%u, color:%d, size:%d, mono:%d, addr:%#x\n",
                 glyph->left, glyph->top, glyph->width, glyph->height,
-                glyph->char_code, character->color,
-                glyph->data_size, character->glyph_addr);
+                (unsigned int)glyph->char_code, character->color,
+                glyph->data_size, glyph->monochrome, character->glyph_addr);
         break;
     }
     case OSD_INGREDIENT_LABEL:

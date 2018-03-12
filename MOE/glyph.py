@@ -123,7 +123,10 @@ class Glyph(object):
         data_size = len(self._data)
         assert (data_size <= 0xFFFF)
 
-        ram += struct.pack('<BBH', self._pitch, self.advance_x, data_size)
+        monochrome = 1 if self._monochrome else 0
+
+        ram += struct.pack('<BBH', self._pitch, self.advance_x,
+                           (monochrome << 15) | data_size)
 
         ram += struct.pack('<%sB' % data_size, *self._data)
         return ram

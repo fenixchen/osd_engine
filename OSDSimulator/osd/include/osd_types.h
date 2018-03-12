@@ -148,6 +148,8 @@ struct _osd_line {
     u8 reserved2;
 };
 
+#define OSD_GLYPH_HEADER_SIZE OSD_OFFSET_OF(osd_glyph, data)
+
 struct _osd_glyph {
     u8 left, top;
     u8 width, height;
@@ -158,7 +160,8 @@ struct _osd_glyph {
 
     u8 pitch;
     u8 advance_x;
-    u16 data_size;
+    u16 data_size:15;
+    u16 monochrome:1;
 
     u8	data[];
 };

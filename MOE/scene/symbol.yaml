@@ -6,7 +6,7 @@ OSD:
     - Font:
         id: mono
         monochrome: True
-        file: fonts/Tamsyn10x20r.pcf
+        file: fonts/Zfull-GB.ttf
 
   Palettes:
     - Palette:

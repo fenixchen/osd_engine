@@ -17,8 +17,17 @@ osd_scene *osd_scene_new(const char *target_folder) {
 
     scene = MALLOC_OBJECT(osd_scene);
 
-    OSD_LOG("OSD_INGREDIENT_DATA_SIZE:%d", OSD_INGREDIENT_DATA_SIZE);
+    OSD_LOG("OSD_GLYPH_HEADER_SIZE:%d\n", OSD_GLYPH_HEADER_SIZE);
+    assert(OSD_GLYPH_HEADER_SIZE == 3 * sizeof(u32));
+
+    OSD_LOG("OSD_INGREDIENT_DATA_SIZE:%d\n", OSD_INGREDIENT_DATA_SIZE);
     assert(OSD_INGREDIENT_DATA_SIZE == 4 * sizeof(u32));
+
+    OSD_LOG("OSD_PALETTE_DATA_SIZE:%d\n", OSD_PALETTE_DATA_SIZE);
+    assert(OSD_PALETTE_DATA_SIZE == 2 * sizeof(u32));
+
+    OSD_LOG("OSD_WINDOW_DATA_SIZE:%d\n", OSD_WINDOW_DATA_SIZE);
+    assert(OSD_WINDOW_DATA_SIZE == 5 * sizeof(u32));
 
     binary = osd_binary_new(target_folder);
     if (!binary) {
@@ -32,6 +41,11 @@ osd_scene *osd_scene_new(const char *target_folder) {
 
     memcpy(scene, binary->global, binary->global_size);
     log_global(scene);
+
+    assert(OSD_GLYPH_HEADER_SIZE == scene->glyph_header_size);
+    assert(OSD_INGREDIENT_DATA_SIZE == scene->ingredient_data_size);
+    assert(OSD_WINDOW_DATA_SIZE == scene->window_data_size);
+    assert(OSD_PALETTE_DATA_SIZE == scene->palette_data_size);
 
     //load palettes
     assert(binary->palettes_size % OSD_PALETTE_DATA_SIZE == 0);
