@@ -156,7 +156,7 @@ class Scene(object):
             code = ord(char_code)
         else:
             code = char_code
-        character_id = 'character_%s_%d_%d_%d' % (font.id, font_size, code, color)
+        character_id = 'ch_%s_%d_%d_%d' % (font.id, font_size, code, color)
 
         character = Character(self, character_id, char_code, color, font, font_size)
         logger.debug(character)
@@ -462,37 +462,38 @@ class Scene(object):
         glyph_size = 0
         for i, glyph in enumerate(self._glyphs):
             s = binary_size[glyph]
-            logger.info('[%04d] %-16s => %d, %d', i, glyph.id, s, glyph_size)
             glyph_size += s
+            logger.info('[%04d] %-16s (%02d x %02d)=> %d, Total:%d',
+                        i, glyph.id, glyph.width, glyph.height, s, glyph_size)
         logger.info('[****] <glyph> size:%d', glyph_size)
         total_size += glyph_size
 
         palette_size = 0
         for i, palette in enumerate(self._palettes):
             s = binary_size[palette]
-            logger.info('[%04d] %-16s => %d', i, palette.id, s)
             palette_size += s
+            logger.info('[%04d] %-32s => %d, Total:%d', i, palette.id, s, palette_size + total_size)
         logger.info('[****] <palette> size:%d', palette_size)
         total_size += palette_size
 
         ingredient_size = 0
         for i, ingredient in enumerate(self._ingredients):
             s = binary_size[ingredient]
-            logger.info('[%04d] %-16s => %d', i, ingredient.id, s)
             ingredient_size += s
+            logger.info('[%04d] %-32s => %d, Total:%d', i, ingredient.id, s, total_size + ingredient_size)
         logger.info('[****] <ingredient> size:%d', ingredient_size)
         total_size += ingredient_size
 
         window_size = 0
         for i, window in enumerate(self._windows):
             s = binary_size[window]
-            logger.info('[%04d] %-16s block(%04d) => %d', i, window.id, len(window.blocks), s)
             window_size += s
+            logger.info('[%04d] %-32s block(%04d) => %d, Total:%d',
+                        i, window.id, len(window.blocks), s, window_size + total_size)
         logger.info('[****] <window> size:%d', window_size)
         total_size += window_size
 
-        logger.info('[****] <RAM TOTAL> size:%d', total_size)
         logger.info('[****] <glyph> size:%d', glyph_size)
         logger.info('[****] <palette> size:%d', palette_size)
         logger.info('[****] <ingredient> size:%d', ingredient_size)
-        logger.info('[****] <window> size:%d', window_size)
+        logger.info('[****] <RAM TOTAL> size:%d', total_size)

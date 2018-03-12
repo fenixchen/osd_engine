@@ -1,28 +1,34 @@
 OSD:
   Fonts:
     - Font:
+        id: mono_16
+        monochrome: True
+        file: fonts/Zfull-GB.ttf
+
+    - Font:
+        id: webdings
+        monochrome: True
+        file: fonts/webdings.ttf
+        charmap: 0
+    - Font:
+        id: wingding
+        monochrome: True
+        file: fonts/wingding.ttf
+        charmap: 0
+    - Font:
+        id: wingding2
+        monochrome: True
+        file: fonts/WINGDNG2.TTF
+        charmap: 0
+    - Font:
+        id: wingding3
+        monochrome: True
+        file: fonts/WINGDNG3.TTF
+        charmap: 0
+
+    - Font:
         id: eng
         file: [fonts/consola.ttf, fonts/consolab.ttf, fonts/consolai.ttf, fonts/consolaz.ttf]
     - Font:
         id: chn
         file: fonts/song.ttf
-    - Font:
-        id: webdings
-        file: fonts/webdings.ttf
-        charmap: 0
-    - Font:
-        id: wingding
-        file: fonts/wingding.ttf
-        charmap: 0
-    - Font:
-        id: wingding2
-        file: fonts/WINGDNG2.TTF
-        charmap: 0
-    - Font:
-        id: wingding3
-        file: fonts/WINGDNG3.TTF
-        charmap: 0
-    - Font:
-        id: mono
-        monochrome: True
-        file: fonts/Tamzen8x16b.pcf

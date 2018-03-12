@@ -1,6 +1,8 @@
 OSD:
   width: 800
   height: 600
+  default_font: mono_16
+  default_font_size: 16
 
   Includes:
     - Include:
@@ -15,7 +17,6 @@ OSD:
     - Label:
         id: label_dell
         text: 'Dell SE2416H'
-        font_size: 14
         color: 2
 
     - Label:

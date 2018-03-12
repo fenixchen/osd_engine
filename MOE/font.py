@@ -13,10 +13,13 @@ logger = Log.get_logger("engine")
 class Font(OSDObject):
     BASE_DIR = ''
 
-    def __init__(self, scene, id, file, charmap=None, monochrome=False):
+    def __init__(self, scene, id, file, font_width=None, font_height=None,
+                 charmap=None, monochrome=False):
         super().__init__(scene, id)
         self._file = file
         self._monochrome = monochrome
+        self._font_width = font_width
+        self._font_height = font_height
         self._faces = []
         if isinstance(file, list):
             assert len(file) == 4
@@ -41,7 +44,18 @@ class Font(OSDObject):
         if font_size is None:
             font_size = self.scene.default_font_size
 
-        face.set_char_size(font_size * 64, font_size * 64)
+        if self._font_width is None:
+            font_width = font_size * 64
+        else:
+            font_width = self._font_width * 64
+
+        if self._font_height is None:
+            font_height = font_size * 64
+        else:
+            font_height = self._font_height * 64
+
+        face.set_char_size(font_width, font_height)
+
         if self._monochrome:
             flags = freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO
         else:
@@ -52,20 +66,19 @@ class Font(OSDObject):
         height = face.size.height >> 6
         left = max(0, face.glyph.bitmap_left)
         top = max(0, bitmap_top)
+        width = face.glyph.advance.x >> 6;
         return left, \
                top, \
-               face.glyph.advance.x >> 6, \
+               width, \
                height, \
                self._monochrome, \
                face.glyph.bitmap
-
 
     def __str__(self):
         if isinstance(self._file, list):
             return "%s(id: %s, file:%s)" % (type(self), self.id, ",".join(self._file))
         else:
             return "%s(id: %s, file:%s)" % (type(self), self.id, self._file)
-
 
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))

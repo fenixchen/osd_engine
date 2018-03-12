@@ -65,14 +65,15 @@ class Character(Ingredient):
         width = min(glyph.width, window.width - block_x - glyph.left)
 
         col = block_x + glyph.left
+        offset = y * glyph.pitch
         for x in range(width):
             if glyph.monochrome:
-                intensity = glyph.data[y * glyph.pitch + (x >> 3)]
+                intensity = glyph.data[offset + (x >> 3)]
                 intensity = intensity & (128 >> (x & 7))
                 if intensity > 0:
                     line_buf[col] = color
             else:
-                intensity = glyph.data[y * glyph.pitch + x]
+                intensity = glyph.data[offset + x]
                 if intensity > 0:
                     line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
             col += 1

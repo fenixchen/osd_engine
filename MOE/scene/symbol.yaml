@@ -1,9 +1,12 @@
 OSD:
   width: 800
   height: 600
-  Includes:
-    - Include:
-        file: common.yaml
+
+  Fonts:
+    - Font:
+        id: mono
+        monochrome: True
+        file: fonts/Tamsyn10x20r.pcf
 
   Palettes:
     - Palette:
@@ -13,10 +16,10 @@ OSD:
   Ingredients:
     - Label:
         id: label_symbol
-        text: 'A'
-        font: eng
+        text: 'Hello'
+        font: mono
         color: 2
-        font_size: 48
+        font_size: 20
 
     - Rectangle:
         id: rect_border
@@ -29,8 +32,8 @@ OSD:
         id: window0
         x: 100
         y: 100
-        width: 100
-        height: 100
+        width: 200
+        height: 200
         palette: palette0
         zorder: 0
         blocks:

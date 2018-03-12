@@ -21,10 +21,19 @@ class Glyph(object):
         self._font_size = font_size
         self._height = bitmap.rows
         self._width = bitmap.width
-        self._data = bitmap.buffer[:]
         self._pitch = bitmap.pitch
         self._char_code = char_code
         self._ram_offset = None
+        if self._monochrome and self._pitch * 8 - self._width > 8:
+            self._data = []
+            new_pitch = (self._width + 7) // 8
+            for y in range(self._height):
+                for x in range(new_pitch):
+                    self._data.append(bitmap.buffer[self.pitch * y + x])
+            self._pitch = new_pitch
+        else:
+            self._data = bitmap.buffer[:]
+
 
     @property
     def monochrome(self):
