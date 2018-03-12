@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "osd_types.h"
+#include "osd_scene.h"
 
 #define MAX_LOADSTRING 100
 
@@ -169,10 +169,11 @@ void DoOpen(HWND hWnd) {
     PathRemoveFileSpec(szFile);
     if (scene) {
         osd_scene_delete(scene);
+        scene = NULL;
     }
     scene = osd_scene_new(szFile);
     if (scene) {
-        AdjustWindow(hWnd, scene->width, scene->height);
+        AdjustWindow(hWnd, scene->hw->width, scene->hw->height);
     }
 }
 
@@ -274,6 +275,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         DoTimer(hWnd);
         break;
     case WM_DESTROY:
+        if (scene) {
+            osd_scene_delete(scene);
+            scene = NULL;
+        }
         PostQuitMessage(0);
         break;
     case WM_CREATE:

@@ -34,6 +34,7 @@ void osd_binary_delete(osd_binary *binary) {
     FREE_OBJECT(binary->global);
     FREE_OBJECT(binary->palettes);
     FREE_OBJECT(binary->ingredients);
+    FREE_OBJECT(binary->windows);
     FREE_OBJECT(binary->ram);
     FREE_OBJECT(binary);
 }

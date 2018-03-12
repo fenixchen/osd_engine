@@ -16,7 +16,7 @@ const char *ingredient_name[] = {
 
 void log_global(osd_scene *scene) {
     OSD_LOG("global\n\twidth: %d, height:%d, ram_base_addr:%#x\n",
-            scene->width, scene->height, scene->ram_base_addr);
+            scene->hw->width, scene->hw->height, scene->hw->ram_base_addr);
 }
 
 void log_palette(int index, osd_palette *palette) {

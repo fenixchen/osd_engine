@@ -80,6 +80,7 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\osd\include\osd_scene.h" />
     <ClInclude Include="..\osd\include\osd_types.h" />
     <ClInclude Include="..\osd\src\osd_binary.h" />
     <ClInclude Include="..\osd\src\osd_bitmap.h" />

@@ -7,6 +7,10 @@
 #define EXTERNC
 #endif
 
+#ifdef WIN32
+#include <vld.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,9 +63,11 @@ typedef struct _osd_binary osd_binary;
 #define PIXEL_FORMAT_GRAY_SCALE 2
 #define PIXEL_FORMAT_LUT 3
 
-#define OSD_SCENE_DATA_SIZE OSD_OFFSET_OF(osd_scene, palettes)
+#define OSD_SCENE_HW_DATA_SIZE sizeof(osd_scene_hw)
 
-struct _osd_scene {
+typedef struct _osd_scene_hw osd_scene_hw;
+
+struct _osd_scene_hw {
     u16 width, height;
     u32 ram_base_addr;
 
@@ -69,7 +75,10 @@ struct _osd_scene {
     u8 palette_data_size;
     u8 ingredient_data_size;
     u8 window_data_size;
+};
 
+struct _osd_scene {
+    osd_scene_hw *hw;
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
@@ -281,15 +290,6 @@ struct _osd_window {
 #define OSD_MIN(x, y) ((x) < (y) ? (x) : (y))
 
 #define OSD_COLOR_CLIP(color) OSD_MIN(OSD_MAX(0, color), 0xFF)
-
-EXTERNC osd_scene *osd_scene_new(const char *target_folder);
-
-EXTERNC void osd_scene_delete(osd_scene *scene);
-
-typedef void (*fn_set_pixel)(void *arg, int x, int y, u32 color);
-
-EXTERNC void osd_scene_paint(osd_scene *scene, u32 frame,
-                             fn_set_pixel set_pixel, void *arg);
 
 #endif
 

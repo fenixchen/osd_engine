@@ -75,6 +75,9 @@
     <ClInclude Include="..\osd\src\osd_character.h">
       <Filter>osd\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\osd\include\osd_scene.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

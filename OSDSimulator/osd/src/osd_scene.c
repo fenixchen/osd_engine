@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "osd_types.h"
+#include "osd_scene.h"
 #include "osd_common.h"
 #include "osd_log.h"
 #include "osd_binary.h"
@@ -34,18 +34,18 @@ osd_scene *osd_scene_new(const char *target_folder) {
         FREE_OBJECT(scene);
         return NULL;
     }
-    scene->binary = binary;
 
     // load scene
-    assert(binary->global_size == OSD_SCENE_DATA_SIZE);
+    assert(binary->global_size == OSD_SCENE_HW_DATA_SIZE);
 
-    memcpy(scene, binary->global, binary->global_size);
+    scene->binary = binary;
+    scene->hw = (osd_scene_hw *)binary->global;
     log_global(scene);
 
-    assert(OSD_GLYPH_HEADER_SIZE == scene->glyph_header_size);
-    assert(OSD_INGREDIENT_DATA_SIZE == scene->ingredient_data_size);
-    assert(OSD_WINDOW_DATA_SIZE == scene->window_data_size);
-    assert(OSD_PALETTE_DATA_SIZE == scene->palette_data_size);
+    assert(OSD_GLYPH_HEADER_SIZE == scene->hw->glyph_header_size);
+    assert(OSD_INGREDIENT_DATA_SIZE == scene->hw->ingredient_data_size);
+    assert(OSD_WINDOW_DATA_SIZE == scene->hw->window_data_size);
+    assert(OSD_PALETTE_DATA_SIZE == scene->hw->palette_data_size);
 
     //load palettes
     assert(binary->palettes_size % OSD_PALETTE_DATA_SIZE == 0);
@@ -56,7 +56,7 @@ osd_scene *osd_scene_new(const char *target_folder) {
         memcpy(palette, binary->palettes + i * OSD_PALETTE_DATA_SIZE, OSD_PALETTE_DATA_SIZE);
         scene->palettes[i] = palette;
         if (palette->entry_count > 0) {
-            u32 *lut_ram = (u32*)(binary->ram + palette->luts_addr - scene->ram_base_addr);
+            u32 *lut_ram = (u32*)(binary->ram + palette->luts_addr - scene->hw->ram_base_addr);
             palette->lut = lut_ram;
         }
         log_palette(i, palette);
@@ -74,10 +74,10 @@ osd_scene *osd_scene_new(const char *target_folder) {
         scene->ingredients[i] = ingredient;
         if (ingredient->type == OSD_INGREDIENT_BITMAP) {
             osd_bitmap *bitmap = &ingredient->data.bitmap;
-            ingredient->ram_data = (u8*)(binary->ram + bitmap->data_addr - scene->ram_base_addr);
+            ingredient->ram_data = (u8*)(binary->ram + bitmap->data_addr - scene->hw->ram_base_addr);
         } else if (ingredient->type == OSD_INGREDIENT_CHARACTER) {
             osd_character *character = &ingredient->data.character;
-            ingredient->ram_data = (u8*)(binary->ram + character->glyph_addr - scene->ram_base_addr);
+            ingredient->ram_data = (u8*)(binary->ram + character->glyph_addr - scene->hw->ram_base_addr);
         }
         log_ingredient(i, ingredient);
     }
@@ -92,7 +92,7 @@ osd_scene *osd_scene_new(const char *target_folder) {
         memcpy(window, binary->windows + i * OSD_WINDOW_DATA_SIZE, OSD_WINDOW_DATA_SIZE);
         scene->windows[i] = window;
         window->blocks = MALLOC_OBJECT_ARRAY(osd_block, window->block_count);
-        block = (osd_block *)(binary->ram + (window->blocks_addr - scene->ram_base_addr));
+        block = (osd_block *)(binary->ram + (window->blocks_addr - scene->hw->ram_base_addr));
         for (j = 0; j < window->block_count; j ++) {
             memcpy(&window->blocks[j], block, sizeof(osd_block));
             block ++;
@@ -109,24 +109,23 @@ void osd_scene_delete(osd_scene *scene) {
 
     for (i = 0; scene->palettes[i]; i ++) {
         osd_palette *palette = scene->palettes[i];
-        FREE_OBJECT(palette->lut);
         FREE_OBJECT(palette);
     }
 
     for (i = 0; scene->ingredients[i]; i ++) {
         osd_ingredient *ingredient = scene->ingredients[i];
         FREE_OBJECT(ingredient);
-        i ++;
     }
 
     for (i = 0; scene->windows[i]; i ++) {
         osd_window *window = scene->windows[i];
         FREE_OBJECT(window->blocks);
         FREE_OBJECT(window);
-        i ++;
     }
 
-    FREE_OBJECT(scene->binary);
+    osd_binary_delete(scene->binary);
+
+    FREE_OBJECT(scene);
 }
 
 void osd_scene_paint(osd_scene *scene, u32 frame, fn_set_pixel set_pixel, void *arg) {
@@ -136,8 +135,8 @@ void osd_scene_paint(osd_scene *scene, u32 frame, fn_set_pixel set_pixel, void *
 
     assert(set_pixel && scene);
 
-    width = scene->width;
-    height = scene->height;
+    width = scene->hw->width;
+    height = scene->hw->height;
     line_buffer = MALLOC_OBJECT_ARRAY(u32, width);
     window_line_buffer = MALLOC_OBJECT_ARRAY(u32, width);
     for (y = 0; y < height; y ++) {
@@ -148,7 +147,7 @@ void osd_scene_paint(osd_scene *scene, u32 frame, fn_set_pixel set_pixel, void *
                 continue;
             }
             if (window->y <= y && y < window->y + window->height) {
-                u16 len = OSD_MIN(scene->width - window->x, window->width);
+                u16 len = OSD_MIN(scene->hw->width - window->x, window->width);
                 memset(window_line_buffer, 0, sizeof(u32) * width);
                 if (osd_window_paint(scene, window, window_line_buffer, y)) {
                     osd_merge_line(line_buffer, window_line_buffer, len, window->x, window->alpha);
