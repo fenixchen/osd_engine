@@ -35,7 +35,7 @@ u32 osd_ingredient_get_color2(osd_scene *scene, osd_window *window,
     palette = scene->palettes[palette_index];
     TV_ASSERT(palette);
     if (palette->pixel_bits == 8) {
-        color_index = color_ram[index * 2];
+        color_index = color_ram[index];
     } else if (palette->pixel_bits == 16) {
         color_index = (color_ram[index * 2 + 1] << 8) | color_ram[index * 2];
     } else {

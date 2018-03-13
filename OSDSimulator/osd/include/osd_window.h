@@ -17,6 +17,6 @@ struct _osd_window {
     void		(*dump)(osd_window *self);
 };
 
-osd_window *osd_window_create(osd_window_hw *hw, u8 *ram, u32 ram_base_addr);
+osd_window *osd_window_create(osd_window_hw *hw, u8 *ram);
 
 #endif

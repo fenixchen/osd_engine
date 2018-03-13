@@ -10,15 +10,18 @@
 #include "osd_binary.h"
 #include "osd_window.h"
 
-osd_scene *osd_scene_new(const char *target_folder) {
+osd_scene *osd_scene_new(const char *osd_file) {
     osd_scene *scene;
-    u32 count, i, ram_base_addr;
+    u32 count, i, ram_offset;
     osd_binary *binary;
     u8 *ram;
 
-    TV_ASSERT(target_folder != NULL);
+    TV_ASSERT(osd_file);
 
     scene = MALLOC_OBJECT(osd_scene);
+
+    OSD_LOG("OSD_SCENE_DATA_SIZE:%d\n", OSD_SCENE_HW_DATA_SIZE);
+    TV_ASSERT(OSD_SCENE_HW_DATA_SIZE == 8 * sizeof(u32));
 
     OSD_LOG("OSD_GLYPH_HEADER_SIZE:%d\n", OSD_GLYPH_HEADER_SIZE);
     TV_ASSERT(OSD_GLYPH_HEADER_SIZE == 3 * sizeof(u32));
@@ -32,16 +35,13 @@ osd_scene *osd_scene_new(const char *target_folder) {
     OSD_LOG("OSD_WINDOW_DATA_SIZE:%d\n", OSD_WINDOW_DATA_SIZE);
     TV_ASSERT(OSD_WINDOW_DATA_SIZE == 5 * sizeof(u32));
 
-    binary = osd_binary_create(target_folder);
-    ram = binary->data(binary, BINARY_TYPE_RAM);
-
-    // load scene
-    TV_ASSERT(binary->data_size(binary, BINARY_TYPE_SCENE) == OSD_SCENE_HW_DATA_SIZE);
+    binary = osd_binary_create(osd_file);
+    ram = binary->data(binary, NULL);
 
     scene->binary = binary;
-    scene->hw = (osd_scene_hw *)binary->data(binary, BINARY_TYPE_SCENE);
-    ram_base_addr = scene->hw->ram_base_addr;
-    log_global(scene);
+    scene->hw = (osd_scene_hw *)ram;
+    log_scene(scene);
+    ram_offset = OSD_SCENE_HW_DATA_SIZE;
 
     TV_ASSERT(OSD_GLYPH_HEADER_SIZE == scene->hw->glyph_header_size);
     TV_ASSERT(OSD_INGREDIENT_DATA_SIZE == scene->hw->ingredient_data_size);
@@ -49,48 +49,45 @@ osd_scene *osd_scene_new(const char *target_folder) {
     TV_ASSERT(OSD_PALETTE_DATA_SIZE == scene->hw->palette_data_size);
 
     //load palettes
-    TV_ASSERT(binary->data_size(binary, BINARY_TYPE_PALETTE) % OSD_PALETTE_DATA_SIZE == 0);
-    count = binary->data_size(binary, BINARY_TYPE_PALETTE) / OSD_PALETTE_DATA_SIZE;
+    count = scene->hw->palette_count;
     TV_ASSERT(count <= OSD_SCENE_MAX_PALETE_COUNT);
     for (i = 0; i < count; i ++) {
         osd_palette *palette = MALLOC_OBJECT(osd_palette);
-        memcpy(palette, binary->data(binary, BINARY_TYPE_PALETTE) + i * OSD_PALETTE_DATA_SIZE, OSD_PALETTE_DATA_SIZE);
+        memcpy(palette, ram + ram_offset, OSD_PALETTE_DATA_SIZE);
+        ram_offset += OSD_PALETTE_DATA_SIZE;
         scene->palettes[i] = palette;
         if (palette->entry_count > 0) {
-            u32 *lut_ram = (u32*)(ram + palette->luts_addr - ram_base_addr);
+            u32 *lut_ram = (u32*)(ram + palette->luts_addr);
             palette->lut = lut_ram;
         }
         log_palette(i, palette);
     }
 
     //load ingredients
-    TV_ASSERT(binary->data_size(binary, BINARY_TYPE_INGREDIENT) % OSD_INGREDIENT_DATA_SIZE == 0);
+    count = scene->hw->ingredient_count;
     TV_ASSERT(count <= OSD_SCENE_MAX_INGREDIENT_COUNT);
-    count = binary->data_size(binary, BINARY_TYPE_INGREDIENT) / OSD_INGREDIENT_DATA_SIZE;
     for (i = 0; i < count; i ++) {
         osd_ingredient *ingredient = MALLOC_OBJECT(osd_ingredient);
-        memcpy(ingredient,
-               binary->data(binary,BINARY_TYPE_INGREDIENT) + i * OSD_INGREDIENT_DATA_SIZE,
-               OSD_INGREDIENT_DATA_SIZE);
+        memcpy(ingredient, ram + ram_offset, OSD_INGREDIENT_DATA_SIZE);
+        ram_offset += OSD_INGREDIENT_DATA_SIZE;
         scene->ingredients[i] = ingredient;
         if (ingredient->type == OSD_INGREDIENT_BITMAP) {
             osd_bitmap *bitmap = &ingredient->data.bitmap;
-            ingredient->ram_data = (u8*)(ram + bitmap->data_addr - ram_base_addr);
+            ingredient->ram_data = (u8*)(ram + bitmap->data_addr);
         } else if (ingredient->type == OSD_INGREDIENT_CHARACTER) {
             osd_character *character = &ingredient->data.character;
-            ingredient->ram_data = (u8*)(ram + character->glyph_addr - ram_base_addr);
+            ingredient->ram_data = (u8*)(ram + character->glyph_addr);
         }
         log_ingredient(i, ingredient);
     }
 
     //load windows
-    TV_ASSERT(binary->data_size(binary, BINARY_TYPE_WINDOW) % OSD_WINDOW_DATA_SIZE == 0);
-    count = binary->data_size(binary, BINARY_TYPE_WINDOW) / OSD_WINDOW_DATA_SIZE;
+    count = scene->hw->window_count;
     TV_ASSERT(count <= OSD_SCENE_MAX_WINDOW_COUNT);
     for (i = 0; i < count; i ++) {
-        osd_window_hw *hw = (osd_window_hw*)(binary->data(binary, BINARY_TYPE_WINDOW)
-                                             + i * OSD_WINDOW_DATA_SIZE);
-        scene->windows[i] = osd_window_create(hw, ram, ram_base_addr);
+        osd_window_hw *hw = (osd_window_hw *)(ram + ram_offset);
+        scene->windows[i] = osd_window_create(hw, ram);
+        ram_offset += OSD_WINDOW_DATA_SIZE;
     }
 
     return scene;

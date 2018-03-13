@@ -49,14 +49,19 @@ typedef struct _osd_scene_hw osd_scene_hw;
 
 struct _osd_scene_hw {
     u16 width, height;
-    u32 ram_base_addr;
 
-    u8 glyph_header_size;
+    u32 ram_offset;
+
     u8 palette_data_size;
     u8 ingredient_data_size;
     u8 window_data_size;
+    u8 glyph_header_size;
 
-    char title[16];
+    u8 palette_count;
+    u8 window_count;
+    u16 ingredient_count;
+
+    char title[12]; //3 bytes
 
     u16 timer_ms; //0 means no timer
     u16 reserved;

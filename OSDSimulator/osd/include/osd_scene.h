@@ -3,7 +3,7 @@
 
 #include "osd_types.h"
 
-EXTERNC osd_scene *osd_scene_new(const char *target_folder);
+EXTERNC osd_scene *osd_scene_new(const char *osd_file);
 
 EXTERNC void osd_scene_delete(osd_scene *scene);
 

@@ -28,7 +28,7 @@ void osd_character_paint(osd_scene *scene, osd_window *window, osd_block *block,
                 window_line_buffer[col] = color;
             }
         } else {
-            u8 alpha = glyph->data[x];
+            u8 alpha = glyph->data[offset + x];
             if (alpha != 0) {
                 window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col], color, alpha);
             }

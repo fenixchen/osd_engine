@@ -35,7 +35,7 @@ class Palette(OSDObject):
         pixel_bits = 1
         while (1 << pixel_bits) < len(self._lut):
             pixel_bits *= 2
-        return pixel_bits
+        return 8 if pixel_bits <= 8 else pixel_bits
 
     @property
     def pixel_format(self):

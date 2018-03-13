@@ -14,7 +14,6 @@
 #define MAX_LOADSTRING 100
 
 
-#define LOAD_DIRECT 1
 // 全局变量:
 HINSTANCE hInst;								// 当前实例
 TCHAR szTitle[MAX_LOADSTRING];					// 标题栏文本
@@ -140,38 +139,34 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
 
 static osd_scene *scene = NULL;
 
-
-
-void DoOpen(HWND hWnd) {
-#if LOAD_DIRECT == 1
-    char szFile[260] = "hello.generated\\global.bin";
-#else
-    OPENFILENAME ofn;       // common dialog box structure
+void DoOpen(HWND hWnd, const char *osd_file) {
     char szFile[260];       // buffer for file name
-    // Initialize OPENFILENAME
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = hWnd;
-    ofn.lpstrFile = szFile;
-    ofn.lpstrFile[0] = '\0';
-    ofn.nMaxFile = sizeof(szFile);
-    ofn.lpstrFilter = "OSD binary(global.bin)\0global.bin\0";
-    ofn.nFilterIndex = 1;
-    ofn.lpstrFileTitle = NULL;
-    ofn.nMaxFileTitle = 0;
-    ofn.lpstrInitialDir = ".";
-    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-    // Display the Open dialog box.
-    if (!GetOpenFileName(&ofn)) {
-        return;
+    if (osd_file == NULL) {
+        OPENFILENAME ofn;       // common dialog box structure
+        // Initialize OPENFILENAME
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = hWnd;
+        ofn.lpstrFile = szFile;
+        ofn.lpstrFile[0] = '\0';
+        ofn.nMaxFile = sizeof(szFile);
+        ofn.lpstrFilter = "OSD binary(*.osd)\0*.osd\0";
+        ofn.nFilterIndex = 1;
+        ofn.lpstrFileTitle = NULL;
+        ofn.nMaxFileTitle = 0;
+        ofn.lpstrInitialDir = ".";
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+        // Display the Open dialog box.
+        if (!GetOpenFileName(&ofn)) {
+            return;
+        }
+        osd_file = szFile;
     }
-#endif
-    PathRemoveFileSpec(szFile);
     if (scene) {
         osd_scene_delete(scene);
         scene = NULL;
     }
-    scene = osd_scene_new(szFile);
+    scene = osd_scene_new(osd_file);
     if (scene) {
         char title[256];
         sprintf(title, "OSDSimulator - %s", scene->hw->title);
@@ -182,6 +177,7 @@ void DoOpen(HWND hWnd) {
         }
         AdjustWindow(hWnd, scene->hw->width, scene->hw->height);
     }
+    InvalidateRect(hWnd, NULL, TRUE);
 }
 
 static COLORREF g_color = RGB(0xFF, 0x00, 0x00);
@@ -271,7 +267,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             DestroyWindow(hWnd);
             break;
         case IDM_OPEN:
-            DoOpen(hWnd);
+            DoOpen(hWnd, NULL);
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -294,9 +290,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_CREATE:
         SetStdOutToNewConsole();
-#if LOAD_DIRECT == 1
-        DoOpen(hWnd);
-#endif
+        DoOpen(hWnd, "test.osd");
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

@@ -4,7 +4,7 @@
 #include "osd_types.h"
 
 
-void log_global(osd_scene *scene);
+void log_scene(osd_scene *scene);
 
 void log_palette(int index, osd_palette *palette);
 

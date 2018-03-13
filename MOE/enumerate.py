@@ -61,9 +61,6 @@ DASH_WIDTH = 10
 
 # all size are bytes based
 
-OSD_GLOBAL_DATA_SIZE = 3 * 4  # struct _osd_scene
-
-OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_scene
 
 OSD_PALETTE_DATA_SIZE = 2 * 4  # struct _osd_palette
 
@@ -71,4 +68,8 @@ OSD_INGREDIENT_DATA_SIZE = 4 * 4  # struct _osd_ingredient
 
 OSD_WINDOW_DATA_SIZE = 5 * 4  # struct _osd_window
 
-OSD_SCENE_TITLE_MAX_LEN = 16
+OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_scene
+
+OSD_SCENE_TITLE_MAX_LEN = 12
+
+OSD_SCENE_HEADER_SIZE = 8 * 4

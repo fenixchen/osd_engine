@@ -4,9 +4,7 @@
 #include "osd_types.h"
 
 
-unsigned char *osd_read_file(const char *base_folder,
-                             const char *filename,
-                             u32 *len);
+unsigned char *osd_read_file(const char *filename, u32 *len);
 
 u32 osd_blend_pixel(u32 dst, u32 src, u8 alpha);
 

@@ -1,16 +1,12 @@
 #include "osd_common.h"
 
-unsigned char *osd_read_file(const char *base_folder,
-                             const char *filename,
-                             u32 *len) {
+unsigned char *osd_read_file(const char *filename, u32 *len) {
     FILE * fp;
     unsigned int length;
     unsigned char *buffer = NULL;
-    char path[OSD_MAX_PATH + 1];
-    sprintf(path, "%s/%s", base_folder, filename);
-    fp = fopen(path, "rb");
+    fp = fopen(filename, "rb");
     if (fp == NULL) {
-        printf("open <%s> failed.\n", path);
+        printf("open <%s> failed.\n", filename);
         return buffer;
     }
     fseek(fp, 0L, SEEK_END);
@@ -18,14 +14,14 @@ unsigned char *osd_read_file(const char *base_folder,
     fseek(fp, 0, SEEK_SET);
     buffer = (unsigned char *)malloc(length);
     if (fread(buffer, length, 1, fp) != 1) {
-        printf("read <%s> failed.\n", path);
+        printf("read <%s> failed.\n", filename);
         free(buffer);
         return NULL;
     }
     *len = length;
     fclose(fp);
 
-    OSD_LOG("%s, size[%d]\n", path, length);
+    OSD_LOG("%s, size[%d]\n", filename, length);
     return buffer;
 }
 

@@ -14,9 +14,9 @@ const char *ingredient_name[] = {
     "EDIT"
 };
 
-void log_global(osd_scene *scene) {
-    OSD_LOG("global\n\twidth: %d, height:%d, ram_base_addr:%#x\n",
-            scene->hw->width, scene->hw->height, scene->hw->ram_base_addr);
+void log_scene(osd_scene *scene) {
+    OSD_LOG("scene\n\twidth: %d, height:%d, ram_offset:%#x\n",
+            scene->hw->width, scene->hw->height, scene->hw->ram_offset);
 }
 
 void log_palette(int index, osd_palette *palette) {
