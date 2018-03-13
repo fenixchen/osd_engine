@@ -77,6 +77,7 @@ class Character(Ingredient):
                 if intensity > 0:
                     line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
             col += 1
+
     def __str__(self):
         ret = "%s(id: %s, font:%s, font_size:%d, char_code:%s, color:%d)" % (
             type(self), self._id, self._font.id, self.glyph.font_size, self.glyph.code, self.color)

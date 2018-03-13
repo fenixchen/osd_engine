@@ -496,7 +496,7 @@ class Scene(object):
         total_size += window_size
 
         total_size += binary_size['scene_bin'] + binary_size['palette_bin'] + \
-            binary_size['ingredient_bin'] + binary_size['window_bin']
+                      binary_size['ingredient_bin'] + binary_size['window_bin']
 
         logger.info('-' * 32)
         logger.info('[****] <Scene> size:%d' % binary_size['scene_bin'])
@@ -505,7 +505,7 @@ class Scene(object):
         logger.info('[****] <Window> size:%d' % binary_size['window_bin'])
         logger.info('[****] <Glyph RAM> size:%d' % glyph_size)
         logger.info('[****] <Palette RAM > size:%d' % palette_size)
-        logger.info('[****] <Ingredient RAM> size:%d' %ingredient_size)
-        logger.info('[****] <Window RAM> size:%d' %window_size)
-        logger.info('[****] <Glyph RAM> size:%d' %glyph_size)
+        logger.info('[****] <Ingredient RAM> size:%d' % ingredient_size)
+        logger.info('[****] <Window RAM> size:%d' % window_size)
+        logger.info('[****] <Glyph RAM> size:%d' % glyph_size)
         logger.info('[****] <TOTAL> size:%d' % total_size)

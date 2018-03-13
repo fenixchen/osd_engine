@@ -34,7 +34,6 @@ class Glyph(object):
         else:
             self._data = bitmap.buffer[:]
 
-
     @property
     def monochrome(self):
         return self._monochrome
@@ -103,7 +102,7 @@ class Glyph(object):
     def data(self):
         return self._data
 
-    def __str__(self):        
+    def __str__(self):
         ret = "%s(font:%s, font_size:%d, left:%d, char:%d, top:%d, pitch:%d, adv(%d,%d), %d x %d, size:%d)" % (
             type(self), self._font.id, self._font_size, self.code,
             self._left, self._top, self._pitch, self._advance_x, self._advance_y,

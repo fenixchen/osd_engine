@@ -22,13 +22,13 @@ if TEST_ALL:
         'scene/menu.yaml',
         'scene/rect.yaml',
         'scene/progressbar.yaml',
-        'scene/move.yaml']
+        'scene/move.yaml',
+        'scene/screensaver.yaml']
 else:
-    #yamls = ['Scene/monitor.yaml']
-    #yamls = ['Scene/symbol.yaml']
-    yamls = ['Scene/menu.yaml']
-    #yamls = ['Scene/screensaver.yaml']
-
+    # yamls = ['scene/monitor.yaml']
+    # yamls = ['scene/symbol.yaml']
+    # yamls = ['scene/menu.yaml']
+    yamls = ['scene/screensaver.yaml']
 
 TARGET_FOLDER = '../DEBUG/'
 

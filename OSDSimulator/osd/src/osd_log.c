@@ -15,7 +15,8 @@ const char *ingredient_name[] = {
 };
 
 void log_scene(osd_scene *scene) {
-    OSD_LOG("scene\n\twidth: %d, height:%d, ram_offset:%#x\n",
+    OSD_LOG("scene\n\tname:%s, width:%d, height:%d, ram_offset:%#x\n",
+            scene->hw->title,
             scene->hw->width, scene->hw->height, scene->hw->ram_offset);
 }
 
