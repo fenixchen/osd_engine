@@ -25,10 +25,10 @@ if TEST_ALL:
         'scene/move.yaml',
         'scene/screensaver.yaml']
 else:
-    # yamls = ['scene/monitor.yaml']
+    yamls = ['scene/monitor.yaml']
     # yamls = ['scene/symbol.yaml']
     # yamls = ['scene/menu.yaml']
-    yamls = ['scene/screensaver.yaml']
+    #yamls = ['scene/screensaver.yaml']
 
 TARGET_FOLDER = '../DEBUG/'
 

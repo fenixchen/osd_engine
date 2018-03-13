@@ -67,14 +67,6 @@ struct _osd_scene_hw {
     u16 reserved;
 };
 
-struct _osd_scene {
-    osd_scene_hw *hw;
-    osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
-    osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
-    osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
-    osd_binary *binary;
-};
-
 #define OSD_PALETTE_DATA_SIZE OSD_OFFSET_OF(osd_palette, lut)
 
 struct _osd_palette {

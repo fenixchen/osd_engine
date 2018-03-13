@@ -9,7 +9,7 @@ struct _osd_window {
     osd_window_priv *priv;
     void		(*destroy)(osd_window *self);
     int			(*is_visible)(osd_window *self);
-    int			(*paint)(osd_window *self, osd_scene *scene, u32 *window_line_buffer, u16 y);
+    int			(*paint)(osd_window *self, u32 *window_line_buffer, u16 y);
     osd_rect	(*get_rect)(osd_window *self);
     u8			(*get_alpha)(osd_window *self);
     u8			(*get_palette_index)(osd_window *self);
@@ -17,6 +17,6 @@ struct _osd_window {
     void		(*dump)(osd_window *self);
 };
 
-osd_window *osd_window_create(osd_window_hw *hw, u8 *ram);
+osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw, u8 *ram);
 
 #endif

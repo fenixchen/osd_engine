@@ -4,6 +4,7 @@
 #include "osd_bitmap.h"
 #include "osd_character.h"
 #include "osd_window.h"
+#include "osd_scene.h"
 
 u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
                              osd_ingredient *ingredient,
@@ -14,7 +15,7 @@ u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
         palette_index = window->get_palette_index(window);
     }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
-    palette = scene->palettes[palette_index];
+    palette = scene->palette(scene, palette_index);
     TV_ASSERT(palette);
     TV_ASSERT(index < palette->entry_count);
     return palette->lut[index];
@@ -32,7 +33,7 @@ u32 osd_ingredient_get_color2(osd_scene *scene, osd_window *window,
         palette_index = window->get_palette_index(window);
     }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
-    palette = scene->palettes[palette_index];
+    palette = scene->palette(scene, palette_index);
     TV_ASSERT(palette);
     if (palette->pixel_bits == 8) {
         color_index = color_ram[index];

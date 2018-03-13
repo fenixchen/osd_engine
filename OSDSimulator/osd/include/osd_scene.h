@@ -3,15 +3,23 @@
 
 #include "osd_types.h"
 
-EXTERNC osd_scene *osd_scene_new(const char *osd_file);
-
-EXTERNC void osd_scene_delete(osd_scene *scene);
-
 typedef void (*fn_set_pixel)(void *arg, int x, int y, u32 color);
 
-EXTERNC void osd_scene_paint(osd_scene *scene, u32 frame,
-                             fn_set_pixel set_pixel, void *arg);
+typedef struct _osd_scene_priv osd_scene_priv;
 
-EXTERNC int osd_scene_timer(osd_scene *scene);
+struct _osd_scene {
+    osd_scene_priv *priv;
+    void (*destroy)(osd_scene *self);
+    void (*paint)(osd_scene *self, fn_set_pixel set_pixel, void *arg);
+    int (*timer)(osd_scene *self);
+    void (*dump)(osd_scene *self);
+    osd_ingredient* (*ingredient)(osd_scene *self, u32 index);
+    osd_palette* (*palette)(osd_scene *self, u32 index);
+    const char * (*title)(osd_scene *self);
+    u16 (*timer_ms)(osd_scene *self);
+    osd_rect (*rect)(osd_scene *self);
+};
+
+EXTERNC osd_scene *osd_scene_create(const char *osd_file);
 
 #endif

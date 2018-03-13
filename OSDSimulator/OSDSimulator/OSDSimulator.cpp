@@ -163,31 +163,28 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         osd_file = szFile;
     }
     if (scene) {
-        osd_scene_delete(scene);
+        scene->destroy(scene);
         scene = NULL;
     }
-    scene = osd_scene_new(osd_file);
+    scene = osd_scene_create(osd_file);
     if (scene) {
         char title[256];
-        sprintf(title, "OSDSimulator - %s", scene->hw->title);
+        sprintf(title, "OSDSimulator - %s", scene->title(scene));
         SetWindowText(hWnd, title);
         KillTimer(hWnd, 0);
-        if (scene->hw->timer_ms != 0) {
-            SetTimer(hWnd, 0, scene->hw->timer_ms, NULL);
+
+        if (scene->timer_ms(scene) != 0) {
+            SetTimer(hWnd, 0, scene->timer_ms(scene), NULL);
         }
-        AdjustWindow(hWnd, scene->hw->width, scene->hw->height);
+        osd_rect rect = scene->rect(scene);
+        AdjustWindow(hWnd, rect.width, rect.height);
     }
     InvalidateRect(hWnd, NULL, TRUE);
 }
 
-static COLORREF g_color = RGB(0xFF, 0x00, 0x00);
 void DoTimer(HWND hWnd) {
-    //MessageBox(hWnd, _T("Hello"), _T("World"), MB_OK);
-    //g_color = g_color + 10;
-    //KillTimer(hWnd, 0);
-    //InvalidateRect(hWnd, NULL, FALSE);
     if (scene) {
-        if (osd_scene_timer(scene)) {
+        if (scene->timer(scene)) {
             InvalidateRect(hWnd, NULL, FALSE);
         }
     }
@@ -211,7 +208,7 @@ void DoPaint(HWND hWnd, HDC hDC) {
     FillRect(hDCMem, &rect, hBrush);
     DeleteObject(hBrush);
     if (scene) {
-        osd_scene_paint(scene, 0, FnSetPixel, hDCMem);
+        scene->paint(scene, FnSetPixel, hDCMem);
     }
     /* 将双缓冲区图像复制到显示缓冲区 */
     BitBlt(hDC, 0, 0, rect.right, rect.bottom, hDCMem, 0, 0, SRCCOPY);
@@ -283,7 +280,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_DESTROY:
         if (scene) {
-            osd_scene_delete(scene);
+            scene->destroy(scene);
             scene = NULL;
         }
         PostQuitMessage(0);

@@ -14,12 +14,6 @@ const char *ingredient_name[] = {
     "EDIT"
 };
 
-void log_scene(osd_scene *scene) {
-    OSD_LOG("scene\n\tname:%s, width:%d, height:%d, ram_offset:%#x\n",
-            scene->hw->title,
-            scene->hw->width, scene->hw->height, scene->hw->ram_offset);
-}
-
 void log_palette(int index, osd_palette *palette) {
     //    u32 i;
     OSD_LOG("palette[%d] \n\tpixel_format:%d, pixel_bits:%d, entry_count:%d, luts_addr:%#x\n",
@@ -33,6 +27,7 @@ void log_palette(int index, osd_palette *palette) {
     LOG("\n");
 #endif
 }
+
 
 void log_ingredient(int index, osd_ingredient *ingredient) {
     OSD_LOG("ingredient[%d] \n\ttype:%s(%d), palette:%d\n",

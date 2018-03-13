@@ -96,3 +96,15 @@ void osd_merge_line(u32 *dst_buf, u32 *src_buf, u16 len, u32 x, u8 alpha) {
         }
     }
 }
+
+int osd_get_rand_boolean(void) {
+    int r;
+    static int first = 1;
+    if (first) {
+        srand((unsigned)time(NULL));
+        first = 0;
+    }
+    r = rand();
+    return rand() > (RAND_MAX / 2);
+}
+

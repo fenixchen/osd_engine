@@ -2,14 +2,15 @@
 #include "osd_common.h"
 #include "osd_ingredient.h"
 #include "osd_window.h"
+#include "osd_scene.h"
 
 struct _osd_window_priv {
     osd_window_hw *hw;
+    osd_scene *scene;
     osd_block* blocks;
 };
 
 static int osd_window_paint(osd_window *self,
-                            osd_scene *scene,
                             u32 *window_line_buffer,
                             u16 y) {
     u32 i;
@@ -26,12 +27,12 @@ static int osd_window_paint(osd_window *self,
         if (!block->visible) {
             continue;
         }
-        ingredient = scene->ingredients[block->ingredient_index];
+        ingredient = priv->scene->ingredient(priv->scene, block->ingredient_index);
         TV_ASSERT(ingredient);
         block_start_y = block->y + osd_ingredient_start_y(ingredient);
         block_height = osd_ingredient_height(ingredient, self);
         if (block_start_y <= window_y && window_y < block_start_y + block_height) {
-            osd_ingredient_paint(scene, self, block, ingredient,
+            osd_ingredient_paint(priv->scene, self, block, ingredient,
                                  window_line_buffer,
                                  window_y - block_start_y);
             ++ paint;
@@ -99,13 +100,14 @@ static void osd_window_move_to(osd_window *self, int x, int y) {
     priv->hw->y = y;
 }
 
-osd_window *osd_window_create(osd_window_hw *hw, u8 *ram) {
+osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw, u8 *ram) {
     u32 i;
     osd_block *block;
     osd_window_priv *priv;
 
     osd_window *self = MALLOC_OBJECT(osd_window);
     priv = MALLOC_OBJECT(osd_window_priv);
+    priv->scene = scene;
     self->priv = priv;
     self->destroy = osd_window_destroy;
     self->is_visible = osd_window_is_visible;
