@@ -87,7 +87,15 @@ static u16 osd_scene_timer_ms(osd_scene *self) {
     return priv->hw->timer_ms;
 }
 
+#define SAVE_TO_FB_FILE 0
+
 static void osd_scene_paint(osd_scene *self, fn_set_pixel set_pixel, void *arg) {
+
+#if SAVE_TO_FB_FILE == 1
+    int fd;
+    char path[256];
+#endif
+
     u32 x, y, i;
     u16 width, height;
     int painted = 0;
@@ -95,9 +103,17 @@ static void osd_scene_paint(osd_scene *self, fn_set_pixel set_pixel, void *arg) 
     TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
 
     TV_ASSERT(set_pixel);
-
+#if SAVE_TO_FB_FILE == 1
+    sprintf(path, "%s.fb", scene->hw->title);
+    fd = open(path, O_CREAT | O_WRONLY | O_TRUNC);
+    if (fd == -1) {
+        sprintf(path, "open %s.fb failed", scene->hw->title);
+        OSD_ERR(path);
+    }
+#endif
     width = scene->hw->width;
     height = scene->hw->height;
+
     line_buffer = MALLOC_OBJECT_ARRAY(u32, width);
     window_line_buffer = MALLOC_OBJECT_ARRAY(u32, width);
     for (y = 0; y < height; y ++) {
@@ -127,7 +143,17 @@ static void osd_scene_paint(osd_scene *self, fn_set_pixel set_pixel, void *arg) 
                 }
             }
         }
+#if SAVE_TO_FB_FILE == 1
+        if (fd != -1)
+            for (x = 0; x < width; x ++) {
+                write(fd, &line_buffer[x], 4);
+            }
+#endif
     }
+#if SAVE_TO_FB_FILE == 1
+    if (fd != -1)
+        close(fd);
+#endif
     FREE_OBJECT(window_line_buffer);
     FREE_OBJECT(line_buffer);
 }

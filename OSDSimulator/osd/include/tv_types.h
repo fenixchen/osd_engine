@@ -16,6 +16,8 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
+#include <fcntl.h>
+#include <io.h>
 
 typedef unsigned char u8;
 typedef unsigned short u16;

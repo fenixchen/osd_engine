@@ -228,7 +228,10 @@ class Scene(object):
             self._width = config['width'] if 'width' in config else 640
             self._height = config['height'] if 'height' in config else 480
             self._frames = 1 if 'frames' not in config else int(config['frames'])
-            self._title = "" if 'title' not in config else config['title']
+            if 'title' in config:
+                self._title = config['title']
+            else:
+                self._title = os.path.splitext(os.path.basename(yaml_file))[0]
             self._title = self._title[:OSD_SCENE_TITLE_MAX_LEN]
             self._timer_ms = 0 if 'timer_ms' not in config else config['timer_ms']
             logger.debug('Title:%s, Width:%d, Height:%d, timer_ms:%d' % (
