@@ -17,6 +17,6 @@ struct _osd_window {
     void		(*dump)(osd_window *self);
 };
 
-osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw, u8 *ram);
+osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw);
 
 #endif

@@ -45,40 +45,43 @@
     <ClInclude Include="OSDSimulator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\osd\src\osd_binary.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\src\osd_bitmap.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\src\osd_common.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\src\osd_ingredient.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\src\osd_line.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\src\osd_log.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\src\osd_rectangle.h">
-      <Filter>osd\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\osd\include\osd_types.h">
+    <ClInclude Include="..\osd\include\osd_binary.h">
       <Filter>osd\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\osd\src\osd_character.h">
-      <Filter>osd\src</Filter>
+    <ClInclude Include="..\osd\include\osd_bitmap.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_character.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_common.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_ingredient.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_line.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_log.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_palette.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_rectangle.h">
+      <Filter>osd\include</Filter>
     </ClInclude>
     <ClInclude Include="..\osd\include\osd_scene.h">
       <Filter>osd\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\osd\include\tv_types.h">
+    <ClInclude Include="..\osd\include\osd_types.h">
       <Filter>osd\include</Filter>
     </ClInclude>
     <ClInclude Include="..\osd\include\osd_window.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\tv_types.h">
       <Filter>osd\include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -93,6 +96,9 @@
       <Filter>osd\src</Filter>
     </ClCompile>
     <ClCompile Include="..\osd\src\osd_bitmap.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_character.c">
       <Filter>osd\src</Filter>
     </ClCompile>
     <ClCompile Include="..\osd\src\osd_common.c">
@@ -116,7 +122,7 @@
     <ClCompile Include="..\osd\src\osd_window.c">
       <Filter>osd\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\osd\src\osd_character.c">
+    <ClCompile Include="..\osd\src\osd_palette.c">
       <Filter>osd\src</Filter>
     </ClCompile>
   </ItemGroup>

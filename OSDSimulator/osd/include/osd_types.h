@@ -67,16 +67,14 @@ struct _osd_scene_hw {
     u16 reserved;
 };
 
-#define OSD_PALETTE_DATA_SIZE OSD_OFFSET_OF(osd_palette, lut)
+#define OSD_PALETTE_DATA_SIZE sizeof(osd_palette_hw)
 
-struct _osd_palette {
+typedef struct _osd_palette_hw osd_palette_hw;
+struct _osd_palette_hw {
     u8 pixel_format;
     u8 pixel_bits; // 0, 1, 2, 4, 8, 16
     u16 entry_count;
-
     u32 luts_addr;
-
-    u32 *lut;
 };
 
 #define OSD_PALETTE_INDEX_INVALID 0xFF

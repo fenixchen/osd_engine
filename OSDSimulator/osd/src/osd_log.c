@@ -14,19 +14,7 @@ const char *ingredient_name[] = {
     "EDIT"
 };
 
-void log_palette(int index, osd_palette *palette) {
-    //    u32 i;
-    OSD_LOG("palette[%d] \n\tpixel_format:%d, pixel_bits:%d, entry_count:%d, luts_addr:%#x\n",
-            index,
-            palette->pixel_format, palette->pixel_bits, palette->entry_count,
-            (unsigned int)palette->luts_addr);
-#if 0
-    for (i = 0; i < palette->entry_count; i ++) {
-        LOG("\t%08x ", palette->lut[i]);
-    }
-    LOG("\n");
-#endif
-}
+
 
 
 void log_ingredient(int index, osd_ingredient *ingredient) {

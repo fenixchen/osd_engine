@@ -18,6 +18,7 @@ struct _osd_scene {
     const char * (*title)(osd_scene *self);
     u16 (*timer_ms)(osd_scene *self);
     osd_rect (*rect)(osd_scene *self);
+    u8* (*ram)(osd_scene *self);
 };
 
 EXTERNC osd_scene *osd_scene_create(const char *osd_file);

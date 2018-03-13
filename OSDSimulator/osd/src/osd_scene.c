@@ -3,7 +3,7 @@
 #include "osd_log.h"
 #include "osd_binary.h"
 #include "osd_window.h"
-
+#include "osd_palette.h"
 
 struct _osd_scene_priv {
     osd_scene_hw *hw;
@@ -167,13 +167,18 @@ osd_rect osd_scene_rect(osd_scene *self) {
     return rect;
 }
 
+static u8* osd_scene_ram(osd_scene *self) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    return priv->binary->data(priv->binary, NULL);
+}
+
 static void osd_scene_destroy(osd_scene *self) {
     u32 i;
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
 
     for (i = 0; priv->palettes[i]; i ++) {
         osd_palette *palette = priv->palettes[i];
-        FREE_OBJECT(palette);
+        palette->destroy(palette);
     }
 
     for (i = 0; priv->ingredients[i]; i ++) {
@@ -208,6 +213,7 @@ osd_scene *osd_scene_create(const char *osd_file) {
     self->title = osd_scene_title;
     self->timer_ms = osd_scene_timer_ms;
     self->rect = osd_scene_rect;
+    self->ram = osd_scene_ram;
 
     TV_ASSERT(osd_file);
 
@@ -245,15 +251,11 @@ osd_scene *osd_scene_create(const char *osd_file) {
     count = priv->hw->palette_count;
     TV_ASSERT(count <= OSD_SCENE_MAX_PALETE_COUNT);
     for (i = 0; i < count; i ++) {
-        osd_palette *palette = MALLOC_OBJECT(osd_palette);
-        memcpy(palette, ram + ram_offset, OSD_PALETTE_DATA_SIZE);
+        osd_palette_hw *hw = (osd_palette_hw *)(ram + ram_offset);
+        osd_palette *palette = osd_palette_create(self, hw);
         ram_offset += OSD_PALETTE_DATA_SIZE;
         priv->palettes[i] = palette;
-        if (palette->entry_count > 0) {
-            u32 *lut_ram = (u32*)(ram + palette->luts_addr);
-            palette->lut = lut_ram;
-        }
-        log_palette(i, palette);
+        palette->dump(palette);
     }
 
     //load ingredients
@@ -279,7 +281,7 @@ osd_scene *osd_scene_create(const char *osd_file) {
     TV_ASSERT(count <= OSD_SCENE_MAX_WINDOW_COUNT);
     for (i = 0; i < count; i ++) {
         osd_window_hw *hw = (osd_window_hw *)(ram + ram_offset);
-        priv->windows[i] = osd_window_create(self, hw, ram);
+        priv->windows[i] = osd_window_create(self, hw);
         ram_offset += OSD_WINDOW_DATA_SIZE;
     }
 

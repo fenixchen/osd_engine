@@ -100,7 +100,7 @@ static void osd_window_move_to(osd_window *self, int x, int y) {
     priv->hw->y = y;
 }
 
-osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw, u8 *ram) {
+osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw) {
     u32 i;
     osd_block *block;
     osd_window_priv *priv;
@@ -120,7 +120,7 @@ osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw, u8 *ram) {
 
     priv->hw = hw;
     priv->blocks = MALLOC_OBJECT_ARRAY(osd_block, hw->block_count);
-    block = (osd_block *)(ram + (hw->blocks_addr));
+    block = (osd_block *)(scene->ram(scene) + (hw->blocks_addr));
     for (i = 0; i < hw->block_count; i ++) {
         memcpy(&priv->blocks[i], block, sizeof(osd_block));
         block ++;

@@ -5,6 +5,7 @@
 #include "osd_character.h"
 #include "osd_window.h"
 #include "osd_scene.h"
+#include "osd_palette.h"
 
 u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
                              osd_ingredient *ingredient,
@@ -16,9 +17,7 @@ u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
     }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
     palette = scene->palette(scene, palette_index);
-    TV_ASSERT(palette);
-    TV_ASSERT(index < palette->entry_count);
-    return palette->lut[index];
+    return palette->color(palette, index);
 }
 
 
@@ -27,6 +26,7 @@ u32 osd_ingredient_get_color2(osd_scene *scene, osd_window *window,
                               u8 *color_ram,
                               u32 index) {
     u32 color_index;
+    u8 pixel_bits;
     osd_palette *palette;
     u8 palette_index = ingredient->palette_index;
     if (palette_index == OSD_PALETTE_INDEX_INVALID) {
@@ -34,16 +34,15 @@ u32 osd_ingredient_get_color2(osd_scene *scene, osd_window *window,
     }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
     palette = scene->palette(scene, palette_index);
-    TV_ASSERT(palette);
-    if (palette->pixel_bits == 8) {
+    pixel_bits = palette->pixel_bits(palette);
+    if (pixel_bits == 8) {
         color_index = color_ram[index];
-    } else if (palette->pixel_bits == 16) {
+    } else if (pixel_bits == 16) {
         color_index = (color_ram[index * 2 + 1] << 8) | color_ram[index * 2];
     } else {
         TV_ASSERT(0);
     }
-    TV_ASSERT(color_index < palette->entry_count);
-    return palette->lut[color_index];
+    return palette->color(palette, color_index);
 }
 
 
