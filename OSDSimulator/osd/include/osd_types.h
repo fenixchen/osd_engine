@@ -55,6 +55,11 @@ struct _osd_scene_hw {
     u8 palette_data_size;
     u8 ingredient_data_size;
     u8 window_data_size;
+
+    char title[16];
+
+    u16 timer_ms; //0 means no timer
+    u16 reserved;
 };
 
 struct _osd_scene {

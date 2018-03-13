@@ -173,6 +173,13 @@ void DoOpen(HWND hWnd) {
     }
     scene = osd_scene_new(szFile);
     if (scene) {
+        char title[256];
+        sprintf(title, "OSDSimulator - %s", scene->hw->title);
+        SetWindowText(hWnd, title);
+        KillTimer(hWnd, 0);
+        if (scene->hw->timer_ms != 0) {
+            SetTimer(hWnd, 0, scene->hw->timer_ms, NULL);
+        }
         AdjustWindow(hWnd, scene->hw->width, scene->hw->height);
     }
 }
@@ -287,7 +294,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_CREATE:
         SetStdOutToNewConsole();
-        SetTimer(hWnd, 0, 200, NULL);
 #if LOAD_DIRECT == 1
         DoOpen(hWnd);
 #endif

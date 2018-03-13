@@ -6,7 +6,7 @@
 typedef struct _osd_binary_priv osd_binary_priv;
 
 typedef enum _binary_type {
-    BINARY_TYPE_GLOBAL = 0,
+    BINARY_TYPE_SCENE = 0,
     BINARY_TYPE_PALETTE = 1,
     BINARY_TYPE_INGREDIENT = 2,
     BINARY_TYPE_WINDOW = 3,

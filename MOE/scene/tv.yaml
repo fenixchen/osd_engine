@@ -1,6 +1,7 @@
-OSD:
+Scene:
   width: 800
   height: 600
+  title: TVDemo
   default_font: mono_16
 
   Includes:

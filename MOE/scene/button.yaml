@@ -1,4 +1,4 @@
-OSD:
+Scene:
   width: 640
   height: 480
   default_palette: palette0

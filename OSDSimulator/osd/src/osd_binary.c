@@ -1,7 +1,7 @@
 #include "osd_common.h"
 #include "osd_binary.h"
 
-#define GLOBAL_FILE		"global.bin"
+#define SCENE_FILE		"scene.bin"
 #define PALETTES_FILE	"palettes.bin"
 #define WINDOWS_FILE	"windows.bin"
 #define INGREDIENT_FILE	"ingredients.bin"
@@ -10,8 +10,8 @@
 
 
 struct _osd_binary_priv {
-    u8 *global;
-    u32 global_size;
+    u8 *scene;
+    u32 scene_size;
 
     u8 *palettes;
     u32 palettes_size;
@@ -29,8 +29,8 @@ struct _osd_binary_priv {
 static u32 osd_binary_data_size(osd_binary *self, binary_type type) {
     TV_TYPE_GET_PRIV(osd_binary_priv, self, priv);
     switch (type) {
-    case BINARY_TYPE_GLOBAL:
-        return priv->global_size;
+    case BINARY_TYPE_SCENE:
+        return priv->scene_size;
     case BINARY_TYPE_PALETTE:
         return priv->palettes_size;
     case BINARY_TYPE_INGREDIENT:
@@ -48,8 +48,8 @@ static u32 osd_binary_data_size(osd_binary *self, binary_type type) {
 static u8* osd_binary_data(osd_binary *self, binary_type type) {
     TV_TYPE_GET_PRIV(osd_binary_priv, self, priv);
     switch (type) {
-    case BINARY_TYPE_GLOBAL:
-        return priv->global;
+    case BINARY_TYPE_SCENE:
+        return priv->scene;
     case BINARY_TYPE_PALETTE:
         return priv->palettes;
     case BINARY_TYPE_INGREDIENT:
@@ -66,7 +66,7 @@ static u8* osd_binary_data(osd_binary *self, binary_type type) {
 
 static void osd_binary_destroy(osd_binary *self) {
     TV_TYPE_GET_PRIV(osd_binary_priv, self, priv);
-    FREE_OBJECT(priv->global);
+    FREE_OBJECT(priv->scene);
     FREE_OBJECT(priv->palettes);
     FREE_OBJECT(priv->ingredients);
     FREE_OBJECT(priv->windows);
@@ -83,8 +83,8 @@ osd_binary *osd_binary_create(const char *target_folder) {
     self->data_size = osd_binary_data_size;
     self->data = osd_binary_data;
 
-    priv->global = osd_read_file(target_folder, GLOBAL_FILE, &priv->global_size);
-    TV_ASSERT(priv->global);
+    priv->scene = osd_read_file(target_folder, SCENE_FILE, &priv->scene_size);
+    TV_ASSERT(priv->scene);
 
     priv->palettes = osd_read_file(target_folder, PALETTES_FILE, &priv->palettes_size);
     TV_ASSERT(priv->palettes);

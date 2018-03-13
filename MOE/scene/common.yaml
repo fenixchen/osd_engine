@@ -1,4 +1,4 @@
-OSD:
+Scene:
   Fonts:
     - Font:
         id: mono_16

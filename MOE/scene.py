@@ -36,6 +36,8 @@ class Scene(object):
         self._height = -1
         self._frames = 1
         self._ticks = 20
+        self._timer_ms = 0
+        self._title = ''
         self._default_font_size = 16
         self._default_font = None
         self._default_palette = None
@@ -220,13 +222,17 @@ class Scene(object):
         if config is None:
             raise Exception('cannot load yaml file %s' % self._yaml_file)
 
-        config = config['OSD']
+        config = config['Scene']
         assert config is not None
         if root:
             self._width = config['width'] if 'width' in config else 640
             self._height = config['height'] if 'height' in config else 480
             self._frames = 1 if 'frames' not in config else int(config['frames'])
-            logger.debug('Width:%d, Height:%d' % (self._width, self._height))
+            self._title = "" if 'title' not in config else config['title']
+            self._title = self._title[:OSD_SCENE_TITLE_MAX_LEN]
+            self._timer_ms = 0 if 'timer_ms' not in config else config['timer_ms']
+            logger.debug('Title:%s, Width:%d, Height:%d, timer_ms:%d' % (
+                self._title, self._width, self._height, self._timer_ms))
 
         if 'Includes' in config:
             for item in config['Includes']:
@@ -332,17 +338,27 @@ class Scene(object):
             with open(filename, "rb") as f:
                 logger.debug('\n' + hexdump.hexdump(f.read(), result='return'))
 
-    def _generate_global_bin(self, filename, ram_base_addr):
+    def _generate_scene_bin(self, filename, ram_base_addr):
+        binary_size = {}
         bins = struct.pack('<HH', self._width, self._height)
         bins += struct.pack('<I', ram_base_addr)
         bins += struct.pack('<BBBB',
                             OSD_GLYPH_HEADER_SIZE, OSD_PALETTE_DATA_SIZE,
                             OSD_INGREDIENT_DATA_SIZE, OSD_WINDOW_DATA_SIZE)
+
+        bins += struct.pack('<%dB' % len(self._title), *self._title.encode('utf-8'))
+
+        bins += struct.pack('<%dx' % (OSD_SCENE_TITLE_MAX_LEN - len(self._title)))
+
+        bins += struct.pack('<Hxx', self._timer_ms)
+
         with open(filename, "wb") as f:
             f.truncate()
             f.write(bins)
         self._debug_file(filename)
-        return bins
+        binary_size[self] = len(bins)
+
+        return binary_size
 
     def _generate_glyhs_bin(self, ram_filename, ram_base_addr):
         binary_size = {}
@@ -442,9 +458,9 @@ class Scene(object):
         with open(ram_filename, "wb") as f:
             f.truncate()
 
-        self._generate_global_bin(target_folder + "global.bin", ram_base_addr)
-
         binary_size = {}
+        binary_size.update(self._generate_scene_bin(target_folder + "scene.bin", ram_base_addr))
+
         binary_size.update(self._generate_glyhs_bin(ram_filename, ram_base_addr))
 
         binary_size.update(self._generate_palettes_bin(target_folder + "palettes.bin", ram_filename, ram_base_addr))

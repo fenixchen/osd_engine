@@ -72,7 +72,7 @@ class Palette(OSDObject):
                            self.pixel_bits,
                            len(self._lut))
         if len(self._lut) > 0:
-            ram = struct.pack('<%sI' % len(self._lut), *self._lut)
+            ram = struct.pack('<%dI' % len(self._lut), *self._lut)
             bins += struct.pack('<I', ram_offset)
         else:
             ram = b''

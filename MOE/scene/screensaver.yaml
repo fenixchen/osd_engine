@@ -1,6 +1,8 @@
-OSD:
+Scene:
   width: 800
   height: 600
+  title: 'ScreenSaver'
+  timer_ms: 200
   Includes:
     - Include:
         file: common.yaml

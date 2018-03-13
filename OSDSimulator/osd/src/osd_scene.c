@@ -36,10 +36,10 @@ osd_scene *osd_scene_new(const char *target_folder) {
     ram = binary->data(binary, BINARY_TYPE_RAM);
 
     // load scene
-    TV_ASSERT(binary->data_size(binary, BINARY_TYPE_GLOBAL) == OSD_SCENE_HW_DATA_SIZE);
+    TV_ASSERT(binary->data_size(binary, BINARY_TYPE_SCENE) == OSD_SCENE_HW_DATA_SIZE);
 
     scene->binary = binary;
-    scene->hw = (osd_scene_hw *)binary->data(binary, BINARY_TYPE_GLOBAL);
+    scene->hw = (osd_scene_hw *)binary->data(binary, BINARY_TYPE_SCENE);
     ram_base_addr = scene->hw->ram_base_addr;
     log_global(scene);
 
@@ -174,12 +174,11 @@ static int get_rand_boolean(void) {
     return rand() > (RAND_MAX / 2);
 }
 
-#define MOVE_STEP 10
-int osd_scene_timer(osd_scene *scene) {
+static int screesaver_timer(osd_scene *scene) {
     osd_window *window = scene->windows[0];
     int x, y, max_x, max_y;
     osd_rect rect;
-
+    const int MOVE_STEP = 10;
     static int x_dir, y_dir;
     static int first = 1;
     if (first) {
@@ -204,4 +203,11 @@ int osd_scene_timer(osd_scene *scene) {
         y_dir = -y_dir;
     }
     return 1;
+}
+
+int osd_scene_timer(osd_scene *scene) {
+    if (strcmp(scene->hw->title, "ScreenSaver") == 0) {
+        return screesaver_timer(scene);
+    }
+    return 0;
 }
