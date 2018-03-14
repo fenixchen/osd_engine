@@ -2,9 +2,15 @@
 #define _OSD_LINE_H
 
 #include "osd_types.h"
+#include "osd_ingredient.h"
 
-void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *block,
-                    osd_ingredient *ingredient,
-                    u32 *window_line_buffer,
-                    u32 y);
+typedef struct _osd_line_priv osd_line_priv;
+
+struct _osd_line {
+    osd_ingredient parent;
+    osd_line_priv *priv;
+};
+
+EXTERNC osd_line *osd_line_create(osd_scene *scene, osd_ingredient_hw *hw);
+
 #endif

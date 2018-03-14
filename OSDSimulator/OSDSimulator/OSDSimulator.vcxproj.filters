@@ -63,9 +63,6 @@
     <ClInclude Include="..\osd\include\osd_line.h">
       <Filter>osd\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\osd\include\osd_log.h">
-      <Filter>osd\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\osd\include\osd_palette.h">
       <Filter>osd\include</Filter>
     </ClInclude>
@@ -82,6 +79,9 @@
       <Filter>osd\include</Filter>
     </ClInclude>
     <ClInclude Include="..\osd\include\tv_types.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_label.h">
       <Filter>osd\include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,9 +110,6 @@
     <ClCompile Include="..\osd\src\osd_line.c">
       <Filter>osd\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\osd\src\osd_log.c">
-      <Filter>osd\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\osd\src\osd_rectangle.c">
       <Filter>osd\src</Filter>
     </ClCompile>
@@ -123,6 +120,9 @@
       <Filter>osd\src</Filter>
     </ClCompile>
     <ClCompile Include="..\osd\src\osd_palette.c">
+      <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\src\osd_label.c">
       <Filter>osd\src</Filter>
     </ClCompile>
   </ItemGroup>

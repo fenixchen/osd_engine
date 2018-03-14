@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSDSimulator", "OSDSimulator\OSDSimulator.vcxproj", "{28C8506B-1F49-407B-9781-A821C353D99C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSDLoader", "OSDLoader\OSDLoader.vcxproj", "{DCD80A58-CA96-44F5-87E3-FC09115A7701}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -15,10 +13,6 @@ Global
 		{28C8506B-1F49-407B-9781-A821C353D99C}.Debug|Win32.Build.0 = Debug|Win32
 		{28C8506B-1F49-407B-9781-A821C353D99C}.Release|Win32.ActiveCfg = Release|Win32
 		{28C8506B-1F49-407B-9781-A821C353D99C}.Release|Win32.Build.0 = Release|Win32
-		{DCD80A58-CA96-44F5-87E3-FC09115A7701}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DCD80A58-CA96-44F5-87E3-FC09115A7701}.Debug|Win32.Build.0 = Debug|Win32
-		{DCD80A58-CA96-44F5-87E3-FC09115A7701}.Release|Win32.ActiveCfg = Release|Win32
-		{DCD80A58-CA96-44F5-87E3-FC09115A7701}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

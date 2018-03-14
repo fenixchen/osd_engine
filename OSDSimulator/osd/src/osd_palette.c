@@ -50,8 +50,9 @@ osd_palette *osd_palette_create(osd_scene *scene, osd_palette_hw *hw) {
     self->destroy = osd_palette_destroy;
     self->color = osd_palette_color;
     self->pixel_bits = osd_palette_pixel_bits;
-    self->dump = osd_palette_dump;
     self->entry_count = osd_palette_entry_count;
+    self->dump = osd_palette_dump;
+    TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
     priv->luts = (u32*)(scene->ram(scene) + priv->hw->luts_addr);
     return self;

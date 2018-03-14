@@ -3,17 +3,31 @@
 #include "osd_line.h"
 #include "osd_window.h"
 
-void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *block,
-                    osd_ingredient *ingredient,
+struct _osd_line_priv {
+    osd_line_hw *line;
+};
+
+
+void osd_line_paint(osd_ingredient *self,
+                    osd_window *window,
+                    osd_block *block,
                     u32 *window_line_buffer,
                     u32 y) {
     u32 x;
-    osd_line *line = &ingredient->data.line;
-    u32 color = osd_ingredient_get_color(scene, window, ingredient, line->color);
-    u32 x1 = line->x1;
-    u32 x2 = line->x2;
-    u32 y1 = line->y1;
-    u32 y2 = line->y2;
+    osd_line_hw *line;
+    u32 color, x1, x2, y1, y2;
+
+    osd_ingredient *ingredient = (osd_ingredient *)self;
+    osd_line *line_self = (osd_line *)self;
+    TV_TYPE_GET_PRIV(osd_line_priv, line_self, priv);
+    line = priv->line;
+
+    color = ingredient->color(ingredient, window, line->color);
+    x1 = line->x1;
+    x2 = line->x2;
+    y1 = line->y1;
+    y2 = line->y2;
+
     if (y1 == y2) {
         if (y1 <= y && y < y1 + line->weight) {
             for (x = block->x + x1; x < block->x + x2; x ++) {
@@ -38,4 +52,52 @@ void osd_line_paint(osd_scene *scene, osd_window *window, osd_block *block,
             }
         }
     }
+}
+
+
+static u32 osd_line_start_y(osd_ingredient *self) {
+    osd_line *line_self = (osd_line *)self;
+    osd_line_hw *line = line_self->priv->line;
+    return OSD_MIN(line->y1, line->y2);
+}
+
+static u32 osd_line_height(osd_ingredient *self, osd_window *window) {
+    osd_line *line_self = (osd_line *)self;
+    osd_line_hw *line = line_self->priv->line;
+    if (line->y2 == line->y1)
+        return line->y2 - line->y1 + 1 + line->weight;
+    else if (line->y2 > line->y1)
+        return line->y2 - line->y1 + 1;
+    else
+        return line->y1 - line->y2 + 1;
+}
+
+static void osd_line_dump(osd_ingredient *ingredient) {
+    osd_line_hw *line;
+    osd_line *self = (osd_line *)ingredient;
+    TV_TYPE_GET_PRIV(osd_line_priv, self, priv);
+
+    line = priv->line;
+    OSD_LOG("Line\n\tx1:%d, y1:%d, x2:%d, y2:%d\n",
+            line->x1, line->y1, line->x2, line->y2);
+}
+
+static void osd_line_destroy(osd_ingredient *self) {
+    osd_line *line_self = (osd_line *)self;
+    FREE_OBJECT(line_self->priv);
+    FREE_OBJECT(self);
+}
+
+osd_line *osd_line_create(osd_scene *scene, osd_ingredient_hw *hw) {
+    osd_line *self = MALLOC_OBJECT(osd_line);
+    self->priv = MALLOC_OBJECT(osd_line_priv);
+    self->priv->line = &hw->data.line;
+
+    self->parent.destroy = osd_line_destroy;
+    self->parent.paint = osd_line_paint;
+    self->parent.destroy = osd_line_destroy;
+    self->parent.start_y = osd_line_start_y;
+    self->parent.height = osd_line_height;
+    self->parent.dump = osd_line_dump;
+    return self;
 }

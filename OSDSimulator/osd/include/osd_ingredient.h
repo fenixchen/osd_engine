@@ -3,22 +3,21 @@
 
 #include "osd_types.h"
 
-u32 osd_ingredient_get_color(osd_scene *scene, osd_window *window,
-                             osd_ingredient *ingredient,
-                             u32 index);
+typedef struct _osd_ingredient_priv osd_ingredient_priv;
 
-u32 osd_ingredient_get_color2(osd_scene *scene, osd_window *window,
-                              osd_ingredient *ingredient,
-                              u8 *color_ram,
-                              u32 index);
+struct _osd_ingredient {
+    osd_ingredient_priv *priv;
+    void (*destroy)(osd_ingredient *self);
+    u32 (*color)(osd_ingredient *self, osd_window *window, u32 index);
+    u32 (*color2)(osd_ingredient *self, osd_window *window, u8 *color_ram, u32 index);
+    u32 (*start_y)(osd_ingredient *self);
+    u32 (*height)(osd_ingredient *self, osd_window *window);
+    void (*paint)(osd_ingredient *self, osd_window *window, osd_block *block,
+                  u32 *window_line_buffer, u32 y);
+    u32 (*palette_index)(osd_ingredient *self);
+    void (*dump)(osd_ingredient *self);
+};
 
-u32 osd_ingredient_start_y(osd_ingredient *ingredient);
-
-u32 osd_ingredient_height(osd_ingredient *ingredient, osd_window *window);
-
-void osd_ingredient_paint(osd_scene *scene, osd_window *window, osd_block *block,
-                          osd_ingredient *ingredient,
-                          u32 *window_line_buffer,
-                          u32 y);
+EXTERNC osd_ingredient *osd_ingredient_create(osd_scene *scene, osd_ingredient_hw *hw);
 
 #endif

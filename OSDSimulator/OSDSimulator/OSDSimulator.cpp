@@ -140,10 +140,9 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
 static osd_scene *scene = NULL;
 
 void DoOpen(HWND hWnd, const char *osd_file) {
-    char szFile[260];       // buffer for file name
+    char szFile[260];
     if (osd_file == NULL) {
-        OPENFILENAME ofn;       // common dialog box structure
-        // Initialize OPENFILENAME
+        OPENFILENAME ofn;
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = sizeof(ofn);
         ofn.hwndOwner = hWnd;
@@ -156,7 +155,6 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         ofn.nMaxFileTitle = 0;
         ofn.lpstrInitialDir = ".";
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-        // Display the Open dialog box.
         if (!GetOpenFileName(&ofn)) {
             return;
         }
@@ -168,18 +166,55 @@ void DoOpen(HWND hWnd, const char *osd_file) {
     }
     scene = osd_scene_create(osd_file);
     if (scene) {
-        char title[256];
-        sprintf(title, "OSDSimulator - %s", scene->title(scene));
-        SetWindowText(hWnd, title);
+        char text[256];
+        const char *title = scene->title(scene);
+        osd_rect rect = scene->rect(scene);
+        sprintf(text, "OSDSimulator - %s %d x %d", title, rect.width, rect.height);
+        SetWindowText(hWnd, text);
         KillTimer(hWnd, 0);
 
         if (scene->timer_ms(scene) != 0) {
             SetTimer(hWnd, 0, scene->timer_ms(scene), NULL);
         }
-        osd_rect rect = scene->rect(scene);
         AdjustWindow(hWnd, rect.width, rect.height);
     }
     InvalidateRect(hWnd, NULL, TRUE);
+}
+
+
+void DoSaveFB(HWND hWnd) {
+    if (!scene) {
+        ::MessageBox(hWnd, "Load scene first", "Information", MB_OK + MB_ICONINFORMATION);
+        return;
+    }
+    OPENFILENAME ofn;
+
+    char szFileName[MAX_PATH] = "";
+
+    ZeroMemory(&ofn, sizeof(ofn));
+
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFilter = "Frame Buffer Files (*.fb)\0*.fb\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile = szFileName;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = "fb";
+
+    if (!GetSaveFileName(&ofn)) {
+        return;
+    }
+    u32 length = scene->rect(scene).width * scene->rect(scene).height * 4;
+    u32 *framebuffer = new u32[length];
+    scene->paint(scene, NULL, NULL, framebuffer);
+    int fd = open(szFileName, O_CREAT | O_WRONLY | O_TRUNC);
+    if (fd != -1) {
+        write(fd, framebuffer, length);
+        close(fd);
+    } else {
+        printf("write file failed.\n");
+    }
+    delete[] framebuffer;
 }
 
 void DoTimer(HWND hWnd) {
@@ -208,7 +243,7 @@ void DoPaint(HWND hWnd, HDC hDC) {
     FillRect(hDCMem, &rect, hBrush);
     DeleteObject(hBrush);
     if (scene) {
-        scene->paint(scene, FnSetPixel, hDCMem);
+        scene->paint(scene, FnSetPixel, hDCMem, NULL);
     }
     /* 将双缓冲区图像复制到显示缓冲区 */
     BitBlt(hDC, 0, 0, rect.right, rect.bottom, hDCMem, 0, 0, SRCCOPY);
@@ -265,6 +300,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             break;
         case IDM_OPEN:
             DoOpen(hWnd, NULL);
+            break;
+        case IDM_SAVE_FB:
+            DoSaveFB(hWnd);
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);

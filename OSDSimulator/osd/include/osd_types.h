@@ -33,6 +33,8 @@ typedef struct _osd_line osd_line;
 typedef struct _osd_move osd_move;
 typedef struct _osd_flip osd_flip;
 
+typedef struct _osd_label osd_label;
+
 typedef struct _osd_character osd_character;
 typedef struct _osd_glyph osd_glyph;
 typedef struct _osd_bitmap osd_bitmap;
@@ -96,7 +98,8 @@ struct _osd_palette_hw {
 #define OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT 4
 #define OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT 5
 
-struct _osd_rectangle {
+typedef struct _osd_rectangle_hw osd_rectangle_hw;
+struct _osd_rectangle_hw {
     u16 width;
     u16 height;
 
@@ -109,7 +112,8 @@ struct _osd_rectangle {
     u8 bgcolor_start, bgcolor_end;
 };
 
-struct _osd_line {
+typedef struct _osd_line_hw osd_line_hw;
+struct _osd_line_hw {
     u16 x1, y1;
 
     u16 x2, y2;
@@ -120,7 +124,7 @@ struct _osd_line {
     u8 reserved2;
 };
 
-#define OSD_GLYPH_HEADER_SIZE OSD_OFFSET_OF(osd_glyph, data)
+#define OSD_GLYPH_HEADER_SIZE sizeof(osd_glyph)
 
 struct _osd_glyph {
     u8 left, top;
@@ -134,11 +138,10 @@ struct _osd_glyph {
     u8 advance_x;
     u16 data_size:15;
     u16 monochrome:1;
-
-    u8	data[];
 };
 
-struct _osd_character {
+typedef struct _osd_character_hw osd_character_hw;
+struct _osd_character_hw {
     u8 color;
     u8 reserved1;
     u16 reserved2;
@@ -148,7 +151,8 @@ struct _osd_character {
     u32 reserved3;
 };
 
-struct _osd_bitmap {
+typedef struct _osd_bitmap_hw osd_bitmap_hw;
+struct _osd_bitmap_hw {
     u16 width;
     u16 height;
 
@@ -168,22 +172,20 @@ struct _osd_bitmap {
 #define OSD_INGREDIENT_BUTTON	 7
 #define OSD_INGREDIENT_EDIT		 8
 
-#define OSD_INGREDIENT_DATA_SIZE OSD_OFFSET_OF(osd_ingredient, ram_data)
+#define OSD_INGREDIENT_DATA_SIZE sizeof(osd_ingredient_hw)
 
-struct _osd_ingredient {
+typedef struct _osd_ingredient_hw osd_ingredient_hw;
+struct _osd_ingredient_hw {
     u8 type; //OSD_INGREDIENT_XXX
     u8 palette_index;
-    u8 current_bitmap;
-    u8 flags;
+    u16 flags;
 
     union {
-        osd_rectangle rect;
-        osd_line line;
-        osd_bitmap bitmap;
-        osd_character character;
+        osd_rectangle_hw rectangle;
+        osd_line_hw line;
+        osd_bitmap_hw bitmap;
+        osd_character_hw character;
     } data;
-
-    u8 *ram_data;
 };
 
 struct _osd_move {

@@ -16,11 +16,10 @@ Scene:
   Ingredients:
     - Label:
         id: label_symbol
-        text: 'Hello'
+        text: 'Hello world'
         font: mono
         color: 2
         font_size: 20
-
     - Rectangle:
         id: rect_border
         border_weight: 1
@@ -39,3 +38,6 @@ Scene:
         blocks:
           - ['', rect_border, 0, 0]
           - ['', label_symbol, 10, 10]
+
+
+

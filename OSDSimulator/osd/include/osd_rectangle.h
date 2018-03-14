@@ -2,9 +2,15 @@
 #define _OSD_RECTANGLE_H
 
 #include "osd_types.h"
+#include "osd_ingredient.h"
 
-void osd_rectangle_paint(osd_scene *scene, osd_window *window, osd_block *block,
-                         osd_ingredient *ingredient,
-                         u32 *window_line_buffer,
-                         u32 y);
+typedef struct _osd_rectangle_priv osd_rectangle_priv;
+
+struct _osd_rectangle {
+    osd_ingredient parent;
+    osd_rectangle_priv *priv;
+};
+
+EXTERNC osd_rectangle *osd_rectangle_create(osd_scene *scene, osd_ingredient_hw *hw);
+
 #endif

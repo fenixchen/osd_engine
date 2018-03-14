@@ -3,6 +3,7 @@
 #include "osd_ingredient.h"
 #include "osd_window.h"
 #include "osd_scene.h"
+#include "osd_ingredient.h"
 
 struct _osd_window_priv {
     osd_window_hw *hw;
@@ -29,12 +30,12 @@ static int osd_window_paint(osd_window *self,
         }
         ingredient = priv->scene->ingredient(priv->scene, block->ingredient_index);
         TV_ASSERT(ingredient);
-        block_start_y = block->y + osd_ingredient_start_y(ingredient);
-        block_height = osd_ingredient_height(ingredient, self);
+        block_start_y = block->y + ingredient->start_y(ingredient);
+        block_height = ingredient->height(ingredient, self);
         if (block_start_y <= window_y && window_y < block_start_y + block_height) {
-            osd_ingredient_paint(priv->scene, self, block, ingredient,
-                                 window_line_buffer,
-                                 window_y - block_start_y);
+            ingredient->paint(ingredient, self, block,
+                              window_line_buffer,
+                              window_y - block_start_y);
             ++ paint;
         }
     }
@@ -117,6 +118,7 @@ osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw) {
     self->get_alpha = osd_window_get_alpha;
     self->move_to = osd_window_move_to;
     self->dump = osd_window_dump;
+    TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
     priv->hw = hw;
     priv->blocks = MALLOC_OBJECT_ARRAY(osd_block, hw->block_count);

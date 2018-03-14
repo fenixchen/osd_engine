@@ -26,8 +26,8 @@ if TEST_ALL:
         'scene/screensaver.yaml']
 else:
     yamls = ['scene/monitor.yaml']
-    # yamls = ['scene/symbol.yaml']
-    # yamls = ['scene/menu.yaml']
+    #yamls = ['scene/symbol.yaml']
+    #yamls = ['scene/menu.yaml']
     #yamls = ['scene/screensaver.yaml']
 
 TARGET_FOLDER = '../DEBUG/'

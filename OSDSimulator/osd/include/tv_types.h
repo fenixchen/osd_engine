@@ -37,5 +37,13 @@ typedef unsigned int u32;
 	var = self->priv;						\
 	TV_ASSERT(var);							\
 
+
+#define TV_TYPE_FP_CHECK(fp_start, fp_end) {\
+    u32 *fp;\
+    for (fp = (u32*)&fp_start; fp <= (u32*)&fp_end; ++ fp) {\
+        TV_ASSERT(*fp);\
+    }\
+}
+
 #endif
 

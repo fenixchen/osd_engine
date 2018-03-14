@@ -1,9 +1,9 @@
 #include "osd_scene.h"
 #include "osd_common.h"
-#include "osd_log.h"
 #include "osd_binary.h"
 #include "osd_window.h"
 #include "osd_palette.h"
+#include "osd_ingredient.h"
 
 struct _osd_scene_priv {
     osd_scene_hw *hw;
@@ -87,30 +87,15 @@ static u16 osd_scene_timer_ms(osd_scene *self) {
     return priv->hw->timer_ms;
 }
 
-#define SAVE_TO_FB_FILE 0
-
-static void osd_scene_paint(osd_scene *self, fn_set_pixel set_pixel, void *arg) {
-
-#if SAVE_TO_FB_FILE == 1
-    int fd;
-    char path[256];
-#endif
-
+static void osd_scene_paint(osd_scene *self,
+                            fn_set_pixel set_pixel, void *arg,
+                            u32 *framebuffer) {
     u32 x, y, i;
     u16 width, height;
     int painted = 0;
     u32 *line_buffer, *window_line_buffer;
     TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
 
-    TV_ASSERT(set_pixel);
-#if SAVE_TO_FB_FILE == 1
-    sprintf(path, "%s.fb", scene->hw->title);
-    fd = open(path, O_CREAT | O_WRONLY | O_TRUNC);
-    if (fd == -1) {
-        sprintf(path, "open %s.fb failed", scene->hw->title);
-        OSD_ERR(path);
-    }
-#endif
     width = scene->hw->width;
     height = scene->hw->height;
 
@@ -136,24 +121,17 @@ static void osd_scene_paint(osd_scene *self, fn_set_pixel set_pixel, void *arg) 
                 }
             }
         }
-        if (painted) {
+        if (painted && set_pixel) {
             for (x = 0; x < width; x ++) {
                 if (line_buffer[x] != 0) {
                     set_pixel(arg, x, y, line_buffer[x]);
                 }
             }
         }
-#if SAVE_TO_FB_FILE == 1
-        if (fd != -1)
-            for (x = 0; x < width; x ++) {
-                write(fd, &line_buffer[x], 4);
-            }
-#endif
+        if (framebuffer) {
+            memcpy(framebuffer, line_buffer, sizeof(u32) * width);
+        }
     }
-#if SAVE_TO_FB_FILE == 1
-    if (fd != -1)
-        close(fd);
-#endif
     FREE_OBJECT(window_line_buffer);
     FREE_OBJECT(line_buffer);
 }
@@ -183,7 +161,7 @@ static void osd_scene_destroy(osd_scene *self) {
 
     for (i = 0; priv->ingredients[i]; i ++) {
         osd_ingredient *ingredient = priv->ingredients[i];
-        FREE_OBJECT(ingredient);
+        ingredient->destroy(ingredient);
     }
 
     for (i = 0; priv->windows[i]; i ++) {
@@ -205,7 +183,6 @@ osd_scene *osd_scene_create(const char *osd_file) {
     osd_scene_priv *priv = MALLOC_OBJECT(osd_scene_priv);
     self->priv = priv;
     self->destroy = osd_scene_destroy;
-    self->dump = osd_scene_dump;
     self->paint = osd_scene_paint;
     self->timer = osd_scene_timer;
     self->ingredient = osd_scene_ingredient;
@@ -214,6 +191,8 @@ osd_scene *osd_scene_create(const char *osd_file) {
     self->timer_ms = osd_scene_timer_ms;
     self->rect = osd_scene_rect;
     self->ram = osd_scene_ram;
+    self->dump = osd_scene_dump;
+    TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
     TV_ASSERT(osd_file);
 
@@ -262,18 +241,13 @@ osd_scene *osd_scene_create(const char *osd_file) {
     count = priv->hw->ingredient_count;
     TV_ASSERT(count <= OSD_SCENE_MAX_INGREDIENT_COUNT);
     for (i = 0; i < count; i ++) {
-        osd_ingredient *ingredient = MALLOC_OBJECT(osd_ingredient);
-        memcpy(ingredient, ram + ram_offset, OSD_INGREDIENT_DATA_SIZE);
+        osd_ingredient_hw *hw = (osd_ingredient_hw*)(ram + ram_offset);
+        osd_ingredient *ingredient = osd_ingredient_create(self, hw);
         ram_offset += OSD_INGREDIENT_DATA_SIZE;
-        priv->ingredients[i] = ingredient;
-        if (ingredient->type == OSD_INGREDIENT_BITMAP) {
-            osd_bitmap *bitmap = &ingredient->data.bitmap;
-            ingredient->ram_data = (u8*)(ram + bitmap->data_addr);
-        } else if (ingredient->type == OSD_INGREDIENT_CHARACTER) {
-            osd_character *character = &ingredient->data.character;
-            ingredient->ram_data = (u8*)(ram + character->glyph_addr);
+        if (ingredient) {
+            priv->ingredients[i] = ingredient;
+            ingredient->dump(ingredient);
         }
-        log_ingredient(i, ingredient);
     }
 
     //load windows
@@ -283,6 +257,7 @@ osd_scene *osd_scene_create(const char *osd_file) {
         osd_window_hw *hw = (osd_window_hw *)(ram + ram_offset);
         priv->windows[i] = osd_window_create(self, hw);
         ram_offset += OSD_WINDOW_DATA_SIZE;
+        priv->windows[i]->dump(priv->windows[i]);
     }
 
     return self;
