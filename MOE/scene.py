@@ -108,9 +108,6 @@ class Scene(object):
         raise Exception('cannot find ingredient <%s>' % id)
 
     def add_ingredient(self, new_ingredient):
-        for ingredient in self._ingredients:
-            if ingredient.id == new_ingredient.id:
-                raise Exception('Duplicated ingredient <%s>' % new_ingredient.id)
         self._ingredients.append(new_ingredient)
         new_ingredient.object_index = len(self._ingredients) - 1
 
@@ -144,16 +141,6 @@ class Scene(object):
             font = self.default_font
         else:
             font = self.find_font(font)
-        for ingredient in self._ingredients:
-            if not isinstance(ingredient, Character):
-                continue
-            character = ingredient
-            glyph = character.glyph
-            if character.color == color and \
-                    glyph._char_code == char_code and \
-                    glyph.font == font and \
-                    glyph.font_size == font_size:
-                return character
         if isinstance(char_code, str):
             code = ord(char_code)
         else:
@@ -260,7 +247,7 @@ class Scene(object):
             if 'default_font_size' in config:
                 self._default_font_size = int(config['default_font_size'])
             else:
-                self._default_font_size = 16
+                self._default_font_size = OSD_DEFAULT_FONT_SIZE
 
         if 'Ingredients' in config:
             for item in config['Ingredients']:
@@ -355,7 +342,7 @@ class Scene(object):
         bins += struct.pack('<%dB' % len(self._title), *self._title.encode('utf-8'))
         bins += struct.pack('<%dx' % (OSD_SCENE_TITLE_MAX_LEN - len(self._title)))
 
-        bins += struct.pack('<Hxx', self._timer_ms)
+        bins += struct.pack('<HH', self._timer_ms, len(self._glyphs))
 
         binary_size[self] = len(bins)
 
@@ -408,7 +395,7 @@ class Scene(object):
             ram_offset += len(ram)
         return bins, rams
 
-    def generate_binary(self, target_filename, taget_address=0):
+    def generate_binary(self, target_binary, target_header, taget_address=0):
         assert self._yaml_file is not None
 
         binary_size = {}
@@ -447,7 +434,7 @@ class Scene(object):
         assert len(window_bin) == OSD_WINDOW_DATA_SIZE * len(self._windows)
 
         # create empty ram.bin
-        with open(target_filename, "wb") as f:
+        with open(target_binary, "wb") as f:
             f.truncate()
             size = f.write(scene_bin)
             size += f.write(palette_bin)
@@ -460,6 +447,24 @@ class Scene(object):
             f.write(window_ram)
 
         self._log_binary_size(binary_size)
+
+        # create header files
+        with open(target_header, "w+") as f:
+            f.truncate()
+            a = ''
+            define = os.path.splitext(os.path.basename(target_header))[0].upper()
+            f.write('#ifndef _SCENE_%s_H_\n' % define)
+            f.write('#define _SCENE_%s_H_\n\n' % define)
+
+            for i, ingredient in enumerate(self._ingredients):
+                if ingredient.multable and len(ingredient.id) > 0:
+                    f.write('#define OSD_INGREDIENT_%-16s%d\n' % (ingredient.id.upper(), i))
+            f.write('\n')
+
+            for i, window in enumerate(self._windows):
+                f.write('#define OSD_WINDOW_%-16s%d\n' % (window.id.upper(), i))
+
+            f.write('\n#endif')
 
     def _log_binary_size(self, binary_size):
         total_size = 0

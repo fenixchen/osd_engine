@@ -63,7 +63,7 @@ static void osd_window_dump(osd_window *self) {
     }
 }
 
-static osd_rect osd_window_get_rect(osd_window *self) {
+static osd_rect osd_window_rect(osd_window *self) {
     osd_rect rect;
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     rect.x = priv->hw->x;
@@ -73,17 +73,22 @@ static osd_rect osd_window_get_rect(osd_window *self) {
     return rect;
 }
 
-static u8 osd_window_get_alpha(osd_window *self) {
+static u8 osd_window_alpha(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     return priv->hw->alpha;
 }
 
-static int osd_window_is_visible(osd_window *self) {
+static int osd_window_visible(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     return priv->hw->visible;
 }
 
-static u8 osd_window_get_palette_index(osd_window *self) {
+static void osd_window_set_visible(osd_window *self, int visible) {
+    TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
+    priv->hw->visible = visible;
+}
+
+static u8 osd_window_palette_index(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     return priv->hw->palette_index;
 }
@@ -111,11 +116,12 @@ osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw) {
     priv->scene = scene;
     self->priv = priv;
     self->destroy = osd_window_destroy;
-    self->is_visible = osd_window_is_visible;
-    self->get_rect = osd_window_get_rect;
+    self->visible = osd_window_visible;
+    self->set_visible = osd_window_set_visible;
+    self->rect = osd_window_rect;
     self->paint = osd_window_paint;
-    self->get_palette_index = osd_window_get_palette_index;
-    self->get_alpha = osd_window_get_alpha;
+    self->palette_index = osd_window_palette_index;
+    self->alpha = osd_window_alpha;
     self->move_to = osd_window_move_to;
     self->dump = osd_window_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);

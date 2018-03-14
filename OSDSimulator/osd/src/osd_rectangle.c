@@ -20,7 +20,7 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
     osd_ingredient *ingredient = (osd_ingredient *)self;
     TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
     rect = priv->rectangle;
-    window_rect = window->get_rect(window);
+    window_rect = window->rect(window);
     width = rect->width == 0xFFFF ? window_rect.width : rect->width;
     height = rect->height == 0xFFFF ?window_rect.height : rect->height;
 
@@ -96,7 +96,7 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
     TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
     rect = priv->rectangle;
 
-    window_rect = window->get_rect(window);
+    window_rect = window->rect(window);
 
     width = rect->width == 0xFFFF ? window_rect.width : rect->width;
     height = rect->height == 0xFFFF ?window_rect.height : rect->height;

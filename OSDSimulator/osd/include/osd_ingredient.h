@@ -15,6 +15,7 @@ struct _osd_ingredient {
     void (*paint)(osd_ingredient *self, osd_window *window, osd_block *block,
                   u32 *window_line_buffer, u32 y);
     u32 (*palette_index)(osd_ingredient *self);
+    u8 (*type)(osd_ingredient *self);
     void (*dump)(osd_ingredient *self);
 };
 

@@ -29,7 +29,7 @@ u32 osd_ingredient_color(osd_ingredient *self,osd_window *window,u32 index) {
     TV_TYPE_GET_PRIV(osd_ingredient_priv, self, priv);
     palette_index = priv->hw->palette_index;
     if (palette_index == OSD_PALETTE_INDEX_INVALID) {
-        palette_index = window->get_palette_index(window);
+        palette_index = window->palette_index(window);
     }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
     palette = priv->scene->palette(priv->scene, palette_index);
@@ -49,7 +49,7 @@ u32 osd_ingredient_color2(osd_ingredient *self,osd_window *window,
 
     palette_index = priv->hw->palette_index;
     if (palette_index == OSD_PALETTE_INDEX_INVALID) {
-        palette_index = window->get_palette_index(window);
+        palette_index = window->palette_index(window);
     }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
     palette = priv->scene->palette(priv->scene, palette_index);
@@ -64,6 +64,10 @@ u32 osd_ingredient_color2(osd_ingredient *self,osd_window *window,
     return palette->color(palette, color_index);
 }
 
+u8 osd_ingredient_type(osd_ingredient *self) {
+    TV_TYPE_GET_PRIV(osd_ingredient_priv, self, priv);
+    return priv->hw->type;
+}
 
 static void osd_ingredient_destroy(osd_ingredient *self) {
     void (*child_destroy)(osd_ingredient *self);
@@ -109,6 +113,7 @@ osd_ingredient *osd_ingredient_create(osd_scene *scene, osd_ingredient_hw *hw) {
     self->color = osd_ingredient_color;
     self->color2 = osd_ingredient_color2;
     self->palette_index = osd_ingredient_palette_index;
+    self->type = osd_ingredient_type;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);
     return self;
 }

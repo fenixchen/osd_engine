@@ -22,7 +22,7 @@ static void osd_bitmap_paint(osd_ingredient *self,
     TV_TYPE_GET_PRIV(osd_bitmap_priv, bitmap_self, priv);
     bitmap = priv->bitmap;
     if (y >= bitmap->height) return;
-    width = OSD_MIN(bitmap->width, window->get_rect(window).width - block->x);
+    width = OSD_MIN(bitmap->width, window->rect(window).width - block->x);
     start = priv->current_bitmap * bitmap->width * bitmap->height +
             bitmap->width * y;
     for (x = start; x < start + width; x ++) {

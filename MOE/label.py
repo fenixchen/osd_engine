@@ -12,9 +12,16 @@ logger = Log.get_logger("engine")
 
 
 class Label(Ingredient):
-    def __init__(self, scene, id, text, color, font=None, font_size=None, vertical=False, palette=None):
+    def __init__(self, scene, id, text, color, font=None,
+                 font_size=None, vertical=False, palette=None, mutable=False):
         super().__init__(scene, id, palette)
         self._text = Text(scene, text, color, font, font_size, vertical)
+        self._blocks = None
+        self._mutable = mutable
+
+    @property
+    def multable(self):
+        return self._mutable
 
     def top_line(self):
         raise Exception("Should never be called")
@@ -26,17 +33,25 @@ class Label(Ingredient):
         raise Exception("Should never be called")
 
     def get_blocks(self, window, block_id, left, top):
-        blocks = []
-        blocks.extend(self._text.get_blocks(window, block_id, left, top))
-        return blocks
+        if self._blocks is None:
+            self._blocks = self._text.get_blocks(window, block_id, left, top)
+        return self._blocks
 
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
         bins = struct.pack('<Bxxx', IngredientType.LABEL.value)
-        bins += struct.pack('<xxxx')
-        bins += struct.pack('<xxxx')
-        bins += struct.pack('<xxxx')
+        if self._mutable:
+            bins += struct.pack('<I', len(self._blocks))
+            bins += struct.pack('<I', ram_offset)
+            bins += struct.pack('<xxxx')
+
+            for block in self._blocks:
+                ram += struct.pack('<H', block.ingredient.object_index)
+        else:
+            bins += struct.pack('<xxxx')
+            bins += struct.pack('<xxxx')
+            bins += struct.pack('<xxxx')
         return bins, ram
 
     def __str__(self):

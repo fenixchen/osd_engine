@@ -4,6 +4,8 @@ Scene:
         id: mono_16
         monochrome: True
         file: fonts/Zfull-GB.ttf
+        preload: '0123456789 '
+        preload_font_size: 16
 
     - Font:
         id: webdings

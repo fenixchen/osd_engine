@@ -139,6 +139,7 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
 
 static osd_scene *scene = NULL;
 
+
 void DoOpen(HWND hWnd, const char *osd_file) {
     char szFile[260];
     if (osd_file == NULL) {
@@ -164,7 +165,7 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         scene->destroy(scene);
         scene = NULL;
     }
-    scene = osd_scene_create(osd_file);
+    scene = osd_scene_create(osd_file, NULL);
     if (scene) {
         char text[256];
         const char *title = scene->title(scene);
@@ -172,9 +173,9 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         sprintf(text, "OSDSimulator - %s %d x %d", title, rect.width, rect.height);
         SetWindowText(hWnd, text);
         KillTimer(hWnd, 0);
-
-        if (scene->timer_ms(scene) != 0) {
-            SetTimer(hWnd, 0, scene->timer_ms(scene), NULL);
+        int timer_interval = scene->timer_interval(scene);
+        if (timer_interval > 0) {
+            SetTimer(hWnd, 0, timer_interval, NULL);
         }
         AdjustWindow(hWnd, rect.width, rect.height);
     }
@@ -219,7 +220,7 @@ void DoSaveFB(HWND hWnd) {
 
 void DoTimer(HWND hWnd) {
     if (scene) {
-        if (scene->timer(scene)) {
+        if (scene->trigger(scene, OSD_TRIGGER_TIMER, NULL)) {
             InvalidateRect(hWnd, NULL, FALSE);
         }
     }
@@ -323,6 +324,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
         PostQuitMessage(0);
         break;
+    case WM_KEYDOWN:
+        if (scene) {
+
+        }
     case WM_CREATE:
         SetStdOutToNewConsole();
         DoOpen(hWnd, "test.osd");

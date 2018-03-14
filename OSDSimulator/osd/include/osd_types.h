@@ -18,8 +18,9 @@
 #define OSD_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
 
 #define OSD_SCENE_MAX_PALETE_COUNT 8
-#define OSD_SCENE_MAX_INGREDIENT_COUNT 2048
+#define OSD_SCENE_MAX_INGREDIENT_COUNT 1024
 #define OSD_SCENE_MAX_WINDOW_COUNT 32
+#define OSD_SCENE_MAX_GLYPH_COUNT 1024
 
 typedef struct _osd_block osd_block;
 typedef struct _osd_window osd_window;
@@ -34,6 +35,8 @@ typedef struct _osd_move osd_move;
 typedef struct _osd_flip osd_flip;
 
 typedef struct _osd_label osd_label;
+
+typedef struct _osd_app osd_app;
 
 typedef struct _osd_character osd_character;
 typedef struct _osd_glyph osd_glyph;
@@ -66,7 +69,7 @@ struct _osd_scene_hw {
     char title[12]; //3 bytes
 
     u16 timer_ms; //0 means no timer
-    u16 reserved;
+    u16 glyph_count;
 };
 
 #define OSD_PALETTE_DATA_SIZE sizeof(osd_palette_hw)
@@ -124,6 +127,8 @@ struct _osd_line_hw {
     u8 reserved2;
 };
 
+#define OSD_SCENE_INVALID_GLYPH_INDEX 0xFFFF
+
 #define OSD_GLYPH_HEADER_SIZE sizeof(osd_glyph)
 
 struct _osd_glyph {
@@ -163,6 +168,13 @@ struct _osd_bitmap_hw {
     u32 data_addr;
 };
 
+typedef struct _osd_label_hw osd_label_hw;
+struct _osd_label_hw {
+    u32 ingredient_count;
+    u32 ingredient_addr;
+    u32 reserved;
+};
+
 #define OSD_INGREDIENT_RECTANGLE 1
 #define OSD_INGREDIENT_LINE		 2
 #define OSD_INGREDIENT_CHARACTER 3
@@ -179,12 +191,12 @@ struct _osd_ingredient_hw {
     u8 type; //OSD_INGREDIENT_XXX
     u8 palette_index;
     u16 flags;
-
     union {
         osd_rectangle_hw rectangle;
         osd_line_hw line;
         osd_bitmap_hw bitmap;
         osd_character_hw character;
+        osd_label_hw label;
     } data;
 };
 

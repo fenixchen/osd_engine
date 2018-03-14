@@ -4,58 +4,32 @@
 #include "osd_window.h"
 #include "osd_palette.h"
 #include "osd_ingredient.h"
+#include "osd_label.h"
+#include "osd_app.h"
 
 struct _osd_scene_priv {
     osd_scene_hw *hw;
+    osd_app *app;
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
+    osd_glyph *glyphs[OSD_SCENE_MAX_GLYPH_COUNT];
     osd_binary *binary;
 };
 
 
-static int x_dir, y_dir;
-static int first = 1;
-
-static int screesaver_timer(osd_scene *self) {
-    osd_window *window;
-    int x, y, max_x, max_y;
-    osd_rect rect;
-    const int MOVE_STEP = 10;
-
-    TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
-
-    window = scene->windows[0];
-    if (first) {
-        first = 0;
-        x_dir = osd_get_rand_boolean() ? 1 : -1;
-        y_dir = osd_get_rand_boolean() ? 1 : -1;
-    }
-
-    rect = window->get_rect(window);
-    max_x = scene->hw->width - rect.width - 1;
-    max_y = scene->hw->height - rect.height - 1;
-
-    x = OSD_MIN(OSD_MAX(0, (int)rect.x + MOVE_STEP * x_dir), max_x);
-    y = OSD_MIN(OSD_MAX(0, (int)rect.y + MOVE_STEP * y_dir), max_y);
-    window->move_to(window, x, y);
-
-    if (x == 0 || x == max_x) {
-        x_dir = -x_dir;
-    }
-
-    if (y == 0 || y == max_y) {
-        y_dir = -y_dir;
-    }
-    return 1;
-}
-
-static int osd_scene_timer(osd_scene *self) {
-    TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
-    if (strcmp(scene->hw->title, "ScreenSaver") == 0) {
-        return screesaver_timer(self);
+static int osd_scene_trigger(osd_scene *self, osd_trigger_type type,
+                             osd_trigger_data *data) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    if (priv->app) {
+        return priv->app->event(priv->app, type, data);
     }
     return 0;
+}
+
+static int osd_scene_timer_interval(osd_scene *self) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    return priv->hw->timer_ms;
 }
 
 static void osd_scene_dump(osd_scene *self) {
@@ -75,6 +49,12 @@ static osd_palette* osd_scene_palette(osd_scene *self, u32 index) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
     TV_ASSERT(index < priv->hw->palette_count);
     return priv->palettes[index];
+}
+
+static osd_window* osd_scene_window(osd_scene *self, u32 index) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->window_count);
+    return priv->windows[index];
 }
 
 static const char * osd_scene_title(osd_scene *self) {
@@ -106,17 +86,17 @@ static void osd_scene_paint(osd_scene *self,
         for (i = 0; scene->windows[i]; i ++) {
             osd_window *window = scene->windows[i];
             osd_rect rect;
-            if (!window->is_visible(window)) {
+            if (!window->visible(window)) {
                 continue;
             }
-            rect = window->get_rect(window);
+            rect = window->rect(window);
 
             if (rect.y <= y && y < rect.y + rect.height) {
                 u16 len = OSD_MIN(scene->hw->width - rect.x, rect.width);
                 memset(window_line_buffer, 0, sizeof(u32) * width);
                 if (window->paint(window, window_line_buffer, y)) {
                     osd_merge_line(line_buffer, window_line_buffer,
-                                   len, rect.x, window->get_alpha(window));
+                                   len, rect.x, window->alpha(window));
                     painted = 1;
                 }
             }
@@ -150,6 +130,28 @@ static u8* osd_scene_ram(osd_scene *self) {
     return priv->binary->data(priv->binary, NULL);
 }
 
+static u32 osd_scene_glyph_addr(osd_scene *self, u16 index) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->glyph_count);
+    return (u8*)priv->glyphs[index] - osd_scene_ram(self);
+}
+
+static u16 osd_scene_find_glyph(osd_scene *self, u16 char_code,
+                                u8 font_id, u8 font_size) {
+    u16 i;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    for (i = 0; i < priv->hw->glyph_count; i ++) {
+        osd_glyph *glyph = priv->glyphs[i];
+        TV_ASSERT(glyph);
+        if (glyph->font_id == font_id
+                && glyph->char_code == char_code
+                && glyph->font_size == font_size) {
+            return i;
+        }
+    }
+    return OSD_SCENE_INVALID_GLYPH_INDEX;
+}
+
 static void osd_scene_destroy(osd_scene *self) {
     u32 i;
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
@@ -170,11 +172,15 @@ static void osd_scene_destroy(osd_scene *self) {
     }
 
     priv->binary->destroy(priv->binary);
+
+    if (priv->app) {
+        priv->app->destroy(priv->app);
+    }
     FREE_OBJECT(priv);
     FREE_OBJECT(self);
 }
 
-osd_scene *osd_scene_create(const char *osd_file) {
+osd_scene *osd_scene_create(const char *osd_file, osd_app *app) {
     u32 count, i, ram_offset;
     osd_binary *binary;
 
@@ -182,15 +188,19 @@ osd_scene *osd_scene_create(const char *osd_file) {
     osd_scene *self = MALLOC_OBJECT(osd_scene);
     osd_scene_priv *priv = MALLOC_OBJECT(osd_scene_priv);
     self->priv = priv;
+    priv->app = app;
     self->destroy = osd_scene_destroy;
     self->paint = osd_scene_paint;
-    self->timer = osd_scene_timer;
+    self->timer_interval = osd_scene_timer_interval;
     self->ingredient = osd_scene_ingredient;
     self->palette = osd_scene_palette;
+    self->window = osd_scene_window;
     self->title = osd_scene_title;
-    self->timer_ms = osd_scene_timer_ms;
+    self->trigger = osd_scene_trigger;
     self->rect = osd_scene_rect;
     self->ram = osd_scene_ram;
+    self->glyph_addr = osd_scene_glyph_addr;
+    self->find_glyph = osd_scene_find_glyph;
     self->dump = osd_scene_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
@@ -258,6 +268,21 @@ osd_scene *osd_scene_create(const char *osd_file) {
         priv->windows[i] = osd_window_create(self, hw);
         ram_offset += OSD_WINDOW_DATA_SIZE;
         priv->windows[i]->dump(priv->windows[i]);
+    }
+
+    count = priv->hw->glyph_count;
+    TV_ASSERT(count <= OSD_SCENE_MAX_GLYPH_COUNT);
+    for (i = 0; i < count; i ++) {
+        osd_glyph *hw = (osd_glyph *)(ram + ram_offset);
+        priv->glyphs[i] = hw;
+        ram_offset += OSD_GLYPH_HEADER_SIZE + hw->data_size;
+    }
+
+    {
+        if (strcmp(priv->hw->title, "ScreenSaver") == 0) {
+            extern osd_app *osd_app_screensaver_create(osd_scene *scene);
+            priv->app = osd_app_screensaver_create(self);
+        }
     }
 
     return self;

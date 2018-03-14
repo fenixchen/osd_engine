@@ -22,6 +22,9 @@
     <Filter Include="osd\include">
       <UniqueIdentifier>{f4136328-e121-4ac4-a2dc-d8326a820037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{8e62d432-ba52-4af4-af5c-66e6467bf0d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -84,6 +87,12 @@
     <ClInclude Include="..\osd\include\osd_label.h">
       <Filter>osd\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\osd\include\osd_app.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\osd\include\osd_event.h">
+      <Filter>osd\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -124,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\osd\src\osd_label.c">
       <Filter>osd\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\app\app_screen_saver.c">
+      <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

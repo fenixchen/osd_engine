@@ -6,6 +6,7 @@
 
 struct _osd_character_priv {
     osd_character_hw *character;
+    osd_scene *scene;
     osd_glyph *glyph;
     u8 *glyph_data;
 };
@@ -32,7 +33,7 @@ void osd_character_paint(osd_ingredient *ingredient,
 
     color = ingredient->color(ingredient, window,
                               character->color);
-    width = OSD_MIN(glyph->width, window->get_rect(window).width - block->x);
+    width = OSD_MIN(glyph->width, window->rect(window).width - block->x);
     offset = glyph->pitch * y;
     col = block->x + glyph->left;
     for (x = 0; x < width; x ++) {
@@ -80,6 +81,20 @@ static void osd_character_dump(osd_ingredient *ingredient) {
 
 }
 
+static osd_glyph* osd_character_glyph(osd_character *self) {
+    TV_TYPE_GET_PRIV(osd_character_priv, self, priv);
+    return priv->glyph;
+}
+
+static void osd_character_set_glyph(osd_character *self, u32 glyph_index) {
+    osd_scene *scene;
+    TV_TYPE_GET_PRIV(osd_character_priv, self, priv);
+    scene = priv->scene;
+    priv->character->glyph_addr = scene->glyph_addr(scene, glyph_index);
+    self->priv->glyph = (osd_glyph*)(scene->ram(scene) + priv->character->glyph_addr);
+    self->priv->glyph_data = (u8*)self->priv->glyph + sizeof(osd_glyph);
+}
+
 static void osd_character_destroy(osd_ingredient *self) {
     osd_character *character_self = (osd_character *)self;
     FREE_OBJECT(character_self->priv);
@@ -89,14 +104,19 @@ static void osd_character_destroy(osd_ingredient *self) {
 osd_character *osd_character_create(osd_scene *scene, osd_ingredient_hw *hw) {
     osd_character *self = MALLOC_OBJECT(osd_character);
     self->priv = MALLOC_OBJECT(osd_character_priv);
-
+    self->priv->scene = scene;
     self->priv->character = &hw->data.character;
-    self->priv->glyph = (osd_glyph*)(scene->ram(scene) + hw->data.character.glyph_addr);
+    self->priv->glyph = (osd_glyph*)(scene->ram(scene) + self->priv->character->glyph_addr);
     self->priv->glyph_data = (u8*)self->priv->glyph + sizeof(osd_glyph);
+
     self->parent.paint = osd_character_paint;
     self->parent.destroy = osd_character_destroy;
     self->parent.start_y = osd_character_start_y;
     self->parent.height = osd_character_height;
     self->parent.dump = osd_character_dump;
+
+    self->set_glyph = osd_character_set_glyph;
+    self->glyph = osd_character_glyph;
+    TV_TYPE_FP_CHECK(self->set_glyph, self->set_glyph);
     return self;
 }

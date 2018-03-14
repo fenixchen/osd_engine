@@ -16,6 +16,10 @@ class Ingredient(OSDObject):
             self._palette = scene.find_palette(palette)
 
     @property
+    def multable(self):
+        return False
+
+    @property
     def palette(self):
         return self._palette
 

@@ -110,8 +110,8 @@ class Glyph(object):
         return ret
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s <%s-%s-%d>' % (
-            type(self), self._font.id, self.char_code, self._font_size))
+        logger.debug('Generate %s <%s-%s-%d> \'%c\'' % (
+            type(self), self._font.id, self.code, self._font_size, self._char_code))
 
         self._ram_offset = ram_offset
 

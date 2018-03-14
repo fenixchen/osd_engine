@@ -47,7 +47,7 @@ void osd_line_paint(osd_ingredient *self,
         u32 px = x1 + (u32)(slope * (y - y1));
         if (osd_line_style_check(line->style, y)) {
             for (x = 0; x < line->weight; x++) {
-                TV_ASSERT(block->x + px + x <= window->get_rect(window).width);
+                TV_ASSERT(block->x + px + x <= window->rect(window).width);
                 window_line_buffer[block->x + px + x] = color;
             }
         }
