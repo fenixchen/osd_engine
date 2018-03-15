@@ -14,14 +14,9 @@ logger = Log.get_logger("engine")
 class Label(Ingredient):
     def __init__(self, scene, id, text, color, font=None,
                  font_size=None, vertical=False, palette=None, mutable=False):
-        super().__init__(scene, id, palette)
+        super().__init__(scene, id, palette, mutable)
         self._text = Text(scene, text, color, font, font_size, vertical)
         self._blocks = None
-        self._mutable = mutable
-
-    @property
-    def multable(self):
-        return self._mutable
 
     def top_line(self):
         raise Exception("Should never be called")

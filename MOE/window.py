@@ -28,7 +28,7 @@ class Window(OSDObject):
                     visible = True
                 else:
                     (block_id, ingredient_id, left, top, visible) = block_info
-
+                mutable = len(block_id) > 0
                 ingredient = self._scene.find_ingredient(ingredient_id)
                 if ingredient is not None:
                     if len(block_id) == 0:
@@ -36,6 +36,7 @@ class Window(OSDObject):
                     blocks = ingredient.get_blocks(self, block_id, left, top)
                     for block in blocks:
                         block.visible = visible
+                        block.mutable = mutable
                     self._blocks.extend(blocks)
                 else:
                     raise Exception('cannot find ingredient <%s>' % id)

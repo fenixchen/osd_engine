@@ -85,7 +85,6 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\osd\include\osd_app.h" />
     <ClInclude Include="..\osd\include\osd_binary.h" />
     <ClInclude Include="..\osd\include\osd_bitmap.h" />
     <ClInclude Include="..\osd\include\osd_character.h" />
@@ -95,6 +94,7 @@
     <ClInclude Include="..\osd\include\osd_label.h" />
     <ClInclude Include="..\osd\include\osd_line.h" />
     <ClInclude Include="..\osd\include\osd_palette.h" />
+    <ClInclude Include="..\osd\include\osd_proc.h" />
     <ClInclude Include="..\osd\include\osd_rectangle.h" />
     <ClInclude Include="..\osd\include\osd_scene.h" />
     <ClInclude Include="..\osd\include\osd_types.h" />
@@ -106,7 +106,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\osd\app\app_screen_saver.c" />
+    <ClCompile Include="..\osd\proc\osd_proc_screensaver.c" />
+    <ClCompile Include="..\osd\proc\osd_proc_tv.c" />
     <ClCompile Include="..\osd\src\osd_binary.c" />
     <ClCompile Include="..\osd\src\osd_bitmap.c" />
     <ClCompile Include="..\osd\src\osd_character.c" />

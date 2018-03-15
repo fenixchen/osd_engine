@@ -73,6 +73,14 @@ static osd_rect osd_window_rect(osd_window *self) {
     return rect;
 }
 
+static void	osd_window_set_rect(osd_window *self, osd_rect *rect) {
+    TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
+    priv->hw->x = rect->x;
+    priv->hw->y = rect->y;
+    priv->hw->width = rect->width;
+    priv->hw->height = rect->height;
+}
+
 static u8 osd_window_alpha(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     return priv->hw->alpha;
@@ -119,6 +127,7 @@ osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw) {
     self->visible = osd_window_visible;
     self->set_visible = osd_window_set_visible;
     self->rect = osd_window_rect;
+    self->set_rect = osd_window_set_rect;
     self->paint = osd_window_paint;
     self->palette_index = osd_window_palette_index;
     self->alpha = osd_window_alpha;

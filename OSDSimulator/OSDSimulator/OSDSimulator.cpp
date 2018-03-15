@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "osd_scene.h"
+#include "osd_proc.h"
 
 #define MAX_LOADSTRING 100
 
@@ -139,6 +140,20 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
 
 static osd_scene *scene = NULL;
 
+static osd_proc *proc = NULL;
+
+
+extern "C" osd_proc *osd_proc_screensaver_create(osd_scene *scene);
+extern "C" osd_proc *osd_proc_tv_create(osd_scene *scene);
+
+struct tv_scene_proc {
+    const char *title;
+    osd_proc* (*proc_create)(osd_scene *scene);
+} scene_procs[] = {
+    {"ScreenSaver", osd_proc_screensaver_create,},
+    {"tv", osd_proc_tv_create,},
+    {NULL, NULL,},
+};
 
 void DoOpen(HWND hWnd, const char *osd_file) {
     char szFile[260];
@@ -161,10 +176,8 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         }
         osd_file = szFile;
     }
-    if (scene) {
-        scene->destroy(scene);
-        scene = NULL;
-    }
+    TV_TYPE_FREE(scene);
+    TV_TYPE_FREE(proc);
     scene = osd_scene_create(osd_file, NULL);
     if (scene) {
         char text[256];
@@ -178,6 +191,16 @@ void DoOpen(HWND hWnd, const char *osd_file) {
             SetTimer(hWnd, 0, timer_interval, NULL);
         }
         AdjustWindow(hWnd, rect.width, rect.height);
+
+        struct tv_scene_proc *scene_proc = scene_procs;
+        while (scene_proc->title && scene_proc->proc_create) {
+            if (stricmp(title, scene_proc->title) == 0) {
+                proc = scene_proc->proc_create(scene);
+                TV_ASSERT(proc);
+                scene->set_proc(scene, proc);
+            }
+            scene_proc ++;
+        }
     }
     InvalidateRect(hWnd, NULL, TRUE);
 }
@@ -318,19 +341,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         DoTimer(hWnd);
         break;
     case WM_DESTROY:
-        if (scene) {
-            scene->destroy(scene);
-            scene = NULL;
-        }
+        TV_TYPE_FREE(scene);
+        TV_TYPE_FREE(proc);
         PostQuitMessage(0);
         break;
     case WM_KEYDOWN:
         if (scene) {
-
+            osd_trigger_data trigger;
+            osd_key key = OSD_KEY_NONE;
+            switch (wParam) {
+            case VK_DOWN:
+                key = OSD_KEY_DOWN;
+                break;
+            case VK_UP:
+                key = OSD_KEY_UP;
+                break;
+            case VK_LEFT:
+                key = OSD_KEY_LEFT;
+                break;
+            case VK_RIGHT:
+                key = OSD_KEY_RIGHT;
+                break;
+            case VK_RETURN:
+                key = OSD_KEY_ENTER;
+                break;
+            }
+            if (key != OSD_KEY_NONE) {
+                trigger.data.keydown.key = key;
+                if (scene->trigger(scene, OSD_TRIGGER_KEYDOWN, &trigger)) {
+                    InvalidateRect(hWnd, NULL, FALSE);
+                }
+            }
+            break;
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "test.osd");
+        DoOpen(hWnd, "tv.osd");
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

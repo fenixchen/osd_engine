@@ -23,9 +23,10 @@ struct _osd_scene {
     u8* (*ram)(osd_scene *self);
     u32 (*glyph_addr)(osd_scene *self, u16 index);
     u16 (*find_glyph)(osd_scene *self, u16 char_code, u8 font_id, u8 font_size);
+    void (*set_proc)(osd_scene *self, osd_proc *proc);
     void (*dump)(osd_scene *self);
 };
 
-EXTERNC osd_scene *osd_scene_create(const char *osd_file, osd_app *app);
+EXTERNC osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc);
 
 #endif

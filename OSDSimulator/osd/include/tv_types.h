@@ -45,5 +45,7 @@ typedef unsigned int u32;
     }\
 }
 
+#define TV_TYPE_FREE(p) do { if (p) { p->destroy(p); p = NULL; } } while (0)
+
 #endif
 

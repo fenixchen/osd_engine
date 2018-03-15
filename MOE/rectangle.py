@@ -16,8 +16,9 @@ class Rectangle(Ingredient):
                  border_color=0, border_weight=0, bgcolor=None,
                  gradient_mode=GradientMode.SOLID.name,
                  border_style=LineStyle.SOLID.name,
-                 palette=None):
-        super().__init__(scene, id, palette)
+                 palette=None,
+                 mutable=False):
+        super().__init__(scene, id, palette, mutable)
         self._width = width
         self._height = height
         self._border_style = LineStyle[border_style]

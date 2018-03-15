@@ -27,8 +27,8 @@ if TEST_ALL:
 else:
     #yamls = ['scene/monitor.yaml']
     #yamls = ['scene/symbol.yaml']
-    #yamls = ['scene/menu.yaml']
-    yamls = ['scene/screensaver.yaml']
+    yamls = ['scene/tv.yaml']
+    #yamls = ['scene/screensaver.yaml']
 
 TARGET_FOLDER = '../DEBUG/'
 
@@ -38,10 +38,7 @@ if __name__ == '__main__':
         scene = Scene(yaml)
         scenes.append(scene)
         if GENERATE_BIN:
-            if TEST_ALL:
-                base_path = TARGET_FOLDER + os.path.splitext(os.path.basename(yaml))[0]
-            else:
-                base_path = TARGET_FOLDER + 'test'
+            base_path = TARGET_FOLDER + os.path.splitext(os.path.basename(yaml))[0]
             scene.generate_binary(base_path + '.osd', base_path + '.h', taget_address=0)
 
     application = app.App(*scenes)

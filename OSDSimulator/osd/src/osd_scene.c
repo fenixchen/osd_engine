@@ -5,11 +5,11 @@
 #include "osd_palette.h"
 #include "osd_ingredient.h"
 #include "osd_label.h"
-#include "osd_app.h"
+#include "osd_proc.h"
 
 struct _osd_scene_priv {
     osd_scene_hw *hw;
-    osd_app *app;
+    osd_proc *proc;
     osd_palette *palettes[OSD_SCENE_MAX_PALETE_COUNT];
     osd_ingredient *ingredients[OSD_SCENE_MAX_INGREDIENT_COUNT];
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
@@ -21,8 +21,9 @@ struct _osd_scene_priv {
 static int osd_scene_trigger(osd_scene *self, osd_trigger_type type,
                              osd_trigger_data *data) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
-    if (priv->app) {
-        return priv->app->event(priv->app, type, data);
+    if (priv->proc) {
+        TV_ASSERT(priv->proc->event);
+        return priv->proc->event(priv->proc, type, data);
     }
     return 0;
 }
@@ -152,6 +153,11 @@ static u16 osd_scene_find_glyph(osd_scene *self, u16 char_code,
     return OSD_SCENE_INVALID_GLYPH_INDEX;
 }
 
+static void osd_scene_set_proc(osd_scene *self, osd_proc *proc) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    priv->proc = proc;
+}
+
 static void osd_scene_destroy(osd_scene *self) {
     u32 i;
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
@@ -173,14 +179,12 @@ static void osd_scene_destroy(osd_scene *self) {
 
     priv->binary->destroy(priv->binary);
 
-    if (priv->app) {
-        priv->app->destroy(priv->app);
-    }
+
     FREE_OBJECT(priv);
     FREE_OBJECT(self);
 }
 
-osd_scene *osd_scene_create(const char *osd_file, osd_app *app) {
+osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
     u32 count, i, ram_offset;
     osd_binary *binary;
 
@@ -188,7 +192,7 @@ osd_scene *osd_scene_create(const char *osd_file, osd_app *app) {
     osd_scene *self = MALLOC_OBJECT(osd_scene);
     osd_scene_priv *priv = MALLOC_OBJECT(osd_scene_priv);
     self->priv = priv;
-    priv->app = app;
+    priv->proc = proc;
     self->destroy = osd_scene_destroy;
     self->paint = osd_scene_paint;
     self->timer_interval = osd_scene_timer_interval;
@@ -201,6 +205,7 @@ osd_scene *osd_scene_create(const char *osd_file, osd_app *app) {
     self->ram = osd_scene_ram;
     self->glyph_addr = osd_scene_glyph_addr;
     self->find_glyph = osd_scene_find_glyph;
+    self->set_proc = osd_scene_set_proc;
     self->dump = osd_scene_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
@@ -276,13 +281,6 @@ osd_scene *osd_scene_create(const char *osd_file, osd_app *app) {
         osd_glyph *hw = (osd_glyph *)(ram + ram_offset);
         priv->glyphs[i] = hw;
         ram_offset += OSD_GLYPH_HEADER_SIZE + hw->data_size;
-    }
-
-    {
-        if (strcmp(priv->hw->title, "ScreenSaver") == 0) {
-            extern osd_app *osd_app_screensaver_create(osd_scene *scene);
-            priv->app = osd_app_screensaver_create(self);
-        }
     }
 
     return self;

@@ -9,6 +9,15 @@ class Block(object):
         self._y = y
         self._ingredient = ingredient
         self._visible = True
+        self._mutable = False
+
+    @property
+    def mutable(self):
+        return self._mutable
+
+    @mutable.setter
+    def mutable(self, mutable):
+        self._mutable = mutable
 
     @property
     def visible(self):

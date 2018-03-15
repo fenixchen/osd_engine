@@ -36,7 +36,7 @@ typedef struct _osd_flip osd_flip;
 
 typedef struct _osd_label osd_label;
 
-typedef struct _osd_app osd_app;
+typedef struct _osd_proc osd_proc;
 
 typedef struct _osd_character osd_character;
 typedef struct _osd_glyph osd_glyph;

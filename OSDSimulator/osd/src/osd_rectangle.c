@@ -212,6 +212,20 @@ static void osd_rectangle_dump(osd_ingredient *ingredient) {
 
 }
 
+osd_rect osd_rectangle_rect(osd_rectangle *self) {
+    osd_rect rect;
+    TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
+    rect.x = rect.y = 0;
+    rect.width = priv->rectangle->width;
+    rect.height = priv->rectangle->height;
+    return rect;
+}
+void osd_rectangle_set_rect(osd_rectangle *self, osd_rect *rect) {
+    TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
+    priv->rectangle->width = rect->width;
+    priv->rectangle->height = rect->height;
+}
+
 static void osd_rectangle_destroy(osd_ingredient *self) {
     osd_rectangle *rectangle_self = (osd_rectangle *)self;
     FREE_OBJECT(rectangle_self->priv);
@@ -229,5 +243,10 @@ osd_rectangle *osd_rectangle_create(osd_scene *scene, osd_ingredient_hw *hw) {
     self->parent.start_y = osd_rectangle_start_y;
     self->parent.height = osd_rectangle_height;
     self->parent.dump = osd_rectangle_dump;
+
+    self->rect = osd_rectangle_rect;
+    self->set_rect = osd_rectangle_set_rect;
+    TV_TYPE_FP_CHECK(self->rect, self->set_rect);
+
     return self;
 }

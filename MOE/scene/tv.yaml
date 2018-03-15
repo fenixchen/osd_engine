@@ -1,7 +1,7 @@
 Scene:
   width: 800
   height: 600
-  title: TVDemo
+  title: tv
   default_font: mono_16
 
   Includes:
@@ -45,13 +45,25 @@ Scene:
 
 
     - Label:
-        id: label_bottom_1
+        id: label_bottom_0_0_0
+        text: '快速指南'
+        font_size: 24
+        color: 2
+
+    - Label:
+        id: label_bottom_0_0_1
+        text: '查看快速指南'
+        font_size: 16
+        color: 2
+
+    - Label:
+        id: label_bottom_0_3_0
         text: '智能功能'
         font_size: 24
         color: 2
 
     - Label:
-        id: label_bottom_2
+        id: label_bottom_0_3_1
         text: '通过使用特殊智能功能，您可以更充分的享受电视带来的乐趣。使用Smart Hub功能，或用语音控制电视'
         font_size: 16
         color: 2
@@ -381,15 +393,27 @@ Scene:
           - ['', icon_1_4, 653, 182]
 
     - Window:
-        id: bottom
+        id: bottom_0_3
         x: 0
         y: 500
         width: 800
         height: 100
         palette: palette0
         blocks:
-          - ['', label_bottom_1, 30, 10]
-          - ['', label_bottom_2, 30, 45]
+          - ['', label_bottom_0_3_0, 30, 10]
+          - ['', label_bottom_0_3_1, 30, 45]
+
+    - Window:
+        id: bottom_0_0
+        x: 0
+        y: 500
+        width: 800
+        height: 100
+        palette: palette0
+        visible: False
+        blocks:
+          - ['', label_bottom_0_0_0, 30, 10]
+          - ['', label_bottom_0_0_1, 30, 45]
 
     - Window:
         id: item_highlight

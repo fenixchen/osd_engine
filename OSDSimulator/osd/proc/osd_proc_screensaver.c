@@ -1,15 +1,15 @@
 #include "osd_scene.h"
 #include "osd_common.h"
-#include "osd_app.h"
+#include "osd_proc.h"
 #include "osd_scene.h"
 #include "osd_ingredient.h"
 #include "osd_window.h"
 #include "osd_label.h"
-#include "../../../Debug/test.h"
+#include "../../../Debug/screensaver.h"
 
 
-typedef struct _osd_app_screensaver_priv osd_app_screensaver_priv;
-struct _osd_app_screensaver_priv {
+typedef struct _osd_proc_screensaver_priv osd_proc_screensaver_priv;
+struct _osd_proc_screensaver_priv {
     osd_scene *scene;
 };
 
@@ -19,7 +19,7 @@ static int init = 15;
 static int visible = 1;
 static int counter = 0;
 
-static int osd_app_screesaver_timer(osd_app *self) {
+static int osd_proc_screesaver_timer(osd_proc *self) {
     osd_window *window;
     osd_ingredient *ingredient;
     osd_label *label;
@@ -27,7 +27,7 @@ static int osd_app_screesaver_timer(osd_app *self) {
     osd_rect window_rect, scene_rect;
     osd_scene *scene;
     const int MOVE_STEP = 10;
-    TV_TYPE_GET_PRIV(osd_app_screensaver_priv, self, priv);
+    TV_TYPE_GET_PRIV(osd_proc_screensaver_priv, self, priv);
 
     scene = priv->scene;
     window = scene->window(scene, OSD_WINDOW_MAIN);
@@ -69,30 +69,30 @@ static int osd_app_screesaver_timer(osd_app *self) {
     return 1;
 }
 
-static int osd_app_screensaver_event(osd_app *self,
-                                     osd_trigger_type type,
-                                     osd_trigger_data *data) {
+static int osd_proc_screensaver_event(osd_proc *self,
+                                      osd_trigger_type type,
+                                      osd_trigger_data *data) {
     switch (type) {
     case OSD_TRIGGER_TIMER:
-        return osd_app_screesaver_timer(self);
+        return osd_proc_screesaver_timer(self);
     default:
         return 0;
     }
 }
 
-static void osd_app_screensaver_destroy(osd_app *self) {
-    TV_TYPE_GET_PRIV(osd_app_screensaver_priv, self, priv);
+static void osd_proc_screensaver_destroy(osd_proc *self) {
+    TV_TYPE_GET_PRIV(osd_proc_screensaver_priv, self, priv);
     FREE_OBJECT(priv);
     FREE_OBJECT(self);
 }
 
-osd_app *osd_app_screensaver_create(osd_scene *scene) {
-    osd_app *self = MALLOC_OBJECT(osd_app);
-    osd_app_screensaver_priv *priv = MALLOC_OBJECT(osd_app_screensaver_priv);
+osd_proc *osd_proc_screensaver_create(osd_scene *scene) {
+    osd_proc *self = MALLOC_OBJECT(osd_proc);
+    osd_proc_screensaver_priv *priv = MALLOC_OBJECT(osd_proc_screensaver_priv);
     self->priv = priv;
     priv->scene = scene;
-    self->destroy = osd_app_screensaver_destroy;
-    self->event = osd_app_screensaver_event;
+    self->destroy = osd_proc_screensaver_destroy;
+    self->event = osd_proc_screensaver_event;
     TV_TYPE_FP_CHECK(self->destroy, self->event);
     return self;
 }
