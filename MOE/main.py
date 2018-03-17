@@ -30,7 +30,7 @@ else:
     yamls = ['scene/tv.yaml']
     #yamls = ['scene/screensaver.yaml']
 
-TARGET_FOLDER = '../DEBUG/'
+TARGET_FOLDER = '../scenes/'
 
 if __name__ == '__main__':
     scenes = []

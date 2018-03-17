@@ -85,6 +85,8 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\scenes\screensaver.h" />
+    <ClInclude Include="..\..\scenes\tv.h" />
     <ClInclude Include="..\osd\include\osd_binary.h" />
     <ClInclude Include="..\osd\include\osd_bitmap.h" />
     <ClInclude Include="..\osd\include\osd_character.h" />

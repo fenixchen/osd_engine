@@ -108,3 +108,24 @@ int osd_get_rand_boolean(void) {
     return rand() > (RAND_MAX / 2);
 }
 
+
+void osd_char_to_wchar(wchar *wstr, const char *str) {
+    const char *p = str;
+    wchar *q = wstr;
+    while (*p) {
+        *q = *p;
+        ++p;
+        ++q;
+    }
+}
+
+int osd_wchar_len(const wchar *wstr) {
+    const wchar *p = wstr;
+    int len = 0;
+    while (p && *p) {
+        ++p;
+        ++len;
+    }
+    return len;
+}
+

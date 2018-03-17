@@ -16,7 +16,7 @@ class Font(OSDObject):
 
     def __init__(self, scene, id, file, font_width=None, font_height=None,
                  charmap=None, monochrome=False,
-                 preload='', preload_font_size=OSD_DEFAULT_FONT_SIZE):
+                 preloads = []):
         super().__init__(scene, id)
         self._file = file
         self._monochrome = monochrome
@@ -39,7 +39,13 @@ class Font(OSDObject):
             for i in range(3):
                 self._faces.append(face)
 
-        for char in preload:
+        for preload in preloads:
+            if 'text' in preload and 'size' in preload:
+                preload_font_size = preload['size']
+                for char in preload['text']:
+                    scene.get_glyph(char, self, preload_font_size)
+
+
             scene.get_glyph(char, self, preload_font_size)
 
     def load_char(self, char, font_size):

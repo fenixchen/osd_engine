@@ -93,6 +93,12 @@
     <ClInclude Include="..\osd\include\osd_proc.h">
       <Filter>osd\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\scenes\tv.h">
+      <Filter>proc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\scenes\screensaver.h">
+      <Filter>proc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

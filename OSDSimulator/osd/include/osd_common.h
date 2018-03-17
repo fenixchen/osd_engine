@@ -16,4 +16,8 @@ void osd_merge_line(u32 *dst_buf, u32 *src_buf, u16 len, u32 x, u8 alpha);
 
 int osd_get_rand_boolean(void);
 
+void osd_char_to_wchar(wchar *wstr, const char *str);
+
+int osd_wchar_len(const wchar *wstr);
+
 #endif

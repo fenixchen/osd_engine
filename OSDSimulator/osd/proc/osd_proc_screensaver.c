@@ -5,7 +5,7 @@
 #include "osd_ingredient.h"
 #include "osd_window.h"
 #include "osd_label.h"
-#include "../../../Debug/screensaver.h"
+#include "../../../scenes/screensaver.h"
 
 
 typedef struct _osd_proc_screensaver_priv osd_proc_screensaver_priv;
@@ -60,7 +60,7 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
         ingredient = scene->ingredient(scene, OSD_INGREDIENT_LABEL_CENTER_2);
         TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_LABEL);
         label = (osd_label *)ingredient;
-        label->set_value(label, init--);
+        label->set_int(label, init--);
         if (init < 0) {
             window->set_visible(window, 0);
         }

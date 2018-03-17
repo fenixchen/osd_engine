@@ -26,16 +26,25 @@ class Text(object):
 
     def get_blocks(self, window, block_id, left, top):
         blocks = []
+        advance = 0
         for i, character in enumerate(self._characters):
             glyph = character.glyph
             sub_id = '%s_%d' % (block_id, i)
             block = Block(window, sub_id, character, left, top)
             blocks.append(block)
-            if self._vertical:
-                top += glyph.advance_y
+
+            if glyph.code == ord(' '):
+                if self._vertical:
+                    top += advance
+                else:
+                    left += advance
             else:
-                left += glyph.advance_x
-            i += 1
+                if self._vertical:
+                    top += glyph.advance_y
+                    advance = max(advance, glyph.advance_y)
+                else:
+                    left += glyph.advance_x
+                    advance = max(advance, glyph.advance_x)
         return blocks
 
     @property

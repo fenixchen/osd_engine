@@ -169,7 +169,7 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         ofn.nFilterIndex = 1;
         ofn.lpstrFileTitle = NULL;
         ofn.nMaxFileTitle = 0;
-        ofn.lpstrInitialDir = ".";
+        ofn.lpstrInitialDir = "..\\scenes\\";
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
         if (!GetOpenFileName(&ofn)) {
             return;
@@ -376,7 +376,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "tv.osd");
+        DoOpen(hWnd, "..\\scenes\\screensaver.osd");
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

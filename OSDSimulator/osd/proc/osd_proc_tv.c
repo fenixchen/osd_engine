@@ -5,7 +5,7 @@
 #include "osd_ingredient.h"
 #include "osd_window.h"
 #include "osd_label.h"
-#include "../../../Debug/tv.h"
+#include "../../../scenes/tv.h"
 
 typedef struct _osd_proc_tv_priv osd_proc_tv_priv;
 struct _osd_proc_tv_priv {
@@ -20,14 +20,23 @@ static int osd_proc_tv_timer(osd_proc *self) {
 static int col = 3, row = 0;
 static int max_col = 4, max_row = 1;
 static int x_offset = 20, y_offset = 120;
-
+static wchar *string_big[] = {
+    L"快速指南",
+    L"连接",
+    L"遥控器和外围设备",
+    L"智能功能",
+    L"电视观看",
+    L"图像和声音",
+    L"系统和支持",
+    L"故障排除",
+    L"注意事项和说明",
+    L"使用说明书",
+};
 static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
     static int old_col, old_row;
     osd_scene *scene;
     osd_window *window_hl;
-    osd_window *window_bottom_0_0;
-    osd_window *window_bottom_0_3;
-
+    osd_label *label_big, *label_small;
     TV_TYPE_GET_PRIV(osd_proc_tv_priv, self, priv);
 
     old_col = col;
@@ -55,19 +64,10 @@ static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
         rect.y = y_offset + row * 152;
         window_hl->set_rect(window_hl, &rect);
 
-        window_bottom_0_0 = scene->window(scene, OSD_WINDOW_BOTTOM_0_0);
-        window_bottom_0_3 = scene->window(scene, OSD_WINDOW_BOTTOM_0_3);
-        if (row == 0 && col == 0) {
-            window_bottom_0_3->set_visible(window_bottom_0_3, 0);
-            window_bottom_0_0->set_visible(window_bottom_0_0, 1);
-        } else if (row == 0 && col == 3) {
-            window_bottom_0_3->set_visible(window_bottom_0_3, 1);
-            window_bottom_0_0->set_visible(window_bottom_0_0, 0);
-        } else {
-            window_bottom_0_3->set_visible(window_bottom_0_3, 0);
-            window_bottom_0_0->set_visible(window_bottom_0_0, 0);
-        }
+        label_big = (osd_label*)scene->ingredient(scene, OSD_INGREDIENT_LABEL_BOTTOM_BIG);
+        label_small = (osd_label*)scene->ingredient(scene, OSD_INGREDIENT_LABEL_BOTTOM_SMALL);
 
+        label_big->set_string(label_big, string_big[row * 5 + col]);
 
         return 1;
     } else {
