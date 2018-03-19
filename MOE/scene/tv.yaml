@@ -7,7 +7,17 @@ Scene:
   Includes:
     - Include:
         file: common.yaml
-
+  Fonts:
+    - Preload:
+        id: preload0
+        font: mono_16
+        size: 16
+        text: '0123456789 '
+    - Preload:
+        id: preload1
+        font: mono_16
+        size: 24
+        text: '0123456789 快速指南 连接 遥控器和外围设备 智能功能 电视观看 图像和声音 系统和支持 故障排除 注意事项和说明 使用说明书'
   Palettes:
     - Palette:
         id: palette0
@@ -16,10 +26,10 @@ Scene:
         0x0000FF, 0xFACE87, 0xED9564, 0x8B8B00, 0xCD5A6A,
         0xAF7000, 0x00BFBF, 0x00BF00, 0x7300BF, 0xA1AE00,
         0x0000AF, 0xAAAE67, 0xAD7544, 0x5B5B00, 0xAD3A4A,
+        0x0000A0, 0xFFFFFF,
         ]
 
   Ingredients:
-
     - Rectangle:
         id: rect_top
         bgcolor: [4, 9]
@@ -42,7 +52,6 @@ Scene:
         text: 'v 1.2.0'
         font_size: 16
         color: 6
-
 
     - Label:
         id: label_bottom_big
@@ -309,6 +318,56 @@ Scene:
         border_weight: 2
         border_color: 2
 
+    - Rectangle:
+        id: rect_msgbox1
+        height: 30
+        bgcolor: [31, 32]
+        border_color: 31
+        border_weight: 1
+        gradient_mode: LEFT_TO_RIGHT
+
+    - Rectangle:
+        id: rect_msgbox2
+        height: 170
+        bgcolor: [2]
+        border_color: 31
+        border_weight: 1
+
+    - Rectangle:
+        id: rect_msgbox_button
+        height: 30
+        width: 80
+        bgcolor: [6,7]
+        gradient_mode: TOP_TO_BOTTOM
+        border_color: 6
+        border_weight: 1
+        border_style: DOT3
+
+    - Label:
+        id: label_msgbox
+        text: '提示信息'
+        font_size: 16
+        color: 1
+
+    - Label:
+        id: label_msgbox_content
+        text: '电视菜单演示程序，按回车键关闭'
+        font_size: 16
+        color: 9
+
+    - Label:
+        id: label_msgbox_close
+        text: '关闭'
+        font_size: 16
+        color: 2
+    - Label:
+        id: icon_close
+        text: 0xCD
+        font: wingding2
+        font_size: 20
+        color: 1
+
+
   Windows:
     - Window:
         id: top
@@ -402,5 +461,23 @@ Scene:
         palette: palette0
         blocks:
           - ['', rect_hl, 0, 0]
+
+    - Window:
+        id: messagebox
+        x: 250
+        y: 200
+        width: 300
+        height: 200
+        palette: palette0
+        visible: false
+        alpha: 0xE0
+        blocks:
+          - ['', rect_msgbox1, 0, 0]
+          - ['', rect_msgbox2, 0, 30]
+          - ['', rect_msgbox_button, 110, 150]
+          - ['', label_msgbox_close, 135, 158]
+          - ['', label_msgbox, 5, 5]
+          - ['', icon_close, 280, 5]
+          - ['', label_msgbox_content, 40, 60]
 
 

@@ -3,20 +3,6 @@
 
 #include "tv_types.h"
 
-
-#ifndef OSD_MAX_PATH
-#define OSD_MAX_PATH 256
-#endif
-
-
-#define OSD_LOG printf
-
-#define OSD_ERR printf
-
-#define OSD_ASSERT assert
-
-#define OSD_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
-
 #define OSD_SCENE_MAX_PALETE_COUNT 8
 #define OSD_SCENE_MAX_INGREDIENT_COUNT 1024
 #define OSD_SCENE_MAX_WINDOW_COUNT 32

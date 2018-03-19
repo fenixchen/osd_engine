@@ -34,15 +34,26 @@ static wchar *string_big[] = {
 };
 static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
     static int old_col, old_row;
+    int msgbox_visible;
     osd_scene *scene;
-    osd_window *window_hl;
+    osd_window *window_hl, *window_msgbox;
     osd_label *label_big, *label_small;
     TV_TYPE_GET_PRIV(osd_proc_tv_priv, self, priv);
-
     old_col = col;
     old_row = row;
     scene = priv->scene;
+
     window_hl = scene->window(scene, OSD_WINDOW_ITEM_HIGHLIGHT);
+
+    window_msgbox = scene->window(scene, OSD_WINDOW_MESSAGEBOX);
+    msgbox_visible = window_msgbox->visible(window_msgbox);
+    if (key == OSD_KEY_ENTER) {
+        window_msgbox->set_visible(window_msgbox, !msgbox_visible);
+        return 1;
+    }
+
+    if (msgbox_visible) return 0;
+
     switch (key) {
     case OSD_KEY_UP:
         row = OSD_MAX(0, row - 1);
@@ -56,7 +67,11 @@ static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
     case OSD_KEY_RIGHT:
         col = OSD_MIN(max_col, col + 1);
         break;
+    default:
+        OSD_LOG("KEY %d pressed\n", key);
+        return 0;
     }
+    window_hl = scene->window(scene, OSD_WINDOW_ITEM_HIGHLIGHT);
     if (old_col != col || old_row != row) {
         osd_rect rect;
         rect.width = rect.height = 152;

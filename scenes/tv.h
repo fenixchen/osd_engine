@@ -8,5 +8,6 @@
 #define OSD_WINDOW_CENTER           1
 #define OSD_WINDOW_BOTTOM           2
 #define OSD_WINDOW_ITEM_HIGHLIGHT   3
+#define OSD_WINDOW_MESSAGEBOX       4
 
 #endif

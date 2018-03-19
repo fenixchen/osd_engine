@@ -117,6 +117,7 @@ void osd_char_to_wchar(wchar *wstr, const char *str) {
         ++p;
         ++q;
     }
+    *q = '\0';
 }
 
 int osd_wchar_len(const wchar *wstr) {

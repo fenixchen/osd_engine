@@ -4,7 +4,7 @@ import app
 from scene import Scene
 import os
 
-TEST_ALL = False
+TEST_ALL = True
 GENERATE_BIN = True
 if TEST_ALL:
     yamls = [

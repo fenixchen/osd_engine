@@ -47,5 +47,19 @@ typedef unsigned short wchar;
 
 #define TV_TYPE_FREE(p) do { if (p) { p->destroy(p); p = NULL; } } while (0)
 
+
+#ifndef OSD_MAX_PATH
+#define OSD_MAX_PATH 256
+#endif
+
+
+#define OSD_LOG printf
+
+#define OSD_ERR printf
+
+#define OSD_ASSERT assert
+
+#define OSD_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
+
 #endif
 

@@ -4,13 +4,6 @@ Scene:
         id: mono_16
         monochrome: True
         file: fonts/Zfull-GB.ttf
-        preloads:
-          - text: '0123456789 '
-            size: 16
-          - text: '0123456789 快速指南 连接 遥控器和外围设备 智能功能 电视观看 \
-                              图像和声音 系统和支持 故障排除 注意事项和说明 使用说明书'
-            size: 24
-
     - Font:
         id: webdings
         monochrome: True

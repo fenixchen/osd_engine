@@ -6,6 +6,12 @@ Scene:
   Includes:
     - Include:
         file: common.yaml
+  Fonts:
+    - Preload:
+        id: preload0
+        font: mono_16
+        size: 16
+        text: '0123456789 '
   Palettes:
     - Palette:
         id: palette1

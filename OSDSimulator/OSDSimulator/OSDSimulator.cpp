@@ -376,7 +376,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "..\\scenes\\screensaver.osd");
+        DoOpen(hWnd, "..\\scenes\\tv.osd");
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
