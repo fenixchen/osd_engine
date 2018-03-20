@@ -19,8 +19,8 @@ class Bitmap(Ingredient):
     def width(self):
         return self._width
 
-    def __init__(self, scene, id, bitmaps, palette):
-        super().__init__(scene, id, palette)
+    def __init__(self, scene, id, bitmaps, palette, mutable=False):
+        super().__init__(scene, id, palette, mutable)
         assert self._palette is not None
         self._data = []
         if isinstance(bitmaps, str):

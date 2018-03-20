@@ -99,6 +99,9 @@
     <ClInclude Include="..\..\scenes\screensaver.h">
       <Filter>proc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\scenes\animation.h">
+      <Filter>proc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -144,6 +147,9 @@
       <Filter>proc</Filter>
     </ClCompile>
     <ClCompile Include="..\osd\proc\osd_proc_tv.c">
+      <Filter>proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\osd\proc\osd_proc_animation.c">
       <Filter>proc</Filter>
     </ClCompile>
   </ItemGroup>

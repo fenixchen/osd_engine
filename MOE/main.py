@@ -28,6 +28,7 @@ else:
     #yamls = ['scene/monitor.yaml']
     #yamls = ['scene/symbol.yaml']
     yamls = ['scene/tv.yaml']
+    #yamls = ['scene/rect.yaml']
     #yamls = ['scene/screensaver.yaml']
 
 TARGET_FOLDER = '../scenes/'

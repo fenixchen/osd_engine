@@ -89,8 +89,9 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
     u32 x, bg_color_start, bg_color_end, color, color_steps;
     double r_delta, g_delta, b_delta;
     osd_rect window_rect;
-    u16 width, height;
+    u16 width, height, fill_width, fill_height;
     osd_rectangle_hw *rect;
+    u32 factor_x, factor_y;
 
     osd_ingredient *ingredient = (osd_ingredient *)self;
     TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
@@ -107,6 +108,9 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
     bg_color_start = ingredient->color(ingredient, window, rect->bgcolor_start);
     bg_color_end = ingredient->color(ingredient, window, rect->bgcolor_end);
 
+    fill_width = width - rect->border_weight * 2;
+    fill_height = height - rect->border_weight * 2;
+
     switch (rect->gradient_mode) {
     case OSD_GRADIENT_MODE_NONE:
         return;
@@ -114,14 +118,17 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
         color_steps = 1;
         break;
     case OSD_GRADIENT_MODE_LEFT_TO_RIGHT:
-        color_steps = width - rect->border_weight * 2;
+        color_steps = fill_width;
         break;
     case OSD_GRADIENT_MODE_TOP_TO_BOTTOM:
-        color_steps = height - rect->border_weight * 2;
+        color_steps = fill_height;
         break;
     case OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT:
     case OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT:
-        color_steps = (width - rect->border_weight * 2) * (height - rect->border_weight * 2);
+        color_steps = fill_width * fill_height;
+        break;
+    case OSD_GRADIENT_MODE_CORNER_TO_CENTER:
+        color_steps = (fill_width * fill_height) >> 2;
         break;
     default:
         TV_ASSERT(0);
@@ -133,22 +140,38 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
     color = bg_color_start;
     for (x = block->x + rect->border_weight;
             x < (u32)(block->x + width - rect->border_weight); ++ x) {
+        u16 fill_x = x - (block->x + rect->border_weight);
+        u16 fill_y = y - rect->border_weight;
         u32 factor;
         switch (rect->gradient_mode) {
         case OSD_GRADIENT_MODE_SOLID:
             factor = 0;
             break;
         case OSD_GRADIENT_MODE_LEFT_TO_RIGHT:
-            factor = x - (block->x + rect->border_weight);
+            factor = fill_x;
             break;
         case OSD_GRADIENT_MODE_TOP_TO_BOTTOM:
             factor = y;
             break;
         case OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT:
-            factor = (x - (block->x + rect->border_weight)) * y;
+            factor = fill_x * fill_y;
             break;
         case OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT:
-            factor = (x - (block->x + rect->border_weight)) * (height - rect->border_weight - y);
+            factor = fill_x * (fill_height - fill_y);
+            break;
+        case OSD_GRADIENT_MODE_CORNER_TO_CENTER:
+            if (fill_x <= (fill_width >> 1)) {
+                factor_x = fill_x;
+            } else {
+                factor_x = fill_width - fill_x;
+            }
+            if (fill_y <= (fill_height >> 1)) {
+                factor_y = fill_y;
+            } else {
+                factor_y = (fill_height - fill_y);
+                factor = factor_x * factor_y;
+            }
+            factor = factor_x * factor_y;
             break;
         default:
             TV_ASSERT(0);

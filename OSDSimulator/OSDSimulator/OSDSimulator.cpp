@@ -145,6 +145,7 @@ static osd_proc *proc = NULL;
 
 extern "C" osd_proc *osd_proc_screensaver_create(osd_scene *scene);
 extern "C" osd_proc *osd_proc_tv_create(osd_scene *scene);
+extern "C" osd_proc *osd_proc_animation_create(osd_scene *scene);
 
 struct tv_scene_proc {
     const char *title;
@@ -152,6 +153,7 @@ struct tv_scene_proc {
 } scene_procs[] = {
     {"ScreenSaver", osd_proc_screensaver_create,},
     {"tv", osd_proc_tv_create,},
+    {"animation", osd_proc_animation_create,},
     {NULL, NULL,},
 };
 
@@ -230,7 +232,7 @@ void DoSaveFB(HWND hWnd) {
     }
     u32 length = scene->rect(scene).width * scene->rect(scene).height * 4;
     u32 *framebuffer = new u32[length];
-    scene->paint(scene, NULL, NULL, framebuffer);
+    scene->paint(scene, framebuffer);
     int fd = open(szFileName, O_CREAT | O_WRONLY | O_TRUNC);
     if (fd != -1) {
         write(fd, framebuffer, length);
@@ -249,33 +251,53 @@ void DoTimer(HWND hWnd) {
     }
 }
 
-void FnSetPixel(void *arg, int x, int y, u32 color) {
-    HDC hdc = (HDC)arg;
-    SetPixel(hdc, x, y, color);
-}
 
 void DoPaint(HWND hWnd, HDC hDC) {
-    RECT rect;
-    HBITMAP hBmpMem;
-    HDC hDCMem = CreateCompatibleDC(hDC);
-    GetClientRect(hWnd, &rect);
-    // 创建一块指定大小的位图
-    hBmpMem = CreateCompatibleBitmap(hDC, rect.right, rect.bottom);
-    // 将该位图选入到内存DC中，默认是全黑色的
-    HGDIOBJ hObj = SelectObject(hDCMem, hBmpMem);
-    HBRUSH hBrush = CreateSolidBrush(RGB(0,0,0));
-    FillRect(hDCMem, &rect, hBrush);
-    DeleteObject(hBrush);
-    if (scene) {
-        scene->paint(scene, FnSetPixel, hDCMem, NULL);
+    if (!scene) {
+        return;
     }
-    /* 将双缓冲区图像复制到显示缓冲区 */
+    //DWORD dwTick = GetTickCount();
+    RECT rect;
+
+    HDC hDCMem = CreateCompatibleDC(hDC);
+
+    GetClientRect(hWnd, &rect);
+
+    HBITMAP hBmp = CreateCompatibleBitmap(hDC, rect.right, rect.bottom);
+    HBITMAP hOldBmp = (HBITMAP)SelectObject(hDCMem, hBmp);
+
+    BITMAPINFOHEADER bmih;
+    memset(&bmih, 0, sizeof(BITMAPINFOHEADER));
+    bmih.biSize = sizeof(BITMAPINFOHEADER);
+    bmih.biWidth= rect.right;
+    bmih.biHeight= -rect.bottom;
+    bmih.biSizeImage = 0;
+    bmih.biBitCount = 32;
+    bmih.biCompression = BI_RGB;
+    bmih.biPlanes = 1;
+
+    int width = scene->rect(scene).width;
+    int height = scene->rect(scene).height;
+    u32 length = width * height * 4;
+
+    u32 *framebuffer = new u32[length];
+    scene->paint(scene, framebuffer);
+    int ret = SetDIBits(hDCMem,
+                        hBmp,
+                        0,
+                        rect.bottom,
+                        framebuffer,
+                        (BITMAPINFO*)&bmih,
+                        DIB_RGB_COLORS);
+
+    delete[] framebuffer;
+
     BitBlt(hDC, 0, 0, rect.right, rect.bottom, hDCMem, 0, 0, SRCCOPY);
 
-    /* 释放资源 */
-    SelectObject(hDCMem, hObj);
-    DeleteObject(hBmpMem);
+    SelectObject(hDCMem, hOldBmp);
     DeleteDC(hDCMem);
+    DeleteObject(hBmp);
+    //printf("DoPaint Used:%d ms\n", GetTickCount() - dwTick);
 }
 
 void SetStdOutToNewConsole() {
@@ -376,7 +398,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "..\\scenes\\tv.osd");
+        DoOpen(hWnd, "..\\scenes\\animation.osd");
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

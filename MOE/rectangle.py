@@ -167,13 +167,17 @@ class Rectangle(Ingredient):
         bg_color_end = self.get_color(window, self._bgcolor_end)
 
         color_steps = 1
+        fill_width = width - self._border_weight * 2
+        fill_height = height - self._border_weight * 2
         if self._gradient_mode == GradientMode.LEFT_TO_RIGHT:
-            color_steps = width - self._border_weight * 2
+            color_steps = fill_width
         elif self._gradient_mode == GradientMode.TOP_TO_BOTTOM:
-            color_steps = height - self._border_weight * 2
+            color_steps = fill_height
         elif self._gradient_mode == GradientMode.TOP_LEFT_TO_BOTTOM_RIGHT or \
                 self._gradient_mode == GradientMode.BOTTOM_LEFT_TO_TOP_RIGHT:
-            color_steps = (width - self._border_weight * 2) * (height - self._border_weight * 2)
+            color_steps = fill_width * fill_height
+        elif self._gradient_mode == GradientMode.CORNER_TO_CENTER:
+            color_steps = (fill_width * fill_height) >> 2
 
         r_start, g_start, b_start = ImageUtil.rgb(bg_color_start)
         r_end, g_end, b_end = ImageUtil.rgb(bg_color_end)
@@ -186,16 +190,29 @@ class Rectangle(Ingredient):
 
         for x in range(block_x + self._border_weight,
                        block_x + width - self._border_weight):
+            fill_x = x - (block_x + self._border_weight)
+            fill_y = y - self._border_weight
             if self._gradient_mode == GradientMode.SOLID:
                 factor = 0
             elif self._gradient_mode == GradientMode.LEFT_TO_RIGHT:
-                factor = x - (block_x + self._border_weight)
+                factor = fill_x
             elif self._gradient_mode == GradientMode.TOP_TO_BOTTOM:
                 factor = y
             elif self._gradient_mode == GradientMode.TOP_LEFT_TO_BOTTOM_RIGHT:
-                factor = (x - block_x + self._border_weight) * y
+                factor = fill_x * fill_y
             elif self._gradient_mode == GradientMode.BOTTOM_LEFT_TO_TOP_RIGHT:
-                factor = (x - block_x - self._border_weight) * (height - self._border_weight - y)
+                factor = fill_x * (fill_height - fill_y)
+            elif self._gradient_mode == GradientMode.CORNER_TO_CENTER:
+                if fill_x <= (fill_width >> 1):
+                    factor_x = fill_x
+                else:
+                    factor_x = fill_width - fill_x
+
+                if fill_y <= (fill_height >> 1):
+                    factor_y = fill_y
+                else:
+                    factor_y = (fill_height - fill_y)
+                factor = factor_x * factor_y
             else:
                 raise Exception('Unknown gradient mode <%s>' % self._gradient_mode.name)
             color = ImageUtil.color_add(bg_color_start,

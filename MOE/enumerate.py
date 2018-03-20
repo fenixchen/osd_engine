@@ -39,6 +39,7 @@ class GradientMode(Enum):
     TOP_TO_BOTTOM = 3
     TOP_LEFT_TO_BOTTOM_RIGHT = 4
     BOTTOM_LEFT_TO_TOP_RIGHT = 5
+    CORNER_TO_CENTER = 6
 
     def __int__(self):
         return self.value

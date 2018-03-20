@@ -1,7 +1,7 @@
 Scene:
   width: 640
   height: 480
-  ticks: 20
+  timer_ms: 200
   frames: 255
 
   Includes:
@@ -17,6 +17,7 @@ Scene:
     - Bitmap:
         id: bitmap_ani
         palette: palette0
+        mutable: true
         bitmaps: ['images/1.bmp','images/2.bmp', 'images/3.bmp','images/4.bmp','images/5.bmp','images/6.bmp']
 
   Windows:

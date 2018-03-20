@@ -86,6 +86,7 @@ struct _osd_palette_hw {
 #define OSD_GRADIENT_MODE_TOP_TO_BOTTOM 3
 #define OSD_GRADIENT_MODE_TOP_LEFT_TO_BOTTOM_RIGHT 4
 #define OSD_GRADIENT_MODE_BOTTOM_LEFT_TO_TOP_RIGHT 5
+#define OSD_GRADIENT_MODE_CORNER_TO_CENTER 6
 
 typedef struct _osd_rectangle_hw osd_rectangle_hw;
 struct _osd_rectangle_hw {

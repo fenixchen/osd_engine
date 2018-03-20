@@ -8,6 +8,7 @@
 struct _osd_bitmap_priv {
     osd_bitmap_hw *bitmap;
     u8 current_bitmap;
+    u8 bitmap_count;
     u8 *bitmap_data;
 };
 
@@ -55,6 +56,23 @@ static void osd_bitmap_dump(osd_ingredient *ingredient) {
             bitmap->data_size, bitmap->data_addr);
 }
 
+static void osd_bitmap_set_current(osd_bitmap *self, u8 bitmap_index) {
+    TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
+    if (bitmap_index < priv->bitmap->bitmap_count) {
+        priv->current_bitmap = bitmap_index;
+    }
+}
+
+static u8 osd_bitmap_current(osd_bitmap *self) {
+    TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
+    return priv->current_bitmap;
+}
+
+static u8 osd_bitmap_count(osd_bitmap *self) {
+    TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
+    return priv->bitmap->bitmap_count;
+}
+
 static void osd_bitmap_destroy(osd_ingredient *self) {
     osd_bitmap *bitmap_self = (osd_bitmap *)self;
     FREE_OBJECT(bitmap_self->priv);
@@ -75,5 +93,10 @@ osd_bitmap *osd_bitmap_create(osd_scene *scene, osd_ingredient_hw *hw) {
     self->parent.start_y = osd_bitmap_start_y;
     self->parent.height = osd_bitmap_height;
     self->parent.dump = osd_bitmap_dump;
+
+    self->set_current = osd_bitmap_set_current;
+    self->current = osd_bitmap_current;
+    self->count = osd_bitmap_count;
+    TV_TYPE_FP_CHECK(self->set_current, self->count);
     return self;
 }

@@ -85,6 +85,7 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\scenes\animation.h" />
     <ClInclude Include="..\..\scenes\screensaver.h" />
     <ClInclude Include="..\..\scenes\tv.h" />
     <ClInclude Include="..\osd\include\osd_binary.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\osd\proc\osd_proc_animation.c" />
     <ClCompile Include="..\osd\proc\osd_proc_screensaver.c" />
     <ClCompile Include="..\osd\proc\osd_proc_tv.c" />
     <ClCompile Include="..\osd\src\osd_binary.c" />

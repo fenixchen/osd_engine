@@ -45,14 +45,14 @@ class ImageUtil(object):
 
     @staticmethod
     def rgb(color):
-        return (int(color) & 0xFF), ((int(color) >> 8) & 0xFF), ((int(color) >> 16) & 0xFF)
+        return ((int(color) >> 16) & 0xFF), ((int(color) >> 8) & 0xFF), (int(color) & 0xFF)
 
     @staticmethod
     def make_color(r, g, b):
         R = ImageUtil.color_clip(r)
         G = ImageUtil.color_clip(g)
         B = ImageUtil.color_clip(b)
-        return (B << 16) | (G << 8) | R
+        return (R << 16) | (G << 8) | B
 
     @staticmethod
     def color_add(src, R_delta, G_delta, B_delta):

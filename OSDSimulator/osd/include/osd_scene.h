@@ -5,14 +5,13 @@
 #include "osd_event.h"
 
 
-typedef void (*fn_set_pixel)(void *arg, int x, int y, u32 color);
 
 typedef struct _osd_scene_priv osd_scene_priv;
 
 struct _osd_scene {
     osd_scene_priv *priv;
     void (*destroy)(osd_scene *self);
-    void (*paint)(osd_scene *self, fn_set_pixel set_pixel, void *arg, u32 *framebuffer);
+    void (*paint)(osd_scene *self, u32 *framebuffer);
     osd_ingredient* (*ingredient)(osd_scene *self, u32 index);
     osd_palette* (*palette)(osd_scene *self, u32 index);
     osd_window* (*window)(osd_scene *self, u32 index);

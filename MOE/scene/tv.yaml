@@ -21,12 +21,14 @@ Scene:
   Palettes:
     - Palette:
         id: palette0
-        colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080, 0xA0A0A0, 0xEED3A4, 0xFF8080, 0,
-        0xFF901E, 0x00FFFF, 0x00FF00, 0x9314FF, 0xD1CE00,
-        0x0000FF, 0xFACE87, 0xED9564, 0x8B8B00, 0xCD5A6A,
-        0xAF7000, 0x00BFBF, 0x00BF00, 0x7300BF, 0xA1AE00,
-        0x0000AF, 0xAAAE67, 0xAD7544, 0x5B5B00, 0xAD3A4A,
-        0x0000A0, 0xFFFFFF,
+        colors: [0,
+        0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
+        0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
+        0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
+        0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
+        0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
+        0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
+        0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
         ]
 
   Ingredients:
@@ -367,7 +369,6 @@ Scene:
         font_size: 20
         color: 1
 
-
   Windows:
     - Window:
         id: top
@@ -458,6 +459,7 @@ Scene:
         y: 120
         width: 150
         height: 150
+        zorder: 1
         palette: palette0
         blocks:
           - ['', rect_hl, 0, 0]
@@ -478,6 +480,4 @@ Scene:
           - ['', label_msgbox_close, 135, 158]
           - ['', label_msgbox, 5, 5]
           - ['', icon_close, 280, 5]
-          - ['', label_msgbox_content, 40, 60]
-
-
+          - ['', label_msgbox_content, 40, 80]

@@ -69,13 +69,13 @@ static u16 osd_scene_timer_ms(osd_scene *self) {
 }
 
 static void osd_scene_paint(osd_scene *self,
-                            fn_set_pixel set_pixel, void *arg,
                             u32 *framebuffer) {
-    u32 x, y, i;
+    u32 y, i;
     u16 width, height;
     int painted = 0;
     u32 *line_buffer, *window_line_buffer;
     TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
+    TV_ASSERT(framebuffer);
 
     width = scene->hw->width;
     height = scene->hw->height;
@@ -102,16 +102,7 @@ static void osd_scene_paint(osd_scene *self,
                 }
             }
         }
-        if (painted && set_pixel) {
-            for (x = 0; x < width; x ++) {
-                if (line_buffer[x] != 0) {
-                    set_pixel(arg, x, y, line_buffer[x]);
-                }
-            }
-        }
-        if (framebuffer) {
-            memcpy(framebuffer, line_buffer, sizeof(u32) * width);
-        }
+        memcpy(framebuffer + y * width, line_buffer, sizeof(u32) * width);
     }
     FREE_OBJECT(window_line_buffer);
     FREE_OBJECT(line_buffer);
