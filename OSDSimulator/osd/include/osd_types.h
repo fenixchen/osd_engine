@@ -187,32 +187,6 @@ struct _osd_ingredient_hw {
     } data;
 };
 
-struct _osd_move {
-    u8 x_delta, y_delta;
-    u8 w_delta, h_delta;
-};
-
-struct _osd_flip {
-    u8 loop;
-};
-
-#define OSD_MODIFIER_MOVE  1
-#define OSD_MODIFIER_FLIP 2
-struct _osd_modifier {
-    u8 type;
-    u8 interval;
-    u8 limit;
-    u8 active;
-    u16 windows_count;
-    u16 blocks_count;
-    u8 *windows;
-    u8 *blocks;
-    union {
-        osd_move move;
-        osd_flip flip;
-    } data;
-};
-
 struct _osd_block {
     u16 visible: 1; //lowest bits
     u16 reserved: 15;
