@@ -2,12 +2,13 @@
 //
 
 #include "stdafx.h"
-#include "OSDSimulator.h"
+#include "tvapp.h"
 #include "Shlwapi.h"
 #include <fcntl.h>
 #include <io.h>
 #include <iostream>
 #include <fstream>
+#include <Commdlg.h>
 
 #include "osd_scene.h"
 #include "osd_proc.h"
@@ -39,7 +40,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
     // 初始化全局字符串
     LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadString(hInstance, IDC_OSDSIMULATOR, szWindowClass, MAX_LOADSTRING);
+    LoadString(hInstance, IDC_TVAPP, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 执行应用程序初始化:
@@ -47,7 +48,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         return FALSE;
     }
 
-    hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_OSDSIMULATOR));
+    hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TVAPP));
 
     // 主消息循环:
     while (GetMessage(&msg, NULL, 0, 0)) {
@@ -85,10 +86,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance) {
     wcex.cbClsExtra		= 0;
     wcex.cbWndExtra		= 0;
     wcex.hInstance		= hInstance;
-    wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_OSDSIMULATOR));
+    wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TVAPP));
     wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_OSDSIMULATOR);
+    wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_TVAPP);
     wcex.lpszClassName	= szWindowClass;
     wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 

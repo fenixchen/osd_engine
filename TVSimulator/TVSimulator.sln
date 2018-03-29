@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osd", "osd\osd.vcxproj", "{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tvapp", "tvapp\tvapp.vcxproj", "{3BB547FF-763A-48AF-9ADB-44D48829A838}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01} = {0F043EBB-F014-4DC8-ABCB-3190DF33AB01}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}.Debug|Win32.Build.0 = Debug|Win32
+		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}.Release|Win32.ActiveCfg = Release|Win32
+		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}.Release|Win32.Build.0 = Release|Win32
+		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Debug|Win32.Build.0 = Debug|Win32
+		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Release|Win32.ActiveCfg = Release|Win32
+		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

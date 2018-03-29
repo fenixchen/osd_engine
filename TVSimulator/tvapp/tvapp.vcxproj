@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{28C8506B-1F49-407B-9781-A821C353D99C}</ProjectGuid>
+    <ProjectGuid>{3BB547FF-763A-48AF-9ADB-44D48829A838}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>OSDSimulator</RootNamespace>
+    <RootNamespace>tvapp</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -25,7 +25,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -40,12 +40,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\$(Configuration)\</OutDir>
-    <IntDir>..\..\obj\$(Configuration)\</IntDir>
+    <IntDir>..\..\objs\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\$(Configuration)\</OutDir>
-    <IntDir>..\..\obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -58,19 +56,18 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>osd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\osd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -80,57 +77,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="OSDSimulator.ico" />
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
+    <None Include="tvapp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\scenes\animation.h" />
-    <ClInclude Include="..\..\scenes\screensaver.h" />
-    <ClInclude Include="..\..\scenes\tv.h" />
-    <ClInclude Include="..\osd\include\osd_binary.h" />
-    <ClInclude Include="..\osd\include\osd_bitmap.h" />
-    <ClInclude Include="..\osd\include\osd_character.h" />
-    <ClInclude Include="..\osd\include\osd_common.h" />
-    <ClInclude Include="..\osd\include\osd_event.h" />
-    <ClInclude Include="..\osd\include\osd_ingredient.h" />
-    <ClInclude Include="..\osd\include\osd_label.h" />
-    <ClInclude Include="..\osd\include\osd_line.h" />
-    <ClInclude Include="..\osd\include\osd_palette.h" />
-    <ClInclude Include="..\osd\include\osd_proc.h" />
-    <ClInclude Include="..\osd\include\osd_rectangle.h" />
-    <ClInclude Include="..\osd\include\osd_scene.h" />
-    <ClInclude Include="..\osd\include\osd_types.h" />
-    <ClInclude Include="..\osd\include\osd_window.h" />
-    <ClInclude Include="..\osd\include\tv_types.h" />
-    <ClInclude Include="OSDSimulator.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="tvapp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\osd\proc\osd_proc_animation.c" />
-    <ClCompile Include="..\osd\proc\osd_proc_screensaver.c" />
-    <ClCompile Include="..\osd\proc\osd_proc_tv.c" />
-    <ClCompile Include="..\osd\src\osd_binary.c" />
-    <ClCompile Include="..\osd\src\osd_bitmap.c" />
-    <ClCompile Include="..\osd\src\osd_character.c" />
-    <ClCompile Include="..\osd\src\osd_common.c" />
-    <ClCompile Include="..\osd\src\osd_ingredient.c" />
-    <ClCompile Include="..\osd\src\osd_label.c" />
-    <ClCompile Include="..\osd\src\osd_line.c" />
-    <ClCompile Include="..\osd\src\osd_palette.c" />
-    <ClCompile Include="..\osd\src\osd_rectangle.c" />
-    <ClCompile Include="..\osd\src\osd_scene.c" />
-    <ClCompile Include="..\osd\src\osd_window.c" />
-    <ClCompile Include="OSDSimulator.cpp" />
+    <ClCompile Include="osd_proc\osd_proc_animation.c" />
+    <ClCompile Include="osd_proc\osd_proc_screensaver.c" />
+    <ClCompile Include="osd_proc\osd_proc_tv.c" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="tvapp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="OSDSimulator.rc" />
+    <ResourceCompile Include="tvapp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
