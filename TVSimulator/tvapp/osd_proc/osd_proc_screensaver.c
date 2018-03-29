@@ -36,8 +36,8 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
     }
     if (first) {
         first = 0;
-        x_dir = osd_get_rand_boolean() ? 1 : -1;
-        y_dir = osd_get_rand_boolean() ? 1 : -1;
+        x_dir = tv_get_rand_boolean() ? 1 : -1;
+        y_dir = tv_get_rand_boolean() ? 1 : -1;
     }
 
     window_rect = window->rect(window);
@@ -45,8 +45,8 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
     max_x = scene_rect.width - window_rect.width - 1;
     max_y = scene_rect.height - window_rect.height - 1;
 
-    x = OSD_MIN(OSD_MAX(0, (int)window_rect.x + MOVE_STEP * x_dir), max_x);
-    y = OSD_MIN(OSD_MAX(0, (int)window_rect.y + MOVE_STEP * y_dir), max_y);
+    x = TV_MIN(TV_MAX(0, (int)window_rect.x + MOVE_STEP * x_dir), max_x);
+    y = TV_MIN(TV_MAX(0, (int)window_rect.y + MOVE_STEP * y_dir), max_y);
     window->move_to(window, x, y);
 
     if (x == 0 || x == max_x) {

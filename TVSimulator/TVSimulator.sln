@@ -2,11 +2,20 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osd", "osd\osd.vcxproj", "{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FA26238D-8C27-42CE-9135-6CAB00CF318F} = {FA26238D-8C27-42CE-9135-6CAB00CF318F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tvapp", "tvapp\tvapp.vcxproj", "{3BB547FF-763A-48AF-9ADB-44D48829A838}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FA26238D-8C27-42CE-9135-6CAB00CF318F} = {FA26238D-8C27-42CE-9135-6CAB00CF318F}
 		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01} = {0F043EBB-F014-4DC8-ABCB-3190DF33AB01}
+		{CEADBED6-4061-4E67-9F7E-99CFE480365E} = {CEADBED6-4061-4E67-9F7E-99CFE480365E}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tvapi", "tvapi\tvapi.vcxproj", "{FA26238D-8C27-42CE-9135-6CAB00CF318F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tfd", "tfd\tfd.vcxproj", "{CEADBED6-4061-4E67-9F7E-99CFE480365E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,8 +29,16 @@ Global
 		{0F043EBB-F014-4DC8-ABCB-3190DF33AB01}.Release|Win32.Build.0 = Release|Win32
 		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Debug|Win32.ActiveCfg = Debug|Win32
 		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Debug|Win32.Build.0 = Debug|Win32
-		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Release|Win32.ActiveCfg = Release|Win32
-		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Release|Win32.Build.0 = Release|Win32
+		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Release|Win32.ActiveCfg = Debug|Win32
+		{3BB547FF-763A-48AF-9ADB-44D48829A838}.Release|Win32.Build.0 = Debug|Win32
+		{FA26238D-8C27-42CE-9135-6CAB00CF318F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA26238D-8C27-42CE-9135-6CAB00CF318F}.Debug|Win32.Build.0 = Debug|Win32
+		{FA26238D-8C27-42CE-9135-6CAB00CF318F}.Release|Win32.ActiveCfg = Release|Win32
+		{FA26238D-8C27-42CE-9135-6CAB00CF318F}.Release|Win32.Build.0 = Release|Win32
+		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Debug|Win32.Build.0 = Debug|Win32
+		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Release|Win32.ActiveCfg = Release|Win32
+		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

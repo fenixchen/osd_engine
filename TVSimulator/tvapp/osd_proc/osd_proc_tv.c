@@ -20,7 +20,7 @@ static int osd_proc_tv_timer(osd_proc *self) {
 static int col = 3, row = 0;
 static int max_col = 4, max_row = 1;
 static int x_offset = 20, y_offset = 120;
-static wchar *string_big[] = {
+static t_wchar *string_big[] = {
     L"快速指南",
     L"连接",
     L"遥控器和外围设备",
@@ -56,19 +56,19 @@ static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
 
     switch (key) {
     case OSD_KEY_UP:
-        row = OSD_MAX(0, row - 1);
+        row = TV_MAX(0, row - 1);
         break;
     case OSD_KEY_DOWN:
-        row = OSD_MIN(max_row, row + 1);
+        row = TV_MIN(max_row, row + 1);
         break;
     case OSD_KEY_LEFT:
-        col = OSD_MAX(0, col - 1);
+        col = TV_MAX(0, col - 1);
         break;
     case OSD_KEY_RIGHT:
-        col = OSD_MIN(max_col, col + 1);
+        col = TV_MIN(max_col, col + 1);
         break;
     default:
-        OSD_LOG("KEY %d pressed\n", key);
+        TV_LOG("KEY %d pressed\n", key);
         return 0;
     }
     window_hl = scene->window(scene, OSD_WINDOW_ITEM_HIGHLIGHT);

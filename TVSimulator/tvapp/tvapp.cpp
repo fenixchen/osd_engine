@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "tvapp.h"
 #include "Shlwapi.h"
 #include <fcntl.h>
 #include <io.h>
@@ -10,8 +9,12 @@
 #include <fstream>
 #include <Commdlg.h>
 
+extern "C"
+{
+#include "tvapp.h"
 #include "osd_scene.h"
 #include "osd_proc.h"
+}
 
 #define MAX_LOADSTRING 100
 
@@ -318,16 +321,8 @@ void SetStdOutToNewConsole() {
     setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-//
-//  函数: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  目的: 处理主窗口的消息。
-//
-//  WM_COMMAND	- 处理应用程序菜单
-//  WM_PAINT	- 绘制主窗口
-//  WM_DESTROY	- 发送退出消息并返回
-//
-//
+extern "C" void tfd_test();
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int wmId, wmEvent;
     PAINTSTRUCT ps;
@@ -399,7 +394,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "..\\scenes\\animation.osd");
+        //DoOpen(hWnd, "..\\scenes\\animation.osd");
+        {
+            tfd_test();
+        }
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

@@ -29,18 +29,18 @@ static u32 osd_label_height(osd_ingredient *self, osd_window *window) {
 }
 
 static void osd_label_dump(osd_ingredient *ingredient) {
-    OSD_LOG("Label\n");
+    TV_LOG("Label\n");
 }
 
 static void osd_label_set_int(osd_label *self, int value) {
     char buffer[16];
-    wchar ubuffer[16];
+    t_wchar ubuffer[16];
     sprintf(buffer, "%d", value);
-    osd_char_to_wchar(ubuffer, buffer);
+    tv_char_to_wchar(ubuffer, buffer);
     self->set_string(self, ubuffer);
 }
 
-static void osd_label_set_string(osd_label *self, const wchar *str) {
+static void osd_label_set_string(osd_label *self, const t_wchar *str) {
     u32 i, len, ch_index = 0;
     osd_ingredient *ingredient;
     u8 font_id, font_size;
@@ -63,12 +63,12 @@ static void osd_label_set_string(osd_label *self, const wchar *str) {
     glyph_blank_index = scene->find_glyph(scene, L' ', font_id, font_size);
     TV_ASSERT(glyph_blank_index != OSD_SCENE_INVALID_GLYPH_INDEX);
 
-    len = osd_wchar_len(str);
-    len = OSD_MIN(len, priv->ingredient_count);
+    len = tv_wchar_len(str);
+    len = TV_MIN(len, priv->ingredient_count);
     for (i = 0; i < len; i ++) {
         u16 glyph_index;
         u16 ingredient_index;
-        wchar ch = str[i];
+        t_wchar ch = str[i];
         ingredient_index = priv->ingredients[i];
         ingredient = priv->scene->ingredient(priv->scene, ingredient_index);
 
@@ -81,7 +81,7 @@ static void osd_label_set_string(osd_label *self, const wchar *str) {
             character->set_glyph(character, glyph_index);
         } else {
             character->set_glyph(character, glyph_blank_index);
-            OSD_ERR("Cannot find glyph for code(%d - %#x), font(%d), size(%d)\n", ch, ch, glyph->font_id, glyph->font_size);
+            TV_ERR("Cannot find glyph for code(%d - %#x), font(%d), size(%d)\n", ch, ch, glyph->font_id, glyph->font_size);
         }
     }
     for (i = len; i < priv->ingredient_count; i ++) {

@@ -33,7 +33,7 @@ void osd_character_paint(osd_ingredient *ingredient,
 
     color = ingredient->color(ingredient, window,
                               character->color);
-    width = OSD_MIN(glyph->width, window->rect(window).width - block->x);
+    width = TV_MIN(glyph->width, window->rect(window).width - block->x);
     offset = glyph->pitch * y;
     col = block->x + glyph->left;
     for (x = 0; x < width; x ++) {
@@ -73,11 +73,11 @@ static void osd_character_dump(osd_ingredient *ingredient) {
 
     character = priv->character;
     glyph = priv->glyph;
-    OSD_LOG("Character\tleft:%d, top:%d, width:%d, height:%d\n"
-            "\tchar:%u, color:%d, size:%d, mono:%d, addr:%#x\n",
-            glyph->left, glyph->top, glyph->width, glyph->height,
-            (unsigned int)glyph->char_code, character->color,
-            glyph->data_size, glyph->monochrome, character->glyph_addr);
+    TV_LOG("Character\tleft:%d, top:%d, width:%d, height:%d\n"
+           "\tchar:%u, color:%d, size:%d, mono:%d, addr:%#x\n",
+           glyph->left, glyph->top, glyph->width, glyph->height,
+           (unsigned int)glyph->char_code, character->color,
+           glyph->data_size, glyph->monochrome, character->glyph_addr);
 
 }
 

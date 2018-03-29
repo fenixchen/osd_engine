@@ -28,7 +28,7 @@ osd_binary *osd_binary_create(const char *osd_file) {
     self->destroy = osd_binary_destroy;
     self->data = osd_binary_data;
 
-    priv->binary = osd_read_file(osd_file, &priv->binary_size);
+    priv->binary = tv_read_file(osd_file, &priv->binary_size);
     if (!priv->binary) {
         self->destroy(self);
         return NULL;

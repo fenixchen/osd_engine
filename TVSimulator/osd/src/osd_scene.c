@@ -35,9 +35,9 @@ static int osd_scene_timer_interval(osd_scene *self) {
 
 static void osd_scene_dump(osd_scene *self) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
-    OSD_LOG("scene\n\tname:%s, width:%d, height:%d, ram_offset:%#x\n",
-            scene->hw->title,
-            scene->hw->width, scene->hw->height, scene->hw->ram_offset);
+    TV_LOG("scene\n\tname:%s, width:%d, height:%d, ram_offset:%#x\n",
+           scene->hw->title,
+           scene->hw->width, scene->hw->height, scene->hw->ram_offset);
 }
 
 static osd_ingredient* osd_scene_ingredient(osd_scene *self, u32 index) {
@@ -93,7 +93,7 @@ static void osd_scene_paint(osd_scene *self,
             rect = window->rect(window);
 
             if (rect.y <= y && y < rect.y + rect.height) {
-                u16 len = OSD_MIN(scene->hw->width - rect.x, rect.width);
+                u16 len = TV_MIN(scene->hw->width - rect.x, rect.width);
                 memset(window_line_buffer, 0, sizeof(u32) * width);
                 if (window->paint(window, window_line_buffer, y)) {
                     osd_merge_line(line_buffer, window_line_buffer,
@@ -202,19 +202,19 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
 
     TV_ASSERT(osd_file);
 
-    OSD_LOG("OSD_SCENE_DATA_SIZE:%d\n", OSD_SCENE_HW_DATA_SIZE);
+    TV_LOG("OSD_SCENE_DATA_SIZE:%d\n", OSD_SCENE_HW_DATA_SIZE);
     TV_ASSERT(OSD_SCENE_HW_DATA_SIZE == 8 * sizeof(u32));
 
-    OSD_LOG("OSD_GLYPH_HEADER_SIZE:%d\n", OSD_GLYPH_HEADER_SIZE);
+    TV_LOG("OSD_GLYPH_HEADER_SIZE:%d\n", OSD_GLYPH_HEADER_SIZE);
     TV_ASSERT(OSD_GLYPH_HEADER_SIZE == 3 * sizeof(u32));
 
-    OSD_LOG("OSD_INGREDIENT_DATA_SIZE:%d\n", OSD_INGREDIENT_DATA_SIZE);
+    TV_LOG("OSD_INGREDIENT_DATA_SIZE:%d\n", OSD_INGREDIENT_DATA_SIZE);
     TV_ASSERT(OSD_INGREDIENT_DATA_SIZE == 4 * sizeof(u32));
 
-    OSD_LOG("OSD_PALETTE_DATA_SIZE:%d\n", OSD_PALETTE_DATA_SIZE);
+    TV_LOG("OSD_PALETTE_DATA_SIZE:%d\n", OSD_PALETTE_DATA_SIZE);
     TV_ASSERT(OSD_PALETTE_DATA_SIZE == 2 * sizeof(u32));
 
-    OSD_LOG("OSD_WINDOW_DATA_SIZE:%d\n", OSD_WINDOW_DATA_SIZE);
+    TV_LOG("OSD_WINDOW_DATA_SIZE:%d\n", OSD_WINDOW_DATA_SIZE);
     TV_ASSERT(OSD_WINDOW_DATA_SIZE == 5 * sizeof(u32));
 
     binary = osd_binary_create(osd_file);

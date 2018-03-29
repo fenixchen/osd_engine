@@ -31,11 +31,11 @@ static u32 osd_palette_entry_count(osd_palette *self) {
 
 static void osd_palette_dump(osd_palette *self) {
     TV_TYPE_GET_PRIV(osd_palette_priv, self, palette);
-    OSD_LOG("palette\n\tpixel_format:%d, pixel_bits:%d, "
-            "entry_count:%d, luts_addr:%#x\n",
-            palette->hw->pixel_format, palette->hw->pixel_bits,
-            palette->hw->entry_count,
-            palette->hw->luts_addr);
+    TV_LOG("palette\n\tpixel_format:%d, pixel_bits:%d, "
+           "entry_count:%d, luts_addr:%#x\n",
+           palette->hw->pixel_format, palette->hw->pixel_bits,
+           palette->hw->entry_count,
+           palette->hw->luts_addr);
 }
 
 osd_palette *osd_palette_create(osd_scene *scene, osd_palette_hw *hw) {

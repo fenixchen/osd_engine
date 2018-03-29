@@ -58,7 +58,7 @@ void osd_line_paint(osd_ingredient *self,
 static u32 osd_line_start_y(osd_ingredient *self) {
     osd_line *line_self = (osd_line *)self;
     osd_line_hw *line = line_self->priv->line;
-    return OSD_MIN(line->y1, line->y2);
+    return TV_MIN(line->y1, line->y2);
 }
 
 static u32 osd_line_height(osd_ingredient *self, osd_window *window) {
@@ -78,8 +78,8 @@ static void osd_line_dump(osd_ingredient *ingredient) {
     TV_TYPE_GET_PRIV(osd_line_priv, self, priv);
 
     line = priv->line;
-    OSD_LOG("Line\n\tx1:%d, y1:%d, x2:%d, y2:%d\n",
-            line->x1, line->y1, line->x2, line->y2);
+    TV_LOG("Line\n\tx1:%d, y1:%d, x2:%d, y2:%d\n",
+           line->x1, line->y1, line->x2, line->y2);
 }
 
 static void osd_line_destroy(osd_ingredient *self) {

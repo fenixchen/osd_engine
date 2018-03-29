@@ -1,7 +1,7 @@
 #ifndef _OSD_TYPES_H
 #define _OSD_TYPES_H
 
-#include "tv_types.h"
+#include "tv_api.h"
 
 #define OSD_SCENE_MAX_PALETE_COUNT 8
 #define OSD_SCENE_MAX_INGREDIENT_COUNT 1024
@@ -13,12 +13,9 @@ typedef struct _osd_window osd_window;
 typedef struct _osd_scene osd_scene;
 typedef struct _osd_palette osd_palette;
 typedef struct _osd_ingredient osd_ingredient;
-typedef struct _osd_modifier osd_modifier;
 
 typedef struct _osd_rectangle osd_rectangle;
 typedef struct _osd_line osd_line;
-typedef struct _osd_move osd_move;
-typedef struct _osd_flip osd_flip;
 
 typedef struct _osd_label osd_label;
 
@@ -220,11 +217,7 @@ struct _osd_window_hw {
 #define OSD_B(color) ((u8)(color >> 16) & 0xFF)
 #define OSD_BLEND(dst, src, alpha) (u8)((dst) * (255 - (alpha)) / 255 + (src) * (alpha) / 255)
 
-
-#define OSD_MAX(x, y) ((x) > (y) ? (x) : (y))
-#define OSD_MIN(x, y) ((x) < (y) ? (x) : (y))
-
-#define OSD_COLOR_CLIP(color) OSD_MIN(OSD_MAX(0, color), 0xFF)
+#define OSD_COLOR_CLIP(color) TV_MIN(TV_MAX(0, color), 0xFF)
 
 
 typedef struct _osd_rect osd_rect;

@@ -1,4 +1,4 @@
-#include "tv_types.h"
+#include "tv_api.h"
 #include "osd_common.h"
 #include "osd_ingredient.h"
 #include "osd_window.h"
@@ -48,18 +48,18 @@ static void osd_window_dump(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     window = priv->hw;
 
-    OSD_LOG("window\n"
-            "\tpalette:%d, visible:%d, alpha:%d, z_order:%d\n"
-            "\tx:%d, y:%d, width:%d, height:%d\n"
-            "\tblock_count:%d, block_addr:%#x\n",
-            window->palette_index, window->visible, window->alpha, window->z_order,
-            window->x, window->y, window->width, window->height,
-            window->block_count, (unsigned int)priv->blocks);
+    TV_LOG("window\n"
+           "\tpalette:%d, visible:%d, alpha:%d, z_order:%d\n"
+           "\tx:%d, y:%d, width:%d, height:%d\n"
+           "\tblock_count:%d, block_addr:%#x\n",
+           window->palette_index, window->visible, window->alpha, window->z_order,
+           window->x, window->y, window->width, window->height,
+           window->block_count, (unsigned int)priv->blocks);
 
     for (i = 0; i < window->block_count; i ++) {
         osd_block *block = &priv->blocks[i];
-        OSD_LOG("\t\tblock[%d] visible:%d, ingredient:%d, x:%d, y:%d\n",
-                i, block->visible, block->ingredient_index, block->x, block->y);
+        TV_LOG("\t\tblock[%d] visible:%d, ingredient:%d, x:%d, y:%d\n",
+               i, block->visible, block->ingredient_index, block->x, block->y);
     }
 }
 

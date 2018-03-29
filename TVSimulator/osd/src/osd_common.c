@@ -1,31 +1,5 @@
 #include "osd_common.h"
 
-unsigned char *osd_read_file(const char *filename, u32 *len) {
-    FILE * fp;
-    unsigned int length;
-    unsigned char *buffer = NULL;
-    fp = fopen(filename, "rb");
-    if (fp == NULL) {
-        printf("open <%s> failed.\n", filename);
-        return buffer;
-    }
-    fseek(fp, 0L, SEEK_END);
-    length = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-    buffer = (unsigned char *)malloc(length);
-    if (fread(buffer, length, 1, fp) != 1) {
-        printf("read <%s> failed.\n", filename);
-        free(buffer);
-        return NULL;
-    }
-    *len = length;
-    fclose(fp);
-
-    OSD_LOG("%s, size[%d]\n", filename, length);
-    return buffer;
-}
-
-
 u32 osd_blend_pixel(u32 dst, u32 src, u8 alpha) {
     u8 dst_r, dst_g, dst_b;
     u8 src_r, src_g, src_b;
@@ -96,37 +70,3 @@ void osd_merge_line(u32 *dst_buf, u32 *src_buf, u16 len, u32 x, u8 alpha) {
         }
     }
 }
-
-int osd_get_rand_boolean(void) {
-    int r;
-    static int first = 1;
-    if (first) {
-        srand((unsigned)time(NULL));
-        first = 0;
-    }
-    r = rand();
-    return rand() > (RAND_MAX / 2);
-}
-
-
-void osd_char_to_wchar(wchar *wstr, const char *str) {
-    const char *p = str;
-    wchar *q = wstr;
-    while (*p) {
-        *q = *p;
-        ++p;
-        ++q;
-    }
-    *q = '\0';
-}
-
-int osd_wchar_len(const wchar *wstr) {
-    const wchar *p = wstr;
-    int len = 0;
-    while (p && *p) {
-        ++p;
-        ++len;
-    }
-    return len;
-}
-

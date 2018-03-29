@@ -4,8 +4,6 @@
 #include "osd_types.h"
 #include "osd_event.h"
 
-
-
 typedef struct _osd_scene_priv osd_scene_priv;
 
 struct _osd_scene {
