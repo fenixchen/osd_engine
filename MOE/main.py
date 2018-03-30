@@ -27,7 +27,7 @@ if TEST_ALL:
 else:
     #yamls = ['scene/monitor.yaml']
     #yamls = ['scene/symbol.yaml']
-    yamls = ['scene/tv.yaml']
+    yamls = ['scene/ico.yaml']
     #yamls = ['scene/rect.yaml']
     #yamls = ['scene/screensaver.yaml']
 

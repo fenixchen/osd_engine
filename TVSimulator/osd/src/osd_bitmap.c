@@ -7,9 +7,8 @@
 
 struct _osd_bitmap_priv {
     osd_bitmap_hw *bitmap;
-    u8 current_bitmap;
     u8 bitmap_count;
-    u8 *bitmap_data;
+    osd_bitmap_data *data;
 };
 
 static void osd_bitmap_paint(osd_ingredient *self,
@@ -17,21 +16,47 @@ static void osd_bitmap_paint(osd_ingredient *self,
                              osd_block *block,
                              u32 *window_line_buffer,
                              u32 y) {
-    u32 width, start, x;
+    u32 width, start, x, cx;
+    u32 bitmap_width, bitmap_height;
+    u8 *bitmap_data;
     osd_bitmap_hw *bitmap;
     osd_bitmap *bitmap_self = (osd_bitmap *)self;
     TV_TYPE_GET_PRIV(osd_bitmap_priv, bitmap_self, priv);
+
     bitmap = priv->bitmap;
     if (y >= bitmap->height) return;
+    bitmap_data = (u8*)priv->data + sizeof(osd_bitmap_data);
+    bitmap_width = priv->data->bitmap_width;
+    bitmap_height = priv->data->bitmap_height;
+
     width = TV_MIN(bitmap->width, window->rect(window).width - block->x);
-    start = priv->current_bitmap * bitmap->width * bitmap->height +
-            bitmap->width * y;
+    if (!bitmap->tiled) {
+        width = TV_MIN(width, bitmap_width);
+    }
+
+    start = bitmap->current_bitmap * bitmap_width * bitmap_height +
+            bitmap_width * (y % bitmap_height);
+
+    cx = start;
     for (x = start; x < start + width; x ++) {
+        u32 col = block->x + x - start;
         u32 color = self->color2(self,
                                  window,
-                                 priv->bitmap_data,
-                                 x);
-        window_line_buffer[block->x + x - start] = color;
+                                 bitmap_data,
+                                 cx);
+        if (bitmap->mask_color == 0) {
+            window_line_buffer[col] = color;
+        } else {
+            u8 alpha = color & 0xFF;
+            if (alpha > 0) {
+                color = self->color(self, window, bitmap->mask_color);
+                window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col], color, alpha);
+            }
+        }
+        cx ++;
+        if (cx - start >= bitmap_width) {
+            cx = start;
+        }
     }
 }
 
@@ -50,22 +75,25 @@ static void osd_bitmap_dump(osd_ingredient *ingredient) {
     TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
 
     bitmap = priv->bitmap;
-    TV_LOG("Bitmap\n\tpalette:%d, width:%d, height:%d, count:%d, size:%d, addr:%#x\n",
+    TV_LOG("Bitmap\n\tpalette:%d, width:%d, height:%d, count:%d, addr:%#x, size:%d\n\t"
+           "bitmap_width:%d, bitmap_height:%d, tiled:%d, mask_color:%d\n",
            ingredient->palette_index(ingredient),
            bitmap->width, bitmap->height, bitmap->bitmap_count,
-           bitmap->data_size, bitmap->data_addr);
+           bitmap->data_addr, priv->data->data_size,
+           priv->data->bitmap_width, priv->data->bitmap_height,
+           bitmap->tiled, bitmap->mask_color);
 }
 
 static void osd_bitmap_set_current(osd_bitmap *self, u8 bitmap_index) {
     TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
     if (bitmap_index < priv->bitmap->bitmap_count) {
-        priv->current_bitmap = bitmap_index;
+        priv->bitmap->current_bitmap = bitmap_index;
     }
 }
 
 static u8 osd_bitmap_current(osd_bitmap *self) {
     TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
-    return priv->current_bitmap;
+    return priv->bitmap->current_bitmap;
 }
 
 static u8 osd_bitmap_count(osd_bitmap *self) {
@@ -85,7 +113,7 @@ osd_bitmap *osd_bitmap_create(osd_scene *scene, osd_ingredient_hw *hw) {
     self->priv = MALLOC_OBJECT(osd_bitmap_priv);
 
     self->priv->bitmap = &hw->data.bitmap;
-    self->priv->bitmap_data = scene->ram(scene) + self->priv->bitmap->data_addr;
+    self->priv->data = (osd_bitmap_data*)(scene->ram(scene) + self->priv->bitmap->data_addr);
 
     self->parent.destroy = osd_bitmap_destroy;
     self->parent.paint = osd_bitmap_paint;

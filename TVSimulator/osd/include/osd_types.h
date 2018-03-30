@@ -97,6 +97,7 @@ struct _osd_rectangle_hw {
     u8 border_style: 4; //OSD_LINE_STYLE_XXX, lower 4 bit
     u8 gradient_mode:4; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX, higher 4 bit
     u8 bgcolor_start, bgcolor_end;
+
 };
 
 typedef struct _osd_line_hw osd_line_hw;
@@ -109,6 +110,7 @@ struct _osd_line_hw {
     u8 style;	//OSD_LINE_STYLE_XXX
     u8 color;
     u8 reserved2;
+
 };
 
 #define OSD_SCENE_INVALID_GLYPH_INDEX 0xFFFF
@@ -135,9 +137,17 @@ struct _osd_character_hw {
     u8 reserved1;
     u16 reserved2;
 
-    u32 glyph_addr;
+    u32 glyph_addr; //pointer to _osd_glyph
 
     u32 reserved3;
+
+};
+
+typedef struct _osd_bitmap_data osd_bitmap_data;
+struct _osd_bitmap_data {
+    u16 bitmap_width;
+    u16 bitmap_height;
+    u32 data_size;
 };
 
 typedef struct _osd_bitmap_hw osd_bitmap_hw;
@@ -145,11 +155,12 @@ struct _osd_bitmap_hw {
     u16 width;
     u16 height;
 
+    u8 tiled;
+    u8 mask_color;
     u8 bitmap_count;
-    u8 reserved2;
-    u16 data_size;
+    u8 current_bitmap;
 
-    u32 data_addr;
+    u32 data_addr; //pointer to osd_bitmap_data
 };
 
 typedef struct _osd_label_hw osd_label_hw;
