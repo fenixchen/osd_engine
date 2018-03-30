@@ -12,7 +12,7 @@ logger = Log.get_logger("engine")
 
 class Rectangle(Ingredient):
     def __init__(self, scene, id,
-                 width='parent', height='parent',
+                 width=0, height=0,
                  border_color=0, border_weight=0, bgcolor=None,
                  gradient_mode=GradientMode.SOLID.name,
                  border_style=LineStyle.SOLID.name,
@@ -22,16 +22,7 @@ class Rectangle(Ingredient):
         self._width = width
         self._height = height
         self._border_style = LineStyle[border_style]
-        if width == "parent":
-            self._width = -1
-        else:
-            self._width = width
-        if height == "parent":
-            self._height = -1
-        else:
-            self._height = height
         self._border_weight = border_weight
-
         if self._border_weight != 0:
             if isinstance(border_color, int):
                 self._border_color_top = border_color
@@ -233,11 +224,13 @@ class Rectangle(Ingredient):
     def top_line(self):
         return 0
 
-    def height(self, window):
-        if self._height == -1:
-            return window.height
-        else:
-            return self._height
+    @property
+    def height(self):
+        return self._height
+
+    @property
+    def width(self):
+        return self._width
 
     def __str__(self):
         return "%s(id:%s, (%d x %d)," \
@@ -256,8 +249,8 @@ class Rectangle(Ingredient):
         ram = b''
         bins = struct.pack('<BBxx', IngredientType.RECTANGLE.value, self.palette_index())
         bins += struct.pack('<HH',
-                            self._width if self._width > 0 else 0xFFFF,
-                            self._height if self._height > 0 else 0xFFFF)
+                            self._width if self._width != 0 else 0xFFFF,
+                            self._height if self._height != 0 else 0xFFFF)
         bins += struct.pack('<BBBB', self._border_color_top, self._border_color_bottom, self._border_color_left,
                             self._border_color_right)
         bins += struct.pack('<BBBB', self._border_weight,

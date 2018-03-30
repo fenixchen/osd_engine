@@ -1,0 +1,92 @@
+Scene:
+  width:  800
+  height: 600
+  default_palette: palette0
+
+  Includes:
+    - Include:
+        file: common.yaml
+
+  Palettes:
+    - Palette:
+        id: palette0
+        colors: [0, 0xFF0000]
+
+  Ingredients:
+    - Rectangle:
+        id: rect_top
+        border_weight: 1
+        border_color: 1
+
+    - Bitmap:
+        id: icon_photo
+        bitmaps: 'images/icon_photo.bmp'
+        transparent_color: 0xFF00FF
+
+    - Bitmap:
+        id: title_left
+        bitmaps: 'images/title_left.bmp'
+
+    - Bitmap:
+        id: title_right
+        bitmaps: 'images/title_right.bmp'
+
+    - Bitmap:
+        id: title_tile
+        bitmaps: 'images/title_tile.bmp'
+        tiled: true
+        width: 410
+
+    - Bitmap:
+        id: left_top_left
+        bitmaps: 'images/left_top_left.bmp'
+
+    - Bitmap:
+        id: left_top_right
+        bitmaps: 'images/left_top_right.bmp'
+
+    - Bitmap:
+        id: left_top_tile
+        bitmaps: 'images/left_top_tile.bmp'
+        tiled: true
+        width: 220
+
+    - Bitmap:
+        id: icon_photo
+        bitmaps: 'images/icon_photo.bmp'
+        transparent_color: 0xFF00FF
+
+  Windows:
+    - Window:
+        id: top
+        x: 0.3
+        y: 0.0
+        width: 0.7
+        height: 0.15
+        blocks:
+          - ['', rect_top, 0, 0]
+          - ['', title_left, 0, 0]
+          - ['', title_tile, 73, 0]
+          - ['', title_right, 483, 0]
+
+    - Window:
+        id: left
+        x: 0.0
+        y: 0.0
+        width: 0.3
+        height: 0.9
+        blocks:
+          - ['', rect_top, 0, 0]
+          - ['', left_top_left, 0, 0]
+          - ['', left_top_tile, 10, 0]
+          - ['', left_top_right, 230, 0]
+          - ['', icon_photo, 0.3, 0.15]
+
+    - Window:
+        id: bottom
+        x: 0.0
+        y: 0.9
+        width: 1.0
+        height: 0.1
+        blocks:
+          - ['', rect_top, 0, 0]

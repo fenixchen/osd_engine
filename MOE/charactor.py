@@ -51,8 +51,13 @@ class Character(Ingredient):
     def top_line(self):
         return self._glyph.top
 
-    def height(self, window=None):
+    @property
+    def height(self):
         return self._glyph.height
+
+    @property
+    def width(self):
+        return self._glyph.width
 
     def draw_line(self, line_buf, window, y, block_x):
         glyph = self._glyph

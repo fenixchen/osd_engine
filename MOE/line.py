@@ -19,13 +19,23 @@ class Line(Ingredient):
         self._x1, self._y1, self._x2, self._y2 = x1, y1, x2, y2
         self._style = LineStyle[style]
 
-    def height(self, window):
+    @property
+    def height(self):
         if self._y2 == self._y1:
-            return self._y2 - self._y1 + 1 + self._weight
+            return 1 + self._weight
         elif self._y2 > self._y1:
             return self._y2 - self._y1 + 1
         else:
             return self._y1 - self._y2 + 1
+
+    @property
+    def width(self):
+        if self._x1 == self._x2:
+            return 1 + self._weight
+        elif self._x1 > self._x2:
+            return self._x1 - self._x2
+        else:
+            return self._x2 - self._x1
 
     def top_line(self):
         return min(self._y1, self._y2)

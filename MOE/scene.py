@@ -76,6 +76,22 @@ class Scene(object):
     def ticks(self):
         return self._ticks
 
+    def get_x(self, x):
+        if type(x) is int:
+            return x
+        elif type(x) is float:
+            return int(x * self._width)
+        else:
+            raise Exception('Un-supported x size:%s' % type(x))
+
+    def get_y(self, y):
+        if type(y) is int:
+            return y
+        elif type(y) is float:
+            return int(y * self._height)
+        else:
+            raise Exception('Un-supported y size:%s' % type(y))
+
     def find_font(self, id):
         for font in self._fonts:
             if font.id == id:
@@ -249,6 +265,13 @@ class Scene(object):
                 self._default_font_size = int(config['default_font_size'])
             else:
                 self._default_font_size = OSD_DEFAULT_FONT_SIZE
+
+            assert len(self._palettes) > 0
+
+            if 'default_palette' in config:
+                self._default_palette = self.find_palette(config['default_palette'])
+            else:
+                self._default_palette = self._palettes[0]
 
         if 'Ingredients' in config:
             for item in config['Ingredients']:

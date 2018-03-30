@@ -9,17 +9,20 @@ logger = Log.get_logger("engine")
 
 
 class Window(OSDObject):
-    def __init__(self, scene, id, x, y, width, height, palette, blocks,
-                 zorder=0, alpha=255, visible=True):
+    def __init__(self, scene, id, x, y, width, height, blocks,
+                 palette=None, zorder=0, alpha=255, visible=True):
         super().__init__(scene, id)
         self._scene = scene
-        self._x = x
-        self._y = y
-        self._width = width
-        self._height = height
+        self._x = scene.get_x(x)
+        self._y = scene.get_y(y)
+        self._width = scene.get_x(width)
+        self._height = scene.get_y(height)
         self._zorder = zorder
         self._visible = visible
-        self._palette = scene.find_palette(palette)
+        if palette is None:
+            self._palette = scene.default_palette
+        else:
+            self._palette = scene.find_palette(palette)
         self._blocks = []
         if blocks is not None:
             for i, block_info in enumerate(blocks):
@@ -98,6 +101,22 @@ class Window(OSDObject):
     def palette(self):
         return self._palette
 
+    def get_x(self, x):
+        if type(x) is int:
+            return x
+        elif type(x) is float:
+            return int(x * self._width)
+        else:
+            raise Exception('Un-supported x size:%s' % type(x))
+
+    def get_y(self, y):
+        if type(y) is int:
+            return y
+        elif type(y) is float:
+            return int(y * self._height)
+        else:
+            raise Exception('Un-supported y size:%s' % type(y))
+
     def find_block(self, id):
         for block in self._blocks:
             if block.id == id:
@@ -117,7 +136,7 @@ class Window(OSDObject):
             if not block.visible:
                 continue
             top = block.top_line()
-            if top <= window_y < top + block.height(self):
+            if top <= window_y < top + block.height:
                 block.ingredient.draw_line(window_line_buf,
                                            self,
                                            window_y - top,

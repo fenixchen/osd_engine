@@ -5,8 +5,8 @@ class Block(object):
     def __init__(self, window, id, ingredient, x, y):
         self._window = window
         self._id = id
-        self._x = x
-        self._y = y
+        self._x = window.get_x(x)
+        self._y = window.get_y(y)
         self._ingredient = ingredient
         self._visible = True
         self._mutable = False
@@ -58,8 +58,13 @@ class Block(object):
     def top_line(self):
         return self._ingredient.top_line() + self._y
 
-    def height(self, window):
-        return self._ingredient.height(window)
+    @property
+    def height(self):
+        return self._ingredient.height
+
+    @property
+    def width(self):
+        return self._ingredient.width
 
     @property
     def ingredient(self):

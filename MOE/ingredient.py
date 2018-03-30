@@ -11,7 +11,7 @@ class Ingredient(OSDObject):
     def __init__(self, scene, id, palette, mutable = False):
         super().__init__(scene, id)
         if palette is None:
-            self._palette = None
+            self._palette = scene.default_palette
         else:
             self._palette = scene.find_palette(palette)
         self._mutable = mutable
@@ -43,8 +43,14 @@ class Ingredient(OSDObject):
     def top_line(self):
         return 0
 
+    @property
     @abc.abstractmethod
-    def height(self, window):
+    def height(self):
+        raise Exception("must implemented by child")
+
+    @property
+    @abc.abstractmethod
+    def width(self):
         raise Exception("must implemented by child")
 
     @abc.abstractmethod

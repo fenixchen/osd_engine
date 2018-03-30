@@ -4,7 +4,7 @@ import app
 from scene import Scene
 import os
 
-TEST_ALL = True
+TEST_ALL = False
 GENERATE_BIN = True
 if TEST_ALL:
     yamls = [
@@ -25,13 +25,11 @@ if TEST_ALL:
         'scene/move.yaml',
         'scene/screensaver.yaml']
 else:
-    #yamls = ['scene/monitor.yaml']
-    #yamls = ['scene/symbol.yaml']
-    yamls = ['scene/ico.yaml']
-    #yamls = ['scene/rect.yaml']
-    #yamls = ['scene/screensaver.yaml']
+    yamls = ['atv/system_settings.yaml']
 
-TARGET_FOLDER = '../scenes/'
+#TARGET_FOLDER = '../scenes/'
+
+TARGET_FOLDER = '../atv/'
 
 if __name__ == '__main__':
     scenes = []

@@ -19,13 +19,11 @@ class Bitmap(Ingredient):
     def width(self):
         return self._width
 
-    def __init__(self, scene, id, bitmaps, palette,
-                 mask_color=None, width=None, height=None, tiled=False, mutable=False):
+    def __init__(self, scene, id, bitmaps, palette = None,
+                 mask_color=None, width=None, height=None, tiled=False,
+                 transparent_color=None, mutable=False):
         super().__init__(scene, id, palette, mutable)
         assert self._palette is not None
-
-        if tiled:
-            assert width is not None and height is not None
 
         self._data = []
         if isinstance(bitmaps, str):
@@ -38,9 +36,12 @@ class Bitmap(Ingredient):
         self._mask_color = mask_color
         self._bitmap_width = 0
         self._bitmap_height = 0
+        self._transparent_color = transparent_color
         color_data = []
         for bitmap in bitmaps:
             self._bitmap_width, self._bitmap_height, data = ImageUtil.load(bitmap)
+            if transparent_color is not None:
+                data = [0 if x == transparent_color else x for x in data]
             if self._palette.pixel_format == PixelFormat.LUT:
                 color_data.extend(data)
             else:
@@ -62,15 +63,22 @@ class Bitmap(Ingredient):
         if self._height is None:
             self._height = self._bitmap_height
 
-    def height(self, window=None):
+    @property
+    def height(self):
         if self._tiled:
             return self._height
         else:
             return min(self._height, self._bitmap_height)
 
+    @property
+    def width(self):
+        if self._tiled:
+            return self._width
+        else:
+            return min(self._width, self._bitmap_width)
+
     def draw_line(self, line_buf, window, y, block_x):
-        height = self.height()
-        if y >= height:
+        if y >= self.height:
             return
         if self._tiled:
             width = min(self._width, window.width - block_x)

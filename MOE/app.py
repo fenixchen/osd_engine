@@ -23,11 +23,18 @@ class Painter(object):
 TITLE_STRING = "Monitor OSD Engine Demo"
 
 
+def center(window):
+    w = window.winfo_screenwidth()
+    h = window.winfo_screenheight()
+    size = tuple(int(_) for _ in window.geometry().split('+')[0].split('x'))
+    x = w / 2 - size[0] / 2
+    y = h / 2 - size[1] / 2 - 10
+    window.geometry("%dx%d+%d+%d" % (size + (x, y)))
+
 class App(object):
     def __init__(self, *scenes):
         self._root = tkinter.Tk()
         self._root.wm_title(TITLE_STRING)
-        self._root.geometry('800x600')
         self._menubar = tkinter.Menu(self._root)
         self._fmenu1 = tkinter.Menu(self._root, tearoff=0)
         self._fmenu1.add_command(label='Open', command=self.open)
@@ -43,6 +50,14 @@ class App(object):
         self._frame_index = 0
         self._scenes = scenes
         self._scene_index = 0
+        if len(scenes) > 0:
+            scene_width = scenes[0].width
+            scene_height = scenes[0].height
+            w = self._root.winfo_screenwidth()
+            h = self._root.winfo_screenheight()
+            x = w / 2 -  scene_width / 2
+            y = h / 2 - scene_height / 2
+            self._root.geometry('%dx%d+%d+%d' % (scenes[0].width, scenes[0].height, x, y))
 
     def quit(self):
         self._root.quit()
