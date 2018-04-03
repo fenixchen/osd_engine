@@ -19,7 +19,7 @@ class Bitmap(Ingredient):
     def width(self):
         return self._width
 
-    def __init__(self, scene, id, bitmaps, palette = None,
+    def __init__(self, scene, id, bitmaps, palette=None,
                  mask_color=None, width=None, height=None, tiled=False,
                  transparent_color=None, mutable=False):
 
@@ -41,8 +41,6 @@ class Bitmap(Ingredient):
         color_data = []
         for bitmap in bitmaps:
             self._bitmap_width, self._bitmap_height, data = ImageUtil.load(bitmap)
-            if transparent_color is not None:
-                data = [0 if x == transparent_color else x for x in data]
             if self._palette.pixel_format == PixelFormat.LUT:
                 color_data.extend(data)
             else:
@@ -85,8 +83,8 @@ class Bitmap(Ingredient):
         else:
             width = min(self._bitmap_width, self._width, window.width - block_x)
 
-        start = self._current * self._bitmap_width * self._bitmap_height + \
-                self._bitmap_width * (y % self._bitmap_height)
+        start = self._current * self._bitmap_width * self._bitmap_height \
+                + self._bitmap_width * (y % self._bitmap_height)
 
         cx = start
         for x in range(start, start + width):
@@ -94,7 +92,8 @@ class Bitmap(Ingredient):
             col = block_x + x - start
             if self._mask_color is None:
                 color = self.get_color(window, index)
-                line_buf[col] = color
+                if color != self._transparent_color:
+                    line_buf[col] = color
             else:
                 color = self.get_color(window, self._mask_color)
                 intensity = index
@@ -133,8 +132,6 @@ class Bitmap(Ingredient):
 
         if pixel_bits <= 8:
             ram += struct.pack('<%sB' % data_size, *self._data)
-        elif pixel_bits == 16:
-            ram += struct.pack('<%sH' % data_size, *self._data)
         else:
             raise Exception('Not implemented %d' % pixel_bits)
         return bins, ram

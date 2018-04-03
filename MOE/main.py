@@ -10,12 +10,14 @@ if TEST_ALL:
     yamls = [
         'Scene/tv.yaml',
         'Scene/ico.yaml',
+        'Scene/bitmap.yaml',
         'Scene/monitor.yaml',
         'Scene/symbol.yaml',
         'Scene/button.yaml',
         'Scene/color.yaml',
         'Scene/form.yaml',
         'Scene/label.yaml',
+        'Scene/label2.yaml',
         'Scene/animation.yaml',
         'scene/hello.yaml',
         'scene/line.yaml',
@@ -25,12 +27,12 @@ if TEST_ALL:
         'scene/move.yaml',
         'scene/screensaver.yaml']
 else:
-    #yamls = ['scene/label2.yaml']
+    #yamls = ['scene/bitmap.yaml']
     yamls = ['atv/system_settings.yaml']
 
-TARGET_FOLDER = '../scenes/'
+#TARGET_FOLDER = '../scenes/'
 
-#TARGET_FOLDER = '../atv/'
+TARGET_FOLDER = '../atv/'
 
 if __name__ == '__main__':
     scenes = []

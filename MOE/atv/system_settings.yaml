@@ -3,13 +3,26 @@ Scene:
   height: 600
   default_palette: palette0
   default_font: mono_16
+  default_font_size: 24
   title: OSDDemo
 
   Defines:
     transparant: 0
     black: 1
     white: 2
+    input_bg_color: 10
+    input_bg_hl_color: 11
+    input_text_color: 1
+    input_text_hl_color: 12
     height: '+48'
+    font_height: '+48'
+
+  Fonts:
+    - Preload:
+        id: preload1
+        font: mono_16
+        size: 24
+        text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz'
 
   Includes:
     - Include:
@@ -19,16 +32,11 @@ Scene:
     - Palette:
         id: palette0
         colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
-                 0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD]
+                 0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
+                 0x909090, 0x104E8B, 0xCDCD00]
 
   Ingredients:
-    - Rectangle:
-        id: rect_top
-        border_weight: 1
-        border_color: 1
-
     #left
-
     - Bitmap:
         id: left_top_left
         bitmaps: 'images/left_top_left.bmp'
@@ -68,7 +76,6 @@ Scene:
     - Label:
         id: label_menu_picture
         text: 'Picture'
-        font_size: 24
         color: 2
         width: 280
         align: CENTER
@@ -76,7 +83,6 @@ Scene:
     - Label:
         id: label_menu_sound
         text: 'Sound'
-        font_size: 24
         color: 1
         width: 280
         align: CENTER
@@ -84,7 +90,6 @@ Scene:
     - Label:
         id: label_menu_channel
         text: 'Channel'
-        font_size: 24
         color: 1
         width: 280
         align: CENTER
@@ -92,7 +97,6 @@ Scene:
     - Label:
         id: label_menu_feature
         text: 'Feature'
-        font_size: 24
         color: 1
         width: 280
         align: CENTER
@@ -100,12 +104,11 @@ Scene:
     - Label:
         id: label_menu_setup
         text: 'Setup'
-        font_size: 24
         color: 1
         width: 280
         align: CENTER
 
-    #top and center
+    #top
     - Bitmap:
         id: title_tile
         bitmaps: 'images/title_tile.bmp'
@@ -123,13 +126,10 @@ Scene:
     - Label:
         id: label_title
         text: 'Picture'
-        font_size: 24
+        mutable: True
         color: 4
 
-
-
     #bottom
-
     - Bitmap:
         id: left_bottom
         bitmaps: 'images/left_bottom.bmp'
@@ -141,7 +141,49 @@ Scene:
         tiled: True
         width: 750
 
-    #center
+    - Bitmap:
+        id: move
+        bitmaps: 'images/move.bmp'
+        transparent_color: 0xFF00FF
+
+    - Bitmap:
+        id: enter
+        bitmaps: 'images/enter.bmp'
+        transparent_color: 0xFF00FF
+
+    - Bitmap:
+        id: exit
+        bitmaps: 'images/exit.bmp'
+        transparent_color: 0xFF00FF
+
+    - Bitmap:
+        id: menu
+        bitmaps: 'images/menu.bmp'
+        transparent_color: 0xFF00FF
+
+    - Label:
+        id: label_move
+        text: 'Move'
+        color: $white
+
+    - Label:
+        id: label_enter
+        text: 'Enter'
+        color: $white
+
+    - Label:
+        id: label_exit
+        text: 'Exit'
+        color: $white
+
+    - Label:
+        id: label_return
+        text: 'Return'
+        color: $white
+
+    ####################################
+    ###           center             ###
+    ####################################
     - Rectangle:
         id: rect_center_bar_1
         bgcolor: 8
@@ -152,9 +194,204 @@ Scene:
         bgcolor: 9
         height: 48
 
+    - Bitmap:
+        id: page_up
+        bitmaps: 'images/page_up.bmp'
+        transparent_color: 0xFF00FF
+
+    - Bitmap:
+        id: page_down
+        bitmaps: 'images/page_down.bmp'
+        transparent_color: 0xFF00FF
+
+    - Bitmap:
+        id: left
+        bitmaps: 'images/left.bmp'
+        transparent_color: 0xFE02FE
+
+    - Bitmap:
+        id: right
+        bitmaps: 'images/right.bmp'
+        transparent_color: 0xFE02FE
+
+    - Label:
+        id: label_picture_mode
+        text: 'Picture Mode'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_brightness
+        text: 'Brightness'
+        color: $black
+        width: 250
+        align: CENTER
+
+
+    - Label:
+        id: label_contrast
+        text: 'Contrast'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_sharpness
+        text: 'Sharpness'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_color
+        text: 'Colour'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_tint
+        text: 'Tint'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_color_temp
+        text: 'Colour Temperature'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_aspect_ratio
+        text: 'Aspect Ratio'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Rectangle:
+        id: rect_input_picture_mode
+        mutable: True
+        bgcolor: $input_bg_hl_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_brightness
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_contrast
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_sharpness
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_color
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_tint
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_color_temp
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Rectangle:
+        id: rect_input_aspect_ratio
+        mutable: True
+        bgcolor: $input_bg_color
+        width: 200
+        height: 40
+
+    - Label:
+        id: text_picture_mode
+        mutable: True
+        text: 'Standard'
+        width: 200
+        align: CENTER
+        color: $input_text_hl_color
+
+    - Label:
+        id: text_brightness
+        mutable: True
+        text: '50'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
+    - Label:
+        id: text_contrast
+        mutable: True
+        text: '50'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
+    - Label:
+        id: text_sharpness
+        mutable: True
+        text: '50'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
+    - Label:
+        id: text_color
+        mutable: True
+        text: '50'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
+    - Label:
+        id: text_tint
+        mutable: True
+        text: '50'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
+    - Label:
+        id: text_color_temp
+        mutable: True
+        text: 'Standard'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
+    - Label:
+        id: text_aspect_ratio
+        mutable: True
+        text: '50'
+        width: 200
+        align: CENTER
+        color: $input_text_color
+
   Windows:
-
-
     - Window:
         id: center
         x: 282
@@ -173,18 +410,52 @@ Scene:
           - ['', rect_center_bar_1, 0, $height]
           - ['', rect_center_bar_2, 0, $height]
 
+          - ['', label_picture_mode, 0, 60]
+          - ['', label_brightness, 0,   $font_height]
+          - ['', label_contrast, 0,   $font_height]
+          - ['', label_sharpness, 0,   $font_height]
+          - ['', label_color, 0,   $font_height]
+          - ['', label_tint, 0,   $font_height]
+          - ['', label_color_temp, 0,   $font_height]
+          - ['', label_aspect_ratio, 0,   $font_height]
+
+          - ['', rect_input_picture_mode, 280, 52]
+          - ['', rect_input_brightness, 280, $font_height]
+          - ['', rect_input_contrast, 280, $font_height]
+          - ['', rect_input_sharpness, 280, $font_height]
+          - ['', rect_input_color, 280, $font_height]
+          - ['', rect_input_tint, 280, $font_height]
+          - ['', rect_input_color_temp, 280, $font_height]
+          - ['', rect_input_aspect_ratio, 280, $font_height]
+
+          - ['', text_picture_mode, 280, 60]
+          - ['', text_brightness, 280, $font_height]
+          - ['', text_contrast, 280, $font_height]
+          - ['', text_sharpness, 280, $font_height]
+          - ['', text_color, 280, $font_height]
+          - ['', text_tint, 280, $font_height]
+          - ['', text_color_temp, 280, $font_height]
+          - ['', text_aspect_ratio, 280, $font_height]
+
+          - ['', left, 260, 60]
+          - ['', right, 485, 60]
+
+          - ['', page_up, 300, 0]
+          - ['', page_down, 300, 456]
+
+
+
     - Window:
         id: left
         x: 0
         y: 0
         width: 282
-        height: 550
+        height: 553
         blocks:
-          - ['', rect_top, 0, 0]
           - ['', left_top_left, 0, 0]
           - ['', left_top_tile, 10, 0]
           - ['', left_top_right, 271, 0]
-          - ['', icon_photo, 70, 60]
+          - ['', icon_photo, 90, 60]
 
           - ['', rect_left_hl, 0, 180]
           - ['', rect_left_ll, 0, 255]
@@ -205,7 +476,6 @@ Scene:
         width: 518
         height: 71
         blocks:
-          - ['', rect_top, 0, 0]
           - ['', title_left, 0, 0]
           - ['', title_tile, 73, 0]
           - ['', title_right, 483, 0]
@@ -216,10 +486,18 @@ Scene:
     - Window:
         id: bottom
         x: 0
-        y: 550
+        y: 553
         width: 1.0
         height: 47
         blocks:
-          - ['', rect_top, 0, 0]
           - ['', left_bottom, 0, 0]
           - ['', bottom, 50, 0]
+          - ['', move, '+50', 15]
+          - ['', enter, '+170', 15]
+          - ['', exit, '+170', 15]
+          - ['', menu, '+170', 15]
+          - ['', label_move, 170, 12]
+          - ['', label_enter, '+170', 12]
+          - ['', label_exit, '+170', 12]
+          - ['', label_return, '+170', 12]
+

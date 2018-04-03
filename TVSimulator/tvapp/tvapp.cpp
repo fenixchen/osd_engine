@@ -394,7 +394,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "..\\scenes\\ico.osd");
+        DoOpen(hWnd, "..\\atv\\system_settings.osd");
     //tfd_test();
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

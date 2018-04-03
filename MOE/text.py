@@ -32,7 +32,7 @@ class Text(object):
 
     def get_blocks(self, window, block_id, left, top):
         blocks = []
-
+        left_origin = left
         text_width = self.width
 
         if self._width is not None and self._width > text_width:
@@ -48,7 +48,7 @@ class Text(object):
             blocks.append(block)
             left += glyph.advance_x
 
-            if self._width is not None and left > self._width:
+            if self._width is not None and left - left_origin > self._width:
                 break
 
         return blocks
@@ -73,5 +73,5 @@ class Text(object):
         return "text:%s, color:%d, font_size:%d, width:%d" % (
             self._text, self._color,
             self._font_size if self._font_size is not None else self._scene.default_font_size,
-            self._width
+            0 if self._width is None else self._width
         )
