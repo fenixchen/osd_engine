@@ -88,8 +88,8 @@ class Rectangle(Ingredient):
 
     def _plot_border(self, window_line_buf, window, y, block_x):
 
-        width = window.width if self._width == -1 else self._width
-        height = window.height if self._height == -1 else self._height
+        width = window.width if self._width == 0 else self._width
+        height = window.height if self._height == 0 else self._height
 
         if y < self._border_weight:
             # draw top border
@@ -151,8 +151,8 @@ class Rectangle(Ingredient):
         if self._gradient_mode == GradientMode.NONE:
             return
 
-        width = window.width if self._width == -1 else self._width
-        height = window.height if self._height == -1 else self._height
+        width = window.width if self._width == 0 else self._width
+        height = window.height if self._height == 0 else self._height
 
         bg_color_start = self.get_color(window, self._bgcolor_start)
         bg_color_end = self.get_color(window, self._bgcolor_end)

@@ -33,8 +33,8 @@ class Scene(object):
         self._modifiers = []
         self._glyphs = []
         self._fonts = []
-        self._width = -1
-        self._height = -1
+        self._width = 0
+        self._height = 0
         self._frames = 1
         self._ticks = 20
         self._timer_ms = 0
@@ -42,6 +42,7 @@ class Scene(object):
         self._default_font_size = 16
         self._default_font = None
         self._default_palette = None
+        self._map_define = {}
         self.load(yaml_file, True)
 
     @property
@@ -104,6 +105,35 @@ class Scene(object):
                 raise Exception('Duplicated font <%s>' % new_font.id)
         self._fonts.append(new_font)
         new_font.object_index = len(self._fonts) - 1
+
+    def extend_color(self, color_data, palette):
+        """
+        :param color_data:
+        :param palette:
+        :return: palette, data_index
+        """
+
+        color_set = set()
+        for color in color_data:
+            color_set.add(color)
+
+        if palette.can_extend(color_set):
+            return palette, palette.extend(color_data)
+
+        for pal in self._palettes:
+            if pal is palette:
+                continue
+            if pal.can_extend(color_set):
+                return pal, pal.extend(color_data)
+
+        palette = Palette(self,
+                          'palette_%d' % (len(self._palettes) + 1),
+                          [])
+        self.add_palette(palette)
+        if palette.can_extend(color_set):
+            return palette, palette.extend(color_data)
+
+        assert False
 
     def find_palette(self, id):
         for palette in self._palettes:
@@ -228,6 +258,7 @@ class Scene(object):
 
         config = config['Scene']
         assert config is not None
+
         if root:
             self._width = config['width'] if 'width' in config else 640
             self._height = config['height'] if 'height' in config else 480
@@ -240,6 +271,9 @@ class Scene(object):
             self._timer_ms = 0 if 'timer_ms' not in config else config['timer_ms']
             logger.debug('Title:%s, Width:%d, Height:%d, timer_ms:%d' % (
                 self._title, self._width, self._height, self._timer_ms))
+
+        if 'Defines' in config:
+            self._map_define = config['Defines']
 
         if 'Includes' in config:
             for item in config['Includes']:
@@ -290,6 +324,35 @@ class Scene(object):
         if root:
             self._windows.sort(key=lambda window: window.zorder, reverse=False)
 
+    def format_tuple(self, values):
+        new_values = []
+        for value in values:
+            if type(value) is str:
+                pos = value.find('$')
+                if pos >= 0:
+                    var_name = value[pos + 1:]
+                    if var_name in self._map_define:
+                        value = value[:pos] + str(self._map_define[var_name])
+                    else:
+                        raise Exception('Unknown variable <%s>' % value)
+            new_values.append(value)
+        return new_values
+
+    def format_dict(self, values):
+        for key, value in values.items():
+            if type(value) is not str:
+                continue
+            pos = value.find('$')
+            if pos >= 0:
+                var_name = value[pos + 1:]
+                if var_name in self._map_define:
+                    if pos > 0:
+                        values[key] = value[:pos - 1] + self._map_define[var_name]
+                    else:
+                        values[key] = self._map_define[var_name]
+                else:
+                    raise Exception('Unknown variable <%s>' % value)
+
     def _create_object(self, item):
         assert (len(item.keys()) > 0)
         cls_name = list(item.keys())[0]
@@ -298,6 +361,7 @@ class Scene(object):
         if cls_name not in globals():
             raise Exception('Undefined class <%s>' % cls_name)
         cls = globals()[cls_name]
+        self.format_dict(values)
         obj = cls(scene=self, **values)
         logger.debug(obj)
         return obj
@@ -481,7 +545,7 @@ class Scene(object):
             f.write('#define _SCENE_%s_H_\n\n' % define)
 
             for i, ingredient in enumerate(self._ingredients):
-                if ingredient.multable and len(ingredient.id) > 0:
+                if ingredient.mutable and len(ingredient.id) > 0:
                     f.write('#define OSD_INGREDIENT_%-16s %d\n' % (ingredient.id.upper(), i))
             f.write('\n')
 

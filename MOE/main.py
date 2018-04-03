@@ -25,11 +25,12 @@ if TEST_ALL:
         'scene/move.yaml',
         'scene/screensaver.yaml']
 else:
+    #yamls = ['scene/label2.yaml']
     yamls = ['atv/system_settings.yaml']
 
-#TARGET_FOLDER = '../scenes/'
+TARGET_FOLDER = '../scenes/'
 
-TARGET_FOLDER = '../atv/'
+#TARGET_FOLDER = '../atv/'
 
 if __name__ == '__main__':
     scenes = []

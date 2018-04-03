@@ -2,6 +2,14 @@ Scene:
   width:  800
   height: 600
   default_palette: palette0
+  default_font: mono_16
+  title: OSDDemo
+
+  Defines:
+    transparant: 0
+    black: 1
+    white: 2
+    height: '+48'
 
   Includes:
     - Include:
@@ -10,7 +18,8 @@ Scene:
   Palettes:
     - Palette:
         id: palette0
-        colors: [0, 0xFF0000]
+        colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
+                 0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD]
 
   Ingredients:
     - Rectangle:
@@ -18,24 +27,7 @@ Scene:
         border_weight: 1
         border_color: 1
 
-    - Bitmap:
-        id: icon_photo
-        bitmaps: 'images/icon_photo.bmp'
-        transparent_color: 0xFF00FF
-
-    - Bitmap:
-        id: title_left
-        bitmaps: 'images/title_left.bmp'
-
-    - Bitmap:
-        id: title_right
-        bitmaps: 'images/title_right.bmp'
-
-    - Bitmap:
-        id: title_tile
-        bitmaps: 'images/title_tile.bmp'
-        tiled: true
-        width: 410
+    #left
 
     - Bitmap:
         id: left_top_left
@@ -49,44 +41,185 @@ Scene:
         id: left_top_tile
         bitmaps: 'images/left_top_tile.bmp'
         tiled: true
-        width: 220
+        width: 262
 
     - Bitmap:
         id: icon_photo
         bitmaps: 'images/icon_photo.bmp'
         transparent_color: 0xFF00FF
 
+
+    - Rectangle:
+        id: rect_left_hl
+        border_weight: 2
+        border_color: 2
+        bgcolor: 5
+        height: 75
+
+
+    - Rectangle:
+        id: rect_left_ll
+        border_weight: 2
+        border_color: 2
+        bgcolor: [6, 7]
+        gradient_mode: CORNER_TO_CENTER
+        height: 75
+
+    - Label:
+        id: label_menu_picture
+        text: 'Picture'
+        font_size: 24
+        color: 2
+        width: 280
+        align: CENTER
+
+    - Label:
+        id: label_menu_sound
+        text: 'Sound'
+        font_size: 24
+        color: 1
+        width: 280
+        align: CENTER
+
+    - Label:
+        id: label_menu_channel
+        text: 'Channel'
+        font_size: 24
+        color: 1
+        width: 280
+        align: CENTER
+
+    - Label:
+        id: label_menu_feature
+        text: 'Feature'
+        font_size: 24
+        color: 1
+        width: 280
+        align: CENTER
+
+    - Label:
+        id: label_menu_setup
+        text: 'Setup'
+        font_size: 24
+        color: 1
+        width: 280
+        align: CENTER
+
+    #top and center
+    - Bitmap:
+        id: title_tile
+        bitmaps: 'images/title_tile.bmp'
+        tiled: true
+        width: 410
+
+    - Bitmap:
+        id: title_left
+        bitmaps: 'images/title_left.bmp'
+
+    - Bitmap:
+        id: title_right
+        bitmaps: 'images/title_right.bmp'
+
+    - Label:
+        id: label_title
+        text: 'Picture'
+        font_size: 24
+        color: 4
+
+
+
+    #bottom
+
+    - Bitmap:
+        id: left_bottom
+        bitmaps: 'images/left_bottom.bmp'
+        width: 50
+
+    - Bitmap:
+        id: bottom
+        bitmaps: 'images/bottom.bmp'
+        tiled: True
+        width: 750
+
+    #center
+    - Rectangle:
+        id: rect_center_bar_1
+        bgcolor: 8
+        height: 48
+
+    - Rectangle:
+        id: rect_center_bar_2
+        bgcolor: 9
+        height: 48
+
   Windows:
+
+
+    - Window:
+        id: center
+        x: 282
+        y: 71
+        width: 518
+        height: 482
+        blocks:
+          - ['', rect_center_bar_1, 0, 0]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+
+    - Window:
+        id: left
+        x: 0
+        y: 0
+        width: 282
+        height: 550
+        blocks:
+          - ['', rect_top, 0, 0]
+          - ['', left_top_left, 0, 0]
+          - ['', left_top_tile, 10, 0]
+          - ['', left_top_right, 271, 0]
+          - ['', icon_photo, 70, 60]
+
+          - ['', rect_left_hl, 0, 180]
+          - ['', rect_left_ll, 0, 255]
+          - ['', rect_left_ll, 0, 330]
+          - ['', rect_left_ll, 0, 405]
+          - ['', rect_left_ll, 0, 480]
+
+          - ['', label_menu_picture, 0, 210]
+          - ['', label_menu_sound, 0, 285]
+          - ['', label_menu_channel, 0, 360]
+          - ['', label_menu_feature, 0, 435]
+          - ['', label_menu_setup, 0, 510]
+
     - Window:
         id: top
-        x: 0.3
-        y: 0.0
-        width: 0.7
-        height: 0.15
+        x: 282
+        y: 0
+        width: 518
+        height: 71
         blocks:
           - ['', rect_top, 0, 0]
           - ['', title_left, 0, 0]
           - ['', title_tile, 73, 0]
           - ['', title_right, 483, 0]
+          - ['', label_title, 250, 32]
 
-    - Window:
-        id: left
-        x: 0.0
-        y: 0.0
-        width: 0.3
-        height: 0.9
-        blocks:
-          - ['', rect_top, 0, 0]
-          - ['', left_top_left, 0, 0]
-          - ['', left_top_tile, 10, 0]
-          - ['', left_top_right, 230, 0]
-          - ['', icon_photo, 0.3, 0.15]
+
 
     - Window:
         id: bottom
-        x: 0.0
-        y: 0.9
+        x: 0
+        y: 550
         width: 1.0
-        height: 0.1
+        height: 47
         blocks:
           - ['', rect_top, 0, 0]
+          - ['', left_bottom, 0, 0]
+          - ['', bottom, 50, 0]

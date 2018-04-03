@@ -25,7 +25,10 @@ class Window(OSDObject):
             self._palette = scene.find_palette(palette)
         self._blocks = []
         if blocks is not None:
+            base_left = 0
+            base_top = 0
             for i, block_info in enumerate(blocks):
+                block_info = scene.format_tuple(block_info)
                 if len(block_info) == 4:
                     (block_id, ingredient_id, left, top) = block_info
                     visible = True
@@ -36,7 +39,9 @@ class Window(OSDObject):
                 if ingredient is not None:
                     if len(block_id) == 0:
                         block_id = '%s_block_%d' % (self.id, i)
-                    blocks = ingredient.get_blocks(self, block_id, left, top)
+                    base_left = self._get_coord(base_left, left)
+                    base_top = self._get_coord(base_top, top)
+                    blocks = ingredient.get_blocks(self, block_id, base_left, base_top)
                     for block in blocks:
                         block.visible = visible
                         block.mutable = mutable
@@ -44,6 +49,16 @@ class Window(OSDObject):
                 else:
                     raise Exception('cannot find ingredient <%s>' % id)
         self._alpha = alpha
+
+    def _get_coord(self, base, value):
+        if type(value) is int:
+            return value
+        elif type(value) is str:
+            if value[0] == '+':
+                return base + int(value[1:])
+            elif value[0] == '-':
+                return base - int(value[1:])
+        raise Exception('Undefined value string <%s>' % value)
 
     @property
     def blocks(self):
@@ -101,21 +116,19 @@ class Window(OSDObject):
     def palette(self):
         return self._palette
 
-    def get_x(self, x):
+    def get_x(self, block, x):
         if type(x) is int:
             return x
         elif type(x) is float:
             return int(x * self._width)
-        else:
-            raise Exception('Un-supported x size:%s' % type(x))
+        raise Exception('Un-supported x <%s>' % x)
 
-    def get_y(self, y):
+    def get_y(self, block, y):
         if type(y) is int:
             return y
         elif type(y) is float:
             return int(y * self._height)
-        else:
-            raise Exception('Un-supported y size:%s' % type(y))
+        raise Exception('Un-supported y <%s>' % y)
 
     def find_block(self, id):
         for block in self._blocks:
@@ -136,7 +149,10 @@ class Window(OSDObject):
             if not block.visible:
                 continue
             top = block.top_line()
-            if top <= window_y < top + block.height:
+            block_height = block.height
+            if block_height == 0:
+                block_height = self._height
+            if top <= window_y < top + block_height:
                 block.ingredient.draw_line(window_line_buf,
                                            self,
                                            window_y - top,

@@ -45,6 +45,15 @@ class GradientMode(Enum):
         return self.value
 
 
+class Align(Enum):
+    LEFT = 0
+    CENTER = 1
+    RIGHT = 2
+
+    def __int__(self):
+        return self.value
+
+
 class LineStyle(Enum):
     SOLID = 1
     DASH = 2
@@ -74,6 +83,5 @@ OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_scene
 OSD_SCENE_TITLE_MAX_LEN = 12
 
 OSD_SCENE_HEADER_SIZE = 8 * 4
-
 
 OSD_DEFAULT_FONT_SIZE = 16

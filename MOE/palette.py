@@ -45,20 +45,47 @@ class Palette(OSDObject):
     def id(self):
         return self._id
 
-    def get_color_index(self, color):
+    @property
+    def count(self):
+        return len(self._lut)
+
+    def find_color(self, color):
         if color in self._lut_map:
             return self._lut_map[color]
         else:
-            self._lut.append(color)
-            self._lut_map[color] = len(self._lut) - 1
-            return len(self._lut) - 1
+            return None
 
-    def color(self, index, based_color=None):
+    def add_color(self, color):
+        self._lut.append(color)
+        self._lut_map[color] = len(self._lut) - 1
+        return len(self._lut) - 1
+
+    def color(self, index):
         if self._pixel_format == PixelFormat.RGB:
             return index
         else:
             assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
             return self._lut[index]
+
+    def can_extend(self, color_set):
+        old_count = self.count
+        new_add = 0
+        for color in color_set:
+            if not self.find_color(color):
+                new_add += 1
+                if new_add + old_count > 256:
+                    return False
+        return True
+
+    def extend(self, color_data):
+        data = []
+        for color in color_data:
+            index = self.find_color(color)
+            if index is None:
+                data.append(self.add_color(color))
+            else:
+                data.append(index)
+        return data
 
     def __str__(self):
         return "%s(id: %s, %s, size:%d)" % \

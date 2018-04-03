@@ -8,7 +8,7 @@ from osdobject import OSDObject
 
 class Ingredient(OSDObject):
 
-    def __init__(self, scene, id, palette, mutable = False):
+    def __init__(self, scene, id, palette, mutable=False):
         super().__init__(scene, id)
         if palette is None:
             self._palette = scene.default_palette
@@ -17,7 +17,7 @@ class Ingredient(OSDObject):
         self._mutable = mutable
 
     @property
-    def multable(self):
+    def mutable(self):
         return self._mutable
 
     @property

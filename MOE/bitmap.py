@@ -22,6 +22,7 @@ class Bitmap(Ingredient):
     def __init__(self, scene, id, bitmaps, palette = None,
                  mask_color=None, width=None, height=None, tiled=False,
                  transparent_color=None, mutable=False):
+
         super().__init__(scene, id, palette, mutable)
         assert self._palette is not None
 
@@ -50,8 +51,7 @@ class Bitmap(Ingredient):
         assert self._bitmap_width > 0 and self._bitmap_height > 0
 
         if self._palette.pixel_format == PixelFormat.LUT:
-            for color in color_data:
-                self._data.append(self._palette.get_color_index(color))
+            self._palette, self._data = scene.extend_color(color_data, self._palette)
 
         self._current = 0
 

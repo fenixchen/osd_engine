@@ -13,15 +13,24 @@ logger = Log.get_logger("engine")
 
 class Label(Ingredient):
     def __init__(self, scene, id, text, color, font=None,
-                 font_size=None, vertical=False, palette=None, mutable=False):
+                 width=None,
+                 font_size=None,
+                 palette=None,
+                 align=Align.LEFT.name,
+                 mutable=False):
         super().__init__(scene, id, palette, mutable)
-        self._text = Text(scene, text, color, font, font_size, vertical)
+        self._text = Text(scene, text, color, font, font_size, width, align)
         self._blocks = None
 
     def top_line(self):
         raise Exception("Should never be called")
 
-    def height(self, window):
+    @property
+    def height(self):
+        raise Exception("Should never be called")
+
+    @property
+    def width(self):
         raise Exception("Should never be called")
 
     def draw_line(self, line_buf, window, y, block_x):
