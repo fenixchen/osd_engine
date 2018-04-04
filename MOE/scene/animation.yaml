@@ -33,13 +33,3 @@ Scene:
         visible: true
         blocks:
           - [ani, bitmap_ani, 0, 0]
-
-
-  Modifiers:
-    - Flip:
-        id: flip0
-        active: true
-        interval: 1
-        limit: 0
-        loop: true
-        blocks: [window0.ani]

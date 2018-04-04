@@ -1,6 +1,8 @@
 Scene:
   width: 640
   height: 480
+  default_font_size: 16
+
   Includes:
     - Include:
         file: common.yaml
@@ -19,7 +21,6 @@ Scene:
         id: label0
         text: '左对齐'
         color: 1
-        font_size: 16
         width: 200
         align: LEFT
 
@@ -27,7 +28,6 @@ Scene:
         id: label1
         text: '居中'
         color: 1
-        font_size: 16
         width: 200
         align: CENTER
 
@@ -35,7 +35,6 @@ Scene:
         id: label2
         text: '右对齐'
         color: 1
-        font_size: 16
         width: 200
         align: RIGHT
 

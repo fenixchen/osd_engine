@@ -67,13 +67,13 @@ class Palette(OSDObject):
             assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
             return self._lut[index]
 
-    def can_extend(self, color_set):
+    def can_extend(self, color_set, max_color_count = 256):
         old_count = self.count
         new_add = 0
         for color in color_set:
             if not self.find_color(color):
                 new_add += 1
-                if new_add + old_count > 256:
+                if new_add + old_count > max_color_count:
                     return False
         return True
 

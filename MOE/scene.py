@@ -15,9 +15,9 @@ from rectangle import Rectangle
 from bitmap import Bitmap
 from line import Line
 from label import Label
-from button import Button
 from edit import Edit
 from preload import Preload
+from window import Window
 
 logger = Log.get_logger("engine")
 
@@ -130,7 +130,7 @@ class Scene(object):
                           'palette_%d' % (len(self._palettes) + 1),
                           [])
         self.add_palette(palette)
-        if palette.can_extend(color_set):
+        if palette.can_extend(color_set, 65536):
             return palette, palette.extend(color_data)
 
         assert False
@@ -170,13 +170,6 @@ class Scene(object):
                 raise Exception('Duplicated window <%s>' % new_window.id)
         self._windows.append(new_window)
         new_window.object_index = len(self._windows) - 1
-
-    def add_modifier(self, new_modifier):
-        for modifier in self._modifiers:
-            if modifier.id == new_modifier.id:
-                raise Exception('Duplicated modifier <%s>' % new_modifier.id)
-        self._modifiers.append(new_modifier)
-        new_modifier.object_index = len(self._modifiers) - 1
 
     def get_character(self, char_code, color, font, font_size):
         '''
@@ -315,10 +308,6 @@ class Scene(object):
             for item in config['Windows']:
                 self.add_window(self._create_object(item))
 
-        if 'Modifiers' in config:
-            for item in config['Modifiers']:
-                self.add_modifier(self._create_object(item))
-
         logger.debug('OSD YAML file <%s> Loaded' % yaml_file)
 
         if root:
@@ -365,11 +354,6 @@ class Scene(object):
         obj = cls(scene=self, **values)
         logger.debug(obj)
         return obj
-
-    def modify(self):
-        for modifier in self._modifiers:
-            if modifier.active:
-                modifier.run()
 
     def paint_line(self, y, line_buffer, painter):
         str_color = '{'

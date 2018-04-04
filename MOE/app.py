@@ -31,6 +31,7 @@ def center(window):
     y = h / 2 - size[1] / 2 - 10
     window.geometry("%dx%d+%d+%d" % (size + (x, y)))
 
+
 class App(object):
     def __init__(self, *scenes):
         self._root = tkinter.Tk()
@@ -47,7 +48,6 @@ class App(object):
         self._canvas = None
         self._image_on_canvas = None
 
-        self._frame_index = 0
         self._scenes = scenes
         self._scene_index = 0
         if len(scenes) > 0:
@@ -55,7 +55,7 @@ class App(object):
             scene_height = scenes[0].height
             w = self._root.winfo_screenwidth()
             h = self._root.winfo_screenheight()
-            x = w / 2 -  scene_width / 2
+            x = w / 2 - scene_width / 2
             y = h / 2 - scene_height / 2
             self._root.geometry('%dx%d+%d+%d' % (scenes[0].width, scenes[0].height, x, y))
 
@@ -71,7 +71,6 @@ class App(object):
         if len(yaml_file) == 0:
             return
 
-        self._frame_index = 0
         s = scene.Scene(yaml_file)
         self._scenes = [s]
         self._root.geometry('%dx%d' % (s.width, s.height))
@@ -95,13 +94,9 @@ class App(object):
             self._scene_index = (self._scene_index + 1) % len(self._scenes)
         elif event.num == 3:
             self._scene_index = (self._scene_index - 1 + len(self._scenes)) % len(self._scenes)
-        self._frame_index = 0
         self._canvas.after(0, self._paint)
 
     def _paint(self):
-        if self._scene_index >= len(self._scenes):
-            return
-
         scene = self._scenes[self._scene_index]
         if self._canvas is None:
             self._canvas = tkinter.Canvas(self._root,
@@ -116,10 +111,7 @@ class App(object):
 
         painter = Painter(image)
 
-        self._root.title(TITLE_STRING + "[%d/%d] - %s" % (
-            self._frame_index + 1,
-            scene.frames,
-            scene.filename))
+        self._root.title(TITLE_STRING + "- %s" % scene.filename)
 
         if self._image_on_canvas is None:
             self._image_on_canvas = self._canvas.create_image(0, 0, anchor=tkinter.NW, image=image)
@@ -128,13 +120,7 @@ class App(object):
 
         scene.draw(painter)
 
-        scene.modify()
-
         self._canvas.img = image
-        self._frame_index = self._frame_index + 1
-
-        if self._frame_index < scene.frames:
-            self._canvas.after(scene.ticks, self._paint)
 
     def run(self):
         self._paint()

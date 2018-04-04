@@ -15,15 +15,17 @@ Scene:
         colors: [0, 0xFFFFFF, 0x505050, 0xF0F0F0, 0xE0E0E0, 0x808080, 0x800000]
 
   Ingredients:
-    - Button:
+    - Label:
         id: button0
         text: 'Normal'
-        pressed: False
+        color: 1
+        align: CENTER
 
-    - Button:
+    - Label:
         id: button1
         text: 'Pressed'
-        pressed: True
+        color: 1
+        align: CENTER
 
     - Rectangle:
         id: rect1
@@ -43,23 +45,27 @@ Scene:
         text: 'Address:'
         color: 1
 
-    - Edit:
+    - Label:
         id: edit0
         text: ''
+        color: 1
         width: 180
 
-    - Edit:
+    - Label:
         id: edit1
         text: ''
+        color: 1
         width: 180
 
-    - Button:
+    - Label:
         id: button2
         text: 'Submit'
+        color: 1
 
-    - Button:
+    - Label:
         id: button3
         text: 'Reset'
+        color: 1
 
 
   Windows:

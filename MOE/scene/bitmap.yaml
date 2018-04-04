@@ -22,8 +22,7 @@ Scene:
         id: bg
         bitmaps: 'images/bg.bmp'
 
-
-    - Bitmap:5
+    - Bitmap:
         id: icon_photo
         bitmaps: 'images/button_enter.bmp'
         transparent_color: 0xFF00FF

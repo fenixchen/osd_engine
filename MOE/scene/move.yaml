@@ -72,16 +72,3 @@ Scene:
         zorder: 1
         blocks:
           - [b0, green_rect, 0, 0]
-
-  Modifiers:
-    - Move:
-        id: move0
-        active: true
-        interval: 1
-        limit: 20
-        windows: [window0]
-        blocks: [window0.bl]
-        x_delta: 5
-        y_delta: 10
-        w_delta: 10
-        h_delta: 10

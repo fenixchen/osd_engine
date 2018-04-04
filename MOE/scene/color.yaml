@@ -66,8 +66,6 @@ Scene:
 
     - Rectangle:
         id: button0_bg_up
-        width: parent
-        height: parent
         border_weight: 2
         border_color: [9, 10, 11, 12]
         bgcolor: [13, 14]
@@ -75,8 +73,6 @@ Scene:
 
     - Rectangle:
         id: button0_bg_down
-        width: parent
-        height: parent
         border_weight: 2
         border_color: [15, 16, 17, 18]
         bgcolor: [19, 20]
@@ -84,8 +80,6 @@ Scene:
 
     - Rectangle:
         id: button1_bg
-        width: parent
-        height: parent
         border_weight: 2
         border_color: [21, 22, 23, 24]
         bgcolor: [25, 26]
@@ -94,8 +88,6 @@ Scene:
 
     - Rectangle:
         id: button2_bg
-        width: parent
-        height: parent
         border_weight: 2
         border_color: [27, 28, 29, 30]
         bgcolor: [31, 32]
@@ -103,8 +95,6 @@ Scene:
 
     - Rectangle:
         id: button3_bg
-        width: parent
-        height: parent
         border_weight: 2
         border_color: [33, 34, 35, 36]
         bgcolor: [37, 38]
@@ -112,8 +102,6 @@ Scene:
 
     - Rectangle:
         id: button4_bg
-        width: parent
-        height: parent
         border_weight: 2
         border_color: [39, 40, 41, 42]
         bgcolor: [43, 44]

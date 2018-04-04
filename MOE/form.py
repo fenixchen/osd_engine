@@ -42,12 +42,15 @@ class Form(Ingredient):
                                       bgcolor=self._bgcolor)
         scene.add_ingredient(self._client_rect)
 
-    def top_line(self):
+    @property
+    def width(self):
         raise Exception("Should never be called")
 
+    @property
     def height(self, window):
         raise Exception("Should never be called")
 
+    @property
     def draw_line(self, line_buf, window, y, block_x):
         raise Exception("Should never be called")
 

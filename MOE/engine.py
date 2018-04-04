@@ -2,8 +2,6 @@
 
 
 from glyph import *
-# local import
-from modifier import *
 from palette import *
 
 logger = Log.get_logger("engine")
@@ -32,14 +30,10 @@ class OSDEngine(object):
     def disable(self):
         for window in self._windows:
             window.disable()
-        for modifier in self._modifiers:
-            modifier.disable()
 
     def enable(self):
         for window in self._windows:
             window.enable()
-        for modifier in self._modifiers:
-            modifier.enable()
 
     def windows(self):
         return self._windows
@@ -74,11 +68,6 @@ class OSDEngine(object):
             window.dump()
         logger.debug("}")
 
-        logger.debug("修改器[%d] = {" % len(self._modifiers))
-        for modifier in self._modifiers:
-            modifier.dump()
-        logger.debug("}")
-
     def draw(self, frame_index, painter):
         self._frame.draw(frame_index, painter)
 
@@ -103,10 +92,6 @@ class Frame(object):
 
     def draw(self, frame_index, painter):
         self._frame_index = frame_index
-        if frame_index != 0:
-            for modifier in self._osd.modifiers():
-                if modifier.enabled():
-                    modifier.action()
         for y in range(0, self._height):
             window_line_buffers = []
             for window in self._osd.windows():

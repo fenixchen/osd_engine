@@ -232,6 +232,14 @@ class Rectangle(Ingredient):
     def width(self):
         return self._width
 
+    @width.setter
+    def width(self, width):
+        self._width = width
+
+    @height.setter
+    def height(self, height):
+        self._height = height
+
     def __str__(self):
         return "%s(id:%s, (%d x %d)," \
                "border_color(top:%#x, bottom:%#x, left:%#x,right:%#x)," \
