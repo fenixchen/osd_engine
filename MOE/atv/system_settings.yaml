@@ -331,6 +331,9 @@ Scene:
         id: text_picture_mode
         mutable: True
         text: 'Standard'
+        #text: 'Dynamic'
+        #text: 'Mild'
+        #text: 'User'
         width: 200
         align: CENTER
         color: $input_text_hl_color
@@ -379,6 +382,8 @@ Scene:
         id: text_color_temp
         mutable: True
         text: 'Standard'
+        #text: 'Cool'
+        #text: 'Warm'
         width: 200
         align: CENTER
         color: $input_text_color

@@ -13,7 +13,7 @@ if TEST_ALL:
         'Scene/bitmap.yaml',
         'Scene/monitor.yaml',
         'Scene/symbol.yaml',
-        'Scene/button.yaml',
+        'Scene/inputbox.yaml',
         'Scene/color.yaml',
         'Scene/form.yaml',
         'Scene/label.yaml',
@@ -27,12 +27,12 @@ if TEST_ALL:
         'scene/move.yaml',
         'scene/screensaver.yaml']
 else:
-    #yamls = ['scene/bitmap.yaml']
-    yamls = ['atv/system_settings.yaml']
+    yamls = ['scene/button.yaml']
+    #yamls = ['atv/system_settings.yaml']
 
-#TARGET_FOLDER = '../scenes/'
+TARGET_FOLDER = '../scenes/'
 
-TARGET_FOLDER = '../atv/'
+#TARGET_FOLDER = '../atv/'
 
 if __name__ == '__main__':
     scenes = []

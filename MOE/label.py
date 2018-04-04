@@ -22,19 +22,16 @@ class Label(Ingredient):
         self._text = Text(scene, text, color, font, font_size, width, align)
         self._blocks = None
 
-    def top_line(self):
-        raise Exception("Should never be called")
-
     @property
     def height(self):
-        raise Exception("Should never be called")
+        raise Exception("should not be called")
 
     @property
     def width(self):
-        raise Exception("Should never be called")
+        raise Exception("should not be called")
 
     def draw_line(self, line_buf, window, y, block_x):
-        raise Exception("Should never be called")
+        raise Exception("should not be called")
 
     def get_blocks(self, window, block_id, left, top):
         if self._blocks is None:

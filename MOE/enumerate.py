@@ -28,9 +28,6 @@ class PixelFormat(Enum):
     GRAY_SCALE = 2
     LUT = 3
 
-    def __int__(self):
-        return self.value
-
 
 class GradientMode(Enum):
     NONE = 0
@@ -41,17 +38,11 @@ class GradientMode(Enum):
     BOTTOM_LEFT_TO_TOP_RIGHT = 5
     CORNER_TO_CENTER = 6
 
-    def __int__(self):
-        return self.value
-
 
 class Align(Enum):
     LEFT = 0
     CENTER = 1
     RIGHT = 2
-
-    def __int__(self):
-        return self.value
 
 
 class LineStyle(Enum):
@@ -62,9 +53,6 @@ class LineStyle(Enum):
     DOT3 = 5
     DASH_DOT = 6
     DASH_DOT_DOT = 7
-
-    def __int__(self):
-        return self.value
 
 
 DASH_WIDTH = 10

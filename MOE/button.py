@@ -12,81 +12,52 @@ from block import Block
 
 logger = Log.get_logger("engine")
 
-BUTTON_TEXT_COLOR = 0
-
-BUTTON_BORDER_LOW_LIGHT = 2
-
-BUTTON_BORDER_HIGH_LIGHT = 3
-
-BUTTON_BORDER_WEIGHT = 2
-
-BUTTON_BGCOLOR_START = 4
-
-BUTTON_BGCOLOR_END = 5
-
-BUTTON_EXTRA_WIDTH = 10
-
-BUTTON_EXTRA_HEIGHT = 10
-
 
 class Button(Ingredient):
-    def __init__(self, scene, id, text, font=None, font_size=None, bgcolor=None,
-                 pressed=False, width=None, height=None, palette=None):
-        super().__init__(scene, id, palette)
-        self._title = Text(scene, text, BUTTON_TEXT_COLOR, font, font_size)
-        if width is None:
-            self._width = self._title.width + BUTTON_EXTRA_WIDTH
-        else:
-            self._width = width
+    def __init__(self, scene, id, text, color,
+                 width, height,
+                 bg_rect_normal=None,
+                 bg_rect_highlight=None,
+                 font=None, font_size=None,
+                 palette=None, highlighted=False,
+                 mutable=False):
 
-        if height is None:
-            self._height = self._title.height + BUTTON_EXTRA_WIDTH
+        super().__init__(scene, id, palette, mutable)
+        if type(color) is list:
+            assert len(color) > 0
+            self._color_normal = color[0]
+            if len(color) > 1:
+                self._color_highlight = color[1]
+            else:
+                self._color_highlight = color[0]
         else:
-            self._height = height
-        self._pressed = pressed
-        if self._pressed:
-            border_color = [BUTTON_BORDER_LOW_LIGHT,
-                            BUTTON_BORDER_HIGH_LIGHT,
-                            BUTTON_BORDER_LOW_LIGHT,
-                            BUTTON_BORDER_HIGH_LIGHT,
-                            ]
-        else:
-            border_color = [BUTTON_BORDER_HIGH_LIGHT,
-                            BUTTON_BORDER_LOW_LIGHT,
-                            BUTTON_BORDER_HIGH_LIGHT,
-                            BUTTON_BORDER_LOW_LIGHT
-                            ]
-        if bgcolor is None:
-            bgcolor_start = BUTTON_BGCOLOR_START
-            bgcolor_end = BUTTON_BGCOLOR_END
-        else:
-            bgcolor_start = bgcolor
-            bgcolor_end = bgcolor
-        self._rect = Rectangle(scene=scene,
-                               id='button_%s_rect' % id,
-                               width=self._width,
-                               height=self._height,
-                               border_color=border_color,
-                               border_weight=BUTTON_BORDER_WEIGHT,
-                               bgcolor=[bgcolor_start, bgcolor_end],
-                               gradient_mode='TOP_TO_BOTTOM')
-        scene.add_ingredient(self._rect)
+            self._color_normal = color
+            self._color_highlight = color
 
-    def top_line(self):
-        raise Exception("Should never be called")
+        self._text_normal = Text(scene, text, self._color_normal, font, font_size,
+                                 width, Align.CENTER.name)
 
-    def height(self, window):
-        raise Exception("Should never be called")
+        self._text_highlight = Text(scene, text, self._color_highlight, font, font_size,
+                                    width, Align.CENTER.name)
+
+        self._highlighted = highlighted
+
+    @property
+    def height(self):
+        raise Exception("should not be called")
+
+    @property
+    def width(self):
+        raise Exception("should not be called")
 
     def draw_line(self, line_buf, window, y, block_x):
-        raise Exception("Should never be called")
+        raise Exception("should not be called")
 
     def get_blocks(self, window, block_id, left, top):
-        blocks = [Block(window, '', self._rect, left, top)]
-        blocks.extend(self._title.get_blocks(window, block_id,
-                                             left + BUTTON_EXTRA_WIDTH // 2,
-                                             top + BUTTON_EXTRA_HEIGHT // 2))
-        return blocks
+        if self._highlighted:
+            return self._text_highlight.get_blocks(window, block_id, left, top)
+        else:
+            return self._text_normal.get_blocks(window, block_id, left, top)
 
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
