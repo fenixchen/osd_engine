@@ -117,8 +117,11 @@ class Bitmap(Ingredient):
 
         bins += struct.pack('<HH', self._width, self._height)
 
+        flag = (1 if self._tiled else 0) | \
+               (0 if self._transparent_color is None else 1) << 1
+
         bins += struct.pack('<BBBx',
-                            1 if self._tiled else 0,
+                            flag,
                             0 if self._mask_color is None else self._mask_color,
                             self._bitmap_count)
 
@@ -127,6 +130,8 @@ class Bitmap(Ingredient):
         data_size = len(self._data)
 
         ram += struct.pack('<HH', self._bitmap_width, self._bitmap_height)
+
+        ram += struct.pack('<I', 0 if self._transparent_color is None else self._transparent_color)
 
         ram += struct.pack('<I', data_size)
 

@@ -45,7 +45,8 @@ static void osd_bitmap_paint(osd_ingredient *self,
                                  bitmap_data,
                                  cx);
         if (bitmap->mask_color == 0) {
-            window_line_buffer[col] = color;
+            if (!bitmap->transparent || priv->data->transparent_color != color)
+                window_line_buffer[col] = color;
         } else {
             u8 alpha = color & 0xFF;
             if (alpha > 0) {

@@ -147,6 +147,7 @@ typedef struct _osd_bitmap_data osd_bitmap_data;
 struct _osd_bitmap_data {
     u16 bitmap_width;
     u16 bitmap_height;
+    u32 transparent_color;
     u32 data_size;
 };
 
@@ -155,7 +156,9 @@ struct _osd_bitmap_hw {
     u16 width;
     u16 height;
 
-    u8 tiled;
+    u8 tiled: 1;
+    u8 transparent: 1;
+    u8 reserved: 6;
     u8 mask_color;
     u8 bitmap_count;
     u8 current_bitmap;
