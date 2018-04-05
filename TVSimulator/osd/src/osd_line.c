@@ -22,7 +22,7 @@ void osd_line_paint(osd_ingredient *self,
     TV_TYPE_GET_PRIV(osd_line_priv, line_self, priv);
     line = priv->line;
 
-    color = ingredient->color(ingredient, window, line->color);
+    color = ingredient->color(ingredient, line->color);
     x1 = line->x1;
     x2 = line->x2;
     y1 = line->y1;

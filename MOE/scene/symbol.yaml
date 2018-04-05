@@ -33,7 +33,6 @@ Scene:
         y: 100
         width: 200
         height: 200
-        palette: palette0
         zorder: 0
         blocks:
           - ['', rect_border, 0, 0]

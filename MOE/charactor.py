@@ -65,7 +65,7 @@ class Character(Ingredient):
         if not 0 <= y < glyph.height:
             return
 
-        color = self.get_color(window, self._color)
+        color = self.get_color( self._color)
 
         width = min(glyph.width, window.width - block_x - glyph.left)
 

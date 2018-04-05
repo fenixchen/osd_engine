@@ -52,7 +52,6 @@ Scene:
         y: 100
         width: 500
         height: 300
-        palette: palette1
         blocks:
           - [r, rect1, 0, 0]
           - [l, label0, 20, 20]

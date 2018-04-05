@@ -3,6 +3,7 @@ Scene:
   height: 480
   ticks: 20
   frames: 255
+  default_palette: palette1
   Includes:
     - Include:
         file: common.yaml
@@ -18,7 +19,6 @@ Scene:
   Ingredients:
     - Bitmap:
         id: bitmap_bird
-        palette: palette0
         bitmaps: 'images/bird.bmp'
 
     - Rectangle:
@@ -43,7 +43,6 @@ Scene:
         y: 0
         width: 200
         height: 200
-        palette: palette1
         alpha: 200
         zorder: 2
         blocks:
@@ -56,7 +55,6 @@ Scene:
         y: 250
         width: 200
         height: 200
-        palette: palette1
         zorder: 3
         blocks:
           - [b0, blue_rect, 0, 0]
@@ -68,7 +66,6 @@ Scene:
         y: 10
         width: 200
         height: 200
-        palette: palette1
         zorder: 1
         blocks:
           - [b0, green_rect, 0, 0]

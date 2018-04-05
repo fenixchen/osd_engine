@@ -49,10 +49,10 @@ static void osd_window_dump(osd_window *self) {
     window = priv->hw;
 
     TV_LOG("window\n"
-           "\tpalette:%d, visible:%d, alpha:%d, z_order:%d\n"
+           "\tvisible:%d, alpha:%d, z_order:%d\n"
            "\tx:%d, y:%d, width:%d, height:%d\n"
            "\tblock_count:%d, block_addr:%#x\n",
-           window->palette_index, window->visible, window->alpha, window->z_order,
+           window->visible, window->alpha, window->z_order,
            window->x, window->y, window->width, window->height,
            window->block_count, (unsigned int)priv->blocks);
 
@@ -96,11 +96,6 @@ static void osd_window_set_visible(osd_window *self, int visible) {
     priv->hw->visible = visible;
 }
 
-static u8 osd_window_palette_index(osd_window *self) {
-    TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
-    return priv->hw->palette_index;
-}
-
 static void osd_window_destroy(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     FREE_OBJECT(priv->blocks);
@@ -129,7 +124,6 @@ osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw) {
     self->rect = osd_window_rect;
     self->set_rect = osd_window_set_rect;
     self->paint = osd_window_paint;
-    self->palette_index = osd_window_palette_index;
     self->alpha = osd_window_alpha;
     self->move_to = osd_window_move_to;
     self->dump = osd_window_dump;

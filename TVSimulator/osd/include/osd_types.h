@@ -211,7 +211,7 @@ struct _osd_block {
 typedef struct _osd_window_hw osd_window_hw;
 
 struct _osd_window_hw {
-    u8 palette_index;
+    u8 reserved;
     u8 visible;
     u8 alpha;
     u8 z_order;

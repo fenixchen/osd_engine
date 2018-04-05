@@ -41,7 +41,6 @@ static void osd_bitmap_paint(osd_ingredient *self,
     for (x = start; x < start + width; x ++) {
         u32 col = block->x + x - start;
         u32 color = self->color2(self,
-                                 window,
                                  bitmap_data,
                                  cx);
         if (bitmap->mask_color == 0) {
@@ -50,7 +49,7 @@ static void osd_bitmap_paint(osd_ingredient *self,
         } else {
             u8 alpha = color & 0xFF;
             if (alpha > 0) {
-                color = self->color(self, window, bitmap->mask_color);
+                color = self->color(self, bitmap->mask_color);
                 window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col], color, alpha);
             }
         }

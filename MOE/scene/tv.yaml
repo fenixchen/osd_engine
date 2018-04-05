@@ -376,7 +376,6 @@ Scene:
         y: 0
         width: 800
         height: 80
-        palette: palette0
         blocks:
           - ['', rect_top, 0, 0]
           - ['', label_top_1, 20, 20]
@@ -390,7 +389,6 @@ Scene:
         y: 120
         width: 770
         height: 400
-        palette: palette0
         blocks:
           - ['', rect_0_0, 0, 0]
           - ['', rect_0_0_b, 0, 110]
@@ -448,7 +446,6 @@ Scene:
         y: 500
         width: 800
         height: 100
-        palette: palette0
         blocks:
           - ['', label_bottom_big, 30, 10]
           - ['', label_bottom_small, 30, 45]
@@ -460,7 +457,6 @@ Scene:
         width: 150
         height: 150
         zorder: 1
-        palette: palette0
         blocks:
           - ['', rect_hl, 0, 0]
 
@@ -470,7 +466,6 @@ Scene:
         y: 200
         width: 300
         height: 200
-        palette: palette0
         visible: false
         alpha: 0xE0
         blocks:

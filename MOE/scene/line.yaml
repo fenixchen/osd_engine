@@ -127,7 +127,6 @@ Scene:
         y: 10
         width: 600
         height: 400
-        palette: palette0
         blocks:
           - [b0, line1, 0, 0]
           - [b0, line2, 120, 0]

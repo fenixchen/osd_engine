@@ -13,7 +13,6 @@ Scene:
   Ingredients:
     - Bitmap:
         id: icon
-        palette: palette0
         bitmaps: 'images/test.ico'
         width: 200
         height: 200
@@ -27,7 +26,6 @@ Scene:
         y: 200
         width: 200
         height: 200
-        palette: palette0
         zorder: 0
         blocks:
           - ['', icon, 0, 0]

@@ -31,7 +31,7 @@ void osd_character_paint(osd_ingredient *ingredient,
     glyph_data = priv->glyph_data;
     if (y >= glyph->height)  return;
 
-    color = ingredient->color(ingredient, window,
+    color = ingredient->color(ingredient,
                               character->color);
     width = TV_MIN(glyph->width, window->rect(window).width - block->x);
     offset = glyph->pitch * y;

@@ -25,18 +25,18 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
     height = rect->height == 0xFFFF ?window_rect.height : rect->height;
 
     if (y < rect->border_weight) {
-        color = ingredient->color(ingredient, window, rect->border_color_top);
+        color = ingredient->color(ingredient, rect->border_color_top);
         margin = rect->border_weight - (rect->border_weight - y);
         for (x = block->x + margin; x < block->x + width - margin; x ++) {
             if (osd_line_style_check(rect->border_style, x))
                 window_line_buffer[x] = color;
         }
-        color = ingredient->color(ingredient, window, rect->border_color_left);
+        color = ingredient->color(ingredient, rect->border_color_left);
         for (x = block->x; x < block->x + y; x ++) {
             if (osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
         }
-        color = ingredient->color(ingredient, window, rect->border_color_right);
+        color = ingredient->color(ingredient, rect->border_color_right);
         for (x = block->x + width - y; x < (u32)(block->x + width); x ++) {
             if (osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
@@ -45,20 +45,20 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
     }
 
     if (y >= (u32)(height - rect->border_weight)) {
-        color = ingredient->color(ingredient, window, rect->border_color_bottom);
+        color = ingredient->color(ingredient, rect->border_color_bottom);
         margin = height - y;
         for (x = block->x + margin; x < block->x + width - margin; x ++) {
             if (osd_line_style_check(rect->border_style, x))
                 window_line_buffer[x] = color;
         }
 
-        color = ingredient->color(ingredient, window, rect->border_color_left);
+        color = ingredient->color(ingredient, rect->border_color_left);
         for (x = block->x; x < block->x + height - y; x ++) {
             if (osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
         }
 
-        color = ingredient->color(ingredient, window, rect->border_color_right);
+        color = ingredient->color(ingredient, rect->border_color_right);
         for (x = block->x + width - height + y; x < (u32)(block->x + width); x ++) {
             if (osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
@@ -66,12 +66,12 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
         return 1;
     }
 
-    color = ingredient->color(ingredient, window, rect->border_color_left);
+    color = ingredient->color(ingredient, rect->border_color_left);
     for (x = block->x; x < (u32)(block->x + rect->border_weight); x ++) {
         window_line_buffer[x] = color;
     }
 
-    color = ingredient->color(ingredient, window, rect->border_color_right);
+    color = ingredient->color(ingredient, rect->border_color_right);
     for (x = block->x + width - rect->border_weight; x < (u32)(block->x + width); x ++) {
         window_line_buffer[x] = color;
     }
@@ -105,8 +105,8 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
     if (rect->bgcolor_start == 0) {
         return;
     }
-    bg_color_start = ingredient->color(ingredient, window, rect->bgcolor_start);
-    bg_color_end = ingredient->color(ingredient, window, rect->bgcolor_end);
+    bg_color_start = ingredient->color(ingredient, rect->bgcolor_start);
+    bg_color_end = ingredient->color(ingredient, rect->bgcolor_end);
 
     fill_width = width - rect->border_weight * 2;
     fill_height = height - rect->border_weight * 2;

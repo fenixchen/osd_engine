@@ -8,8 +8,8 @@ typedef struct _osd_ingredient_priv osd_ingredient_priv;
 struct _osd_ingredient {
     osd_ingredient_priv *priv;
     void (*destroy)(osd_ingredient *self);
-    u32 (*color)(osd_ingredient *self, osd_window *window, u32 index);
-    u32 (*color2)(osd_ingredient *self, osd_window *window, u8 *color_ram, u32 index);
+    u32 (*color)(osd_ingredient *self, u32 index);
+    u32 (*color2)(osd_ingredient *self, u8 *color_ram, u32 index);
     u32 (*start_y)(osd_ingredient *self);
     u32 (*height)(osd_ingredient *self, osd_window *window);
     void (*paint)(osd_ingredient *self, osd_window *window, osd_block *block,

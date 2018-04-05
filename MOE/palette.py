@@ -64,6 +64,8 @@ class Palette(OSDObject):
         if self._pixel_format == PixelFormat.RGB:
             return index
         else:
+            if index >= len(self._lut):
+                pass
             assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
             return self._lut[index]
 

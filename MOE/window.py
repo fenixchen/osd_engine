@@ -10,7 +10,7 @@ logger = Log.get_logger("engine")
 
 class Window(OSDObject):
     def __init__(self, scene, id, x, y, width, height, blocks,
-                 palette=None, zorder=0, alpha=255, visible=True):
+                 zorder=0, alpha=255, visible=True):
         super().__init__(scene, id)
         self._scene = scene
         self._x = scene.get_x(x)
@@ -19,10 +19,6 @@ class Window(OSDObject):
         self._height = scene.get_y(height)
         self._zorder = zorder
         self._visible = visible
-        if palette is None:
-            self._palette = scene.default_palette
-        else:
-            self._palette = scene.find_palette(palette)
         self._blocks = []
         if blocks is not None:
             base_left = 0
@@ -112,10 +108,6 @@ class Window(OSDObject):
     def height(self, height):
         self._height = height
 
-    @property
-    def palette(self):
-        return self._palette
-
     def get_x(self, block, x):
         if type(x) is int:
             return x
@@ -170,15 +162,9 @@ class Window(OSDObject):
             ret += "\t%s @(%d, %d)\n" % (block.ingredient.id, block.x, block.y)
         return ret.rstrip('\n')
 
-    def palette_index(self):
-        if self._palette is None:
-            return 0xFF
-        else:
-            return self._palette.object_index
-
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
-        bins = struct.pack('<BBBB', self.palette_index(),
+        bins = struct.pack('<BBBB', 0,
                            1 if self._visible else 0,
                            self._alpha,
                            self._zorder)

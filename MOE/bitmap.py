@@ -91,11 +91,11 @@ class Bitmap(Ingredient):
             index = self._data[cx]
             col = block_x + x - start
             if self._mask_color is None:
-                color = self.get_color(window, index)
+                color = self.get_color( index)
                 if color != self._transparent_color:
                     line_buf[col] = color
             else:
-                color = self.get_color(window, self._mask_color)
+                color = self.get_color( self._mask_color)
                 intensity = index
                 if intensity > 0:
                     line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)

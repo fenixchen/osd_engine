@@ -114,7 +114,6 @@ Scene:
         y: 20
         width: 85
         height: 30
-        palette: palette0
         visible: true
         blocks:
           - [b4, button0_bg_up, 0, 0]
@@ -129,7 +128,6 @@ Scene:
         y: 20
         width: 85
         height: 30
-        palette: palette0
         visible: true
         blocks:
           - [b4, button0_bg_down, 0, 0]
@@ -144,7 +142,6 @@ Scene:
         y: 70
         width: 85
         height: 30
-        palette: palette0
         visible: true
         blocks:
           - [b4, button1_bg, 0, 0]
@@ -159,7 +156,6 @@ Scene:
         y: 70
         width: 85
         height: 30
-        palette: palette0
         visible: true
         blocks:
           - [b4, button2_bg, 0, 0]
@@ -174,7 +170,6 @@ Scene:
         y: 70
         width: 85
         height: 30
-        palette: palette0
         visible: true
         blocks:
           - [b4, button3_bg, 0, 0]
@@ -189,7 +184,6 @@ Scene:
         y: 70
         width: 85
         height: 30
-        palette: palette0
         visible: true
         blocks:
           - [b4, button4_bg, 0, 0]

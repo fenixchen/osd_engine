@@ -264,7 +264,6 @@ Scene:
         y: 100
         width: 600
         height: 30
-        palette: palette0
         blocks:
           - ['', rect_border, 0, 0]
           - ['', label_dell, 10, 10]
@@ -291,7 +290,6 @@ Scene:
         y: 130
         width: 250
         height: 340
-        palette: palette0
         blocks:
           - ['', rect_bg_gray1, 0, 0]
           - ['', rect_highlight, 0, 140]
@@ -322,7 +320,6 @@ Scene:
         y: 130
         width: 350
         height: 340
-        palette: palette0
         blocks:
           - ['', rect_bg_gray2, 0, 0]
           - ['', line0, 0, 35]
@@ -376,7 +373,6 @@ Scene:
         y: 470
         width: 600
         height: 30
-        palette: palette0
         blocks:
           - ['', rect_border, 0, 0]
           - ['', icon_resolution, 5, 5]

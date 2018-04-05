@@ -23,23 +23,18 @@ u32 osd_ingredient_palette_index(osd_ingredient *self) {
     return priv->hw->palette_index;
 }
 
-u32 osd_ingredient_color(osd_ingredient *self,osd_window *window,u32 index) {
+u32 osd_ingredient_color(osd_ingredient *self, u32 index) {
     osd_palette *palette;
     u8 palette_index;
     TV_TYPE_GET_PRIV(osd_ingredient_priv, self, priv);
     palette_index = priv->hw->palette_index;
-    if (palette_index == OSD_PALETTE_INDEX_INVALID) {
-        palette_index = window->palette_index(window);
-    }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
     palette = priv->scene->palette(priv->scene, palette_index);
     return palette->color(palette, index);
 }
 
 
-u32 osd_ingredient_color2(osd_ingredient *self,osd_window *window,
-                          u8 *color_ram,
-                          u32 index) {
+u32 osd_ingredient_color2(osd_ingredient *self, u8 *color_ram, u32 index) {
 
     u32 color_index;
     u8 pixel_bits;
@@ -48,9 +43,6 @@ u32 osd_ingredient_color2(osd_ingredient *self,osd_window *window,
     TV_TYPE_GET_PRIV(osd_ingredient_priv, self, priv);
 
     palette_index = priv->hw->palette_index;
-    if (palette_index == OSD_PALETTE_INDEX_INVALID) {
-        palette_index = window->palette_index(window);
-    }
     TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
     palette = priv->scene->palette(priv->scene, palette_index);
     pixel_bits = palette->pixel_bits(palette);

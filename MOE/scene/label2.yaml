@@ -45,7 +45,6 @@ Scene:
         y: 100
         width: 200
         height: 180
-        palette: palette1
         blocks:
           - ['', rect1, 0,  0]
           - ['', label0, 0, '+10']

@@ -14,7 +14,6 @@ struct _osd_window {
     osd_rect	(*rect)(osd_window *self);
     void		(*set_rect)(osd_window *self, osd_rect *rect);
     u8			(*alpha)(osd_window *self);
-    u8			(*palette_index)(osd_window *self);
     void		(*move_to)(osd_window *self, int x, int y);
     void		(*dump)(osd_window *self);
 };

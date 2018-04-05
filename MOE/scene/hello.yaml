@@ -25,7 +25,6 @@ Scene:
 
     - Bitmap:
         id: bitmap0
-        palette: palette0
         bitmaps: 'images/tv.gif'
 
     - Line:
@@ -54,7 +53,6 @@ Scene:
         y: 100
         width: 400
         height: 300
-        palette: palette1
         blocks:
           - [b0, rect1, 25, 25]
           - [b1, line1, 180, 180]
