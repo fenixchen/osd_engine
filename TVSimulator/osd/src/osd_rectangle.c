@@ -10,7 +10,7 @@ struct _osd_rectangle_priv {
 
 static int osd_rectangle_border_paint(osd_rectangle *self,
                                       osd_window *window,
-                                      osd_block *block,
+                                      osd_block_hw *block,
                                       u32 *window_line_buffer,
                                       u32 y) {
     u32 x, color, margin;
@@ -83,7 +83,7 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
 
 static void osd_rectangle_backgroud_paint(osd_rectangle *self,
         osd_window *window,
-        osd_block *block,
+        osd_block_hw *block,
         u32 *window_line_buffer,
         u32 y) {
     u32 x, bg_color_start, bg_color_end, color, color_steps;
@@ -186,7 +186,7 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
 
 static void osd_rectangle_paint(osd_ingredient *self,
                                 osd_window *window,
-                                osd_block *block,
+                                osd_block_hw *block,
                                 u32 *window_line_buffer,
                                 u32 y) {
     int is_border = 0;

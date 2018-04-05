@@ -2,14 +2,27 @@
 
 
 class Block(object):
-    def __init__(self, window, id, ingredient, x, y):
+    def __init__(self, window, id, ingredient, x, y, visible=None, mutable=None):
         self._window = window
         self._id = id
         self._x = window.get_x(self, x)
         self._y = window.get_y(self, y)
         self._ingredient = ingredient
-        self._visible = True
-        self._mutable = False
+        self._visible = visible
+        self._mutable = mutable
+        self._index = 0
+
+    @property
+    def index(self):
+        return self._index
+
+    @index.setter
+    def index(self, i):
+        self._index = i
+
+    @property
+    def full_index(self):
+        return (self._window.object_index << 16) | self.index
 
     @property
     def mutable(self):

@@ -23,7 +23,7 @@ static int osd_proc_animation_timer(osd_proc *self) {
     TV_TYPE_GET_PRIV(osd_proc_animation_priv, self, priv);
     if (!priv->bitmap) {
         scene = priv->scene;
-        priv->bitmap = (osd_bitmap*)scene->ingredient(scene, OSD_INGREDIENT_BITMAP_ANI);
+        priv->bitmap = scene->bitmap(scene, OSD_INGREDIENT_BITMAP_ANI);
     }
     TV_ASSERT(priv->bitmap);
     bitmap = priv->bitmap;
@@ -53,6 +53,10 @@ static int osd_proc_animation_event(osd_proc *self,
     }
 }
 
+static void osd_proc_animation_init_ui(osd_proc *self) {
+
+}
+
 static void osd_proc_animation_destroy(osd_proc *self) {
     TV_TYPE_GET_PRIV(osd_proc_animation_priv, self, priv);
     FREE_OBJECT(priv);
@@ -65,6 +69,7 @@ osd_proc *osd_proc_animation_create(osd_scene *scene) {
     self->priv = priv;
     priv->scene = scene;
     self->destroy = osd_proc_animation_destroy;
+    self->init_ui = osd_proc_animation_init_ui;
     self->event = osd_proc_animation_event;
     TV_TYPE_FP_CHECK(self->destroy, self->event);
     return self;

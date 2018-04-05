@@ -13,7 +13,7 @@ struct _osd_bitmap_priv {
 
 static void osd_bitmap_paint(osd_ingredient *self,
                              osd_window *window,
-                             osd_block *block,
+                             osd_block_hw *block,
                              u32 *window_line_buffer,
                              u32 y) {
     u32 width, start, x, cx;

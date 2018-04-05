@@ -38,6 +38,9 @@
     <ClInclude Include="tvapp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\atv\system_settings.h">
+      <Filter>osd_proc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -57,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="tfd_test.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="osd_proc\osd_proc_system_settings.c">
+      <Filter>osd_proc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

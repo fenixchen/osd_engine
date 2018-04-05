@@ -55,6 +55,8 @@ class LineStyle(Enum):
     DASH_DOT_DOT = 7
 
 
+INVALID_BLOCK_INDEX = 0xFFFFFFFF
+
 DASH_WIDTH = 10
 
 # all size are bytes based

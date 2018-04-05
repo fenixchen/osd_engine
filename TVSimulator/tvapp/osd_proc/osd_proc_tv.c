@@ -79,8 +79,8 @@ static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
         rect.y = y_offset + row * 152;
         window_hl->set_rect(window_hl, &rect);
 
-        label_big = (osd_label*)scene->ingredient(scene, OSD_INGREDIENT_LABEL_BOTTOM_BIG);
-        label_small = (osd_label*)scene->ingredient(scene, OSD_INGREDIENT_LABEL_BOTTOM_SMALL);
+        label_big = scene->label(scene, OSD_INGREDIENT_LABEL_BOTTOM_BIG);
+        label_small = scene->label(scene, OSD_INGREDIENT_LABEL_BOTTOM_SMALL);
 
         label_big->set_string(label_big, string_big[row * 5 + col]);
 
@@ -89,7 +89,9 @@ static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
         return 0;
     }
 }
+void osd_proc_tv_init_ui(osd_proc *self) {
 
+}
 
 static int osd_proc_tv_event(osd_proc *self,
                              osd_trigger_type type,
@@ -116,6 +118,7 @@ osd_proc *osd_proc_tv_create(osd_scene *scene) {
     self->priv = priv;
     priv->scene = scene;
     self->destroy = osd_proc_tv_destroy;
+    self->init_ui = osd_proc_tv_init_ui;
     self->event = osd_proc_tv_event;
     TV_TYPE_FP_CHECK(self->destroy, self->event);
     return self;

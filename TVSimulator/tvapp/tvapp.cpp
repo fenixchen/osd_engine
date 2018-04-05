@@ -16,6 +16,9 @@ extern "C"
 #include "osd_proc.h"
 }
 
+#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
+//#define STARTUP_OSD_FILE "..\\scenes\\screensaver.osd"
+
 #define MAX_LOADSTRING 100
 
 
@@ -150,6 +153,7 @@ static osd_proc *proc = NULL;
 extern "C" osd_proc *osd_proc_screensaver_create(osd_scene *scene);
 extern "C" osd_proc *osd_proc_tv_create(osd_scene *scene);
 extern "C" osd_proc *osd_proc_animation_create(osd_scene *scene);
+extern "C" osd_proc *osd_proc_system_settings_create(osd_scene *scene);
 
 struct tv_scene_proc {
     const char *title;
@@ -158,6 +162,7 @@ struct tv_scene_proc {
     {"ScreenSaver", osd_proc_screensaver_create,},
     {"tv", osd_proc_tv_create,},
     {"animation", osd_proc_animation_create,},
+    {"sysset", osd_proc_system_settings_create,},
     {NULL, NULL,},
 };
 
@@ -394,7 +399,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
     case WM_CREATE:
         SetStdOutToNewConsole();
-        DoOpen(hWnd, "..\\atv\\system_settings.osd");
+#ifdef STARTUP_OSD_FILE
+        DoOpen(hWnd, STARTUP_OSD_FILE);
+#endif
     //tfd_test();
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

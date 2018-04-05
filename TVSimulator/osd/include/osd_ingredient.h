@@ -12,7 +12,7 @@ struct _osd_ingredient {
     u32 (*color2)(osd_ingredient *self, u8 *color_ram, u32 index);
     u32 (*start_y)(osd_ingredient *self);
     u32 (*height)(osd_ingredient *self, osd_window *window);
-    void (*paint)(osd_ingredient *self, osd_window *window, osd_block *block,
+    void (*paint)(osd_ingredient *self, osd_window *window, osd_block_hw *block,
                   u32 *window_line_buffer, u32 y);
     u32 (*palette_index)(osd_ingredient *self);
     u8 (*type)(osd_ingredient *self);

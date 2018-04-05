@@ -14,7 +14,7 @@ struct _osd_character_priv {
 
 void osd_character_paint(osd_ingredient *ingredient,
                          osd_window *window,
-                         osd_block *block,
+                         osd_block_hw *block,
                          u32 *window_line_buffer,
                          u32 y) {
     u32 x, width, offset, col;

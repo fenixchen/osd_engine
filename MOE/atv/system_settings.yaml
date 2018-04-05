@@ -4,7 +4,7 @@ Scene:
   default_palette: palette0
   default_font: mono_16
   default_font_size: 24
-  title: OSDDemo
+  title: sysset
 
   Defines:
     transparant: 0
@@ -33,10 +33,12 @@ Scene:
         id: palette0
         colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
                  0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
-                 0x909090, 0x104E8B, 0xCDCD00]
+                 0x909090, 0x104E8B, 0xCDCD00, 0x9191E6]
 
   Ingredients:
-    #left
+    ####################################
+    ###           left               ###
+    ####################################
     - Bitmap:
         id: left_top_left
         bitmaps: 'images/left_top_left.bmp'
@@ -56,59 +58,88 @@ Scene:
         bitmaps: 'images/icon_photo.bmp'
         transparent_color: 0xFF00FF
 
-
     - Rectangle:
-        id: rect_left_hl
-        border_weight: 2
-        border_color: 2
-        bgcolor: 5
-        height: 75
-
-
-    - Rectangle:
-        id: rect_left_ll
-        border_weight: 2
+        id: rect_left_normal
+        border_weight: 1
         border_color: 2
         bgcolor: [6, 7]
-        gradient_mode: CORNER_TO_CENTER
         height: 75
+        gradient_mode: CORNER_TO_CENTER
+
+    - Rectangle:
+        id: rect_left_selected
+        border_weight: 1
+        border_color: 2
+        bgcolor: [5, 13]
+        height: 70
+        gradient_mode: CORNER_TO_CENTER
+
+    - Rectangle:
+        id: rect_left_focused
+        border_weight: 3
+        border_color: 2
+        bgcolor: [5, 13]
+        height: 70
+        gradient_mode: CORNER_TO_CENTER
 
     - Label:
         id: label_menu_picture
         text: 'Picture'
-        color: 2
+        color: [1, 2, 2]
         width: 280
+        height: 75
+        background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
+        state: 0
+        mutable: True
 
     - Label:
         id: label_menu_sound
         text: 'Sound'
-        color: 1
+        color: [1, 2]
         width: 280
+        height: 75
+        background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
+        state: 0
+        mutable: True
 
     - Label:
         id: label_menu_channel
         text: 'Channel'
-        color: 1
+        color: [1, 2]
         width: 280
+        height: 75
+        background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
+        state: 0
+        mutable: True
 
     - Label:
         id: label_menu_feature
         text: 'Feature'
-        color: 1
+        color: [1, 2]
         width: 280
+        height: 75
+        background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
+        state: 0
+        mutable: True
 
     - Label:
         id: label_menu_setup
         text: 'Setup'
-        color: 1
+        color: [1, 2]
         width: 280
+        height: 75
+        background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
+        state: 0
+        mutable: True
 
-    #top
+    ####################################
+    ###           top                ###
+    ####################################
     - Bitmap:
         id: title_tile
         bitmaps: 'images/title_tile.bmp'
@@ -125,11 +156,13 @@ Scene:
 
     - Label:
         id: label_title
-        text: 'Picture'
+        text: ['Picture', 'Sound', 'Channel', 'Feature', 'Setup']
         mutable: True
         color: 4
 
-    #bottom
+    ####################################
+    ###           bottom             ###
+    ####################################
     - Bitmap:
         id: left_bottom
         bitmaps: 'images/left_bottom.bmp'
@@ -273,63 +306,54 @@ Scene:
 
     - Rectangle:
         id: rect_input_picture_mode
-        mutable: True
         bgcolor: $input_bg_hl_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_brightness
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_contrast
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_sharpness
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_color
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_tint
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_color_temp
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Rectangle:
         id: rect_input_aspect_ratio
-        mutable: True
         bgcolor: $input_bg_color
         width: 200
         height: 40
 
     - Label:
         id: text_picture_mode
-        mutable: True
         text: 'Standard'
         #text: 'Dynamic'
         #text: 'Mild'
@@ -340,7 +364,6 @@ Scene:
 
     - Label:
         id: text_brightness
-        mutable: True
         text: '50'
         width: 200
         align: CENTER
@@ -348,7 +371,6 @@ Scene:
 
     - Label:
         id: text_contrast
-        mutable: True
         text: '50'
         width: 200
         align: CENTER
@@ -356,7 +378,6 @@ Scene:
 
     - Label:
         id: text_sharpness
-        mutable: True
         text: '50'
         width: 200
         align: CENTER
@@ -364,7 +385,6 @@ Scene:
 
     - Label:
         id: text_color
-        mutable: True
         text: '50'
         width: 200
         align: CENTER
@@ -372,7 +392,6 @@ Scene:
 
     - Label:
         id: text_tint
-        mutable: True
         text: '50'
         width: 200
         align: CENTER
@@ -380,7 +399,6 @@ Scene:
 
     - Label:
         id: text_color_temp
-        mutable: True
         text: 'Standard'
         #text: 'Cool'
         #text: 'Warm'
@@ -390,7 +408,6 @@ Scene:
 
     - Label:
         id: text_aspect_ratio
-        mutable: True
         text: '50'
         width: 200
         align: CENTER
@@ -462,17 +479,11 @@ Scene:
           - ['', left_top_right, 271, 0]
           - ['', icon_photo, 90, 60]
 
-          - ['', rect_left_hl, 0, 180]
-          - ['', rect_left_ll, 0, 255]
-          - ['', rect_left_ll, 0, 330]
-          - ['', rect_left_ll, 0, 405]
-          - ['', rect_left_ll, 0, 480]
-
-          - ['', label_menu_picture, 0, 210]
-          - ['', label_menu_sound, 0, 285]
-          - ['', label_menu_channel, 0, 360]
-          - ['', label_menu_feature, 0, 435]
-          - ['', label_menu_setup, 0, 510]
+          - ['', label_menu_picture, 0, 175]
+          - ['', label_menu_sound, 0, '+75']
+          - ['', label_menu_channel, 0, '+75']
+          - ['', label_menu_feature, 0, '+75']
+          - ['', label_menu_setup, 0, '+75']
 
     - Window:
         id: top

@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClCompile Include="src\osd_binary.c" />
     <ClCompile Include="src\osd_bitmap.c" />
+    <ClCompile Include="src\osd_block.c" />
     <ClCompile Include="src\osd_character.c" />
     <ClCompile Include="src\osd_common.c" />
     <ClCompile Include="src\osd_ingredient.c" />
@@ -93,6 +94,7 @@
   <ItemGroup>
     <ClInclude Include="include\osd_binary.h" />
     <ClInclude Include="include\osd_bitmap.h" />
+    <ClInclude Include="include\osd_block.h" />
     <ClInclude Include="include\osd_character.h" />
     <ClInclude Include="include\osd_common.h" />
     <ClInclude Include="include\osd_event.h" />

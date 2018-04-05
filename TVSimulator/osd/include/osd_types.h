@@ -166,10 +166,23 @@ struct _osd_bitmap_hw {
     u32 data_addr; //pointer to osd_bitmap_data
 };
 
+
+typedef struct _osd_label_state osd_label_state;
+struct _osd_label_state {
+    u32 bg_block_index;
+    u32 char_block_count;
+    u32 char_block_index[];
+    //u32 char_block[char_block_count]
+    //next osd_label_state
+};
+
 typedef struct _osd_label_hw osd_label_hw;
 struct _osd_label_hw {
-    u32 ingredient_count;
-    u32 ingredient_addr;
+    u16 state_count;
+    u16 current_state;
+
+    u32 osd_label_state_addr; //pointer to osd_label_state
+
     u32 reserved;
 };
 
@@ -198,9 +211,10 @@ struct _osd_ingredient_hw {
     } data;
 };
 
-struct _osd_block {
+typedef struct _osd_block_hw osd_block_hw;
+struct _osd_block_hw {
     u16 visible: 1; //lowest bits
-    u16 reserved: 15;
+    u16 block_index: 15;
     u16 ingredient_index;
     u16 x;
     u16 y;
@@ -233,6 +247,11 @@ struct _osd_window_hw {
 
 #define OSD_COLOR_CLIP(color) TV_MIN(TV_MAX(0, color), 0xFF)
 
+
+#define OSD_BLOCK_INDEX_TO_WINDOW_INDEX(block_index) (((block_index) >> 16) & 0xFFFF)
+#define OSD_BLOCK_INDEX_TO_WINDOW_BLOCK(block_index) ((block_index) & 0xFFFF)
+
+#define OSD_INVALID_BLOCK_INDEX 0xFFFFFFFF
 
 typedef struct _osd_rect osd_rect;
 

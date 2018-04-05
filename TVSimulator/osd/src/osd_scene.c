@@ -7,6 +7,15 @@
 #include "osd_label.h"
 #include "osd_proc.h"
 
+#define SHOW_OBJECT_DUMP 0
+
+#if SHOW_OBJECT_DUMP
+#define DUMP(object) object->dump(object)
+#else
+#define DUMP(object)
+#endif
+
+
 struct _osd_scene_priv {
     osd_scene_hw *hw;
     osd_proc *proc;
@@ -40,10 +49,69 @@ static void osd_scene_dump(osd_scene *self) {
            scene->hw->width, scene->hw->height, scene->hw->ram_offset);
 }
 
+static osd_block* osd_scene_block(osd_scene *self, u32 index) {
+    osd_window *window;
+    osd_block *block;
+    u16 window_index, block_index;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
+    window_index = OSD_BLOCK_INDEX_TO_WINDOW_INDEX(index);
+    block_index = OSD_BLOCK_INDEX_TO_WINDOW_BLOCK(index);
+    window = self->window(self, window_index);
+    TV_ASSERT(window);
+    block = window->block(window, block_index);
+    TV_ASSERT(block);
+    return block;
+}
+
 static osd_ingredient* osd_scene_ingredient(osd_scene *self, u32 index) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
     TV_ASSERT(index < priv->hw->ingredient_count);
     return priv->ingredients[index];
+}
+
+static osd_character* osd_scene_character(osd_scene *self, u32 index) {
+    osd_ingredient *ingredient;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->ingredient_count);
+    ingredient = priv->ingredients[index];
+    TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_CHARACTER);
+    return (osd_character*)ingredient;
+}
+
+static osd_bitmap* osd_scene_bitmap(osd_scene *self, u32 index) {
+    osd_ingredient *ingredient;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->ingredient_count);
+    ingredient = priv->ingredients[index];
+    TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_BITMAP);
+    return (osd_bitmap*)ingredient;
+}
+
+static osd_rectangle* osd_scene_rectangle(osd_scene *self, u32 index) {
+    osd_ingredient *ingredient;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->ingredient_count);
+    ingredient = priv->ingredients[index];
+    TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_RECTANGLE);
+    return (osd_rectangle*)ingredient;
+}
+
+static osd_line* osd_scene_line(osd_scene *self, u32 index) {
+    osd_ingredient *ingredient;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->ingredient_count);
+    ingredient = priv->ingredients[index];
+    TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_LINE);
+    return (osd_line*)ingredient;
+}
+
+static osd_label* osd_scene_label(osd_scene *self, u32 index) {
+    osd_ingredient *ingredient;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    TV_ASSERT(index < priv->hw->ingredient_count);
+    ingredient = priv->ingredients[index];
+    TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_LABEL);
+    return (osd_label*)ingredient;
 }
 
 static osd_palette* osd_scene_palette(osd_scene *self, u32 index) {
@@ -147,6 +215,7 @@ static u16 osd_scene_find_glyph(osd_scene *self, u16 char_code,
 static void osd_scene_set_proc(osd_scene *self, osd_proc *proc) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
     priv->proc = proc;
+    proc->init_ui(proc);
 }
 
 static void osd_scene_destroy(osd_scene *self) {
@@ -187,7 +256,13 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
     self->destroy = osd_scene_destroy;
     self->paint = osd_scene_paint;
     self->timer_interval = osd_scene_timer_interval;
+    self->block = osd_scene_block;
     self->ingredient = osd_scene_ingredient;
+    self->character = osd_scene_character;
+    self->bitmap = osd_scene_bitmap;
+    self->rectangle = osd_scene_rectangle;
+    self->line = osd_scene_line;
+    self->label = osd_scene_label;
     self->palette = osd_scene_palette;
     self->window = osd_scene_window;
     self->title = osd_scene_title;
@@ -223,7 +298,7 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
 
     priv->hw = (osd_scene_hw *)ram;
 
-    self->dump(self);
+    DUMP(self);
 
     ram_offset = OSD_SCENE_HW_DATA_SIZE;
 
@@ -240,7 +315,7 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
         osd_palette *palette = osd_palette_create(self, hw);
         ram_offset += OSD_PALETTE_DATA_SIZE;
         priv->palettes[i] = palette;
-        palette->dump(palette);
+        DUMP(palette);
     }
 
     //load ingredients
@@ -252,7 +327,7 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
         ram_offset += OSD_INGREDIENT_DATA_SIZE;
         if (ingredient) {
             priv->ingredients[i] = ingredient;
-            ingredient->dump(ingredient);
+            DUMP(ingredient);
         }
     }
 
@@ -263,7 +338,7 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
         osd_window_hw *hw = (osd_window_hw *)(ram + ram_offset);
         priv->windows[i] = osd_window_create(self, hw);
         ram_offset += OSD_WINDOW_DATA_SIZE;
-        priv->windows[i]->dump(priv->windows[i]);
+        DUMP(priv->windows[i]);
     }
 
     count = priv->hw->glyph_count;

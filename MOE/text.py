@@ -30,7 +30,7 @@ class Text(object):
         else:
             raise Exception('unknown type <%s>' % type(self._text))
 
-    def get_blocks(self, window, block_id, left, top):
+    def get_blocks(self, window, block_id, left, top, visible=None):
         blocks = []
         left_origin = left
         text_width = self.width
@@ -44,7 +44,7 @@ class Text(object):
         for i, character in enumerate(self._characters):
             glyph = character.glyph
             sub_id = '%s_%d' % (block_id, i)
-            block = Block(window, sub_id, character, left, top)
+            block = Block(window, sub_id, character, left, top, visible)
             blocks.append(block)
             left += glyph.advance_x
 

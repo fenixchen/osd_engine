@@ -21,7 +21,6 @@ static int counter = 0;
 
 static int osd_proc_screesaver_timer(osd_proc *self) {
     osd_window *window;
-    osd_ingredient *ingredient;
     osd_label *label;
     int x, y, max_x, max_y;
     osd_rect window_rect, scene_rect;
@@ -57,9 +56,7 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
         y_dir = -y_dir;
     }
     if (--counter <= 0) {
-        ingredient = scene->ingredient(scene, OSD_INGREDIENT_LABEL_CENTER_2);
-        TV_ASSERT(ingredient->type(ingredient) == OSD_INGREDIENT_LABEL);
-        label = (osd_label *)ingredient;
+        label = scene->label(scene, OSD_INGREDIENT_LABEL_CENTER_2);
         label->set_int(label, init--);
         if (init < 0) {
             window->set_visible(window, 0);
@@ -80,6 +77,10 @@ static int osd_proc_screensaver_event(osd_proc *self,
     }
 }
 
+static void osd_proc_screensaver_init_ui(osd_proc *self) {
+
+}
+
 static void osd_proc_screensaver_destroy(osd_proc *self) {
     TV_TYPE_GET_PRIV(osd_proc_screensaver_priv, self, priv);
     FREE_OBJECT(priv);
@@ -92,6 +93,7 @@ osd_proc *osd_proc_screensaver_create(osd_scene *scene) {
     self->priv = priv;
     priv->scene = scene;
     self->destroy = osd_proc_screensaver_destroy;
+    self->init_ui = osd_proc_screensaver_init_ui;
     self->event = osd_proc_screensaver_event;
     TV_TYPE_FP_CHECK(self->destroy, self->event);
     return self;

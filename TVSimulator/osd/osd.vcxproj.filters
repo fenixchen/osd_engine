@@ -44,6 +44,9 @@
     <ClCompile Include="src\osd_window.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\osd_block.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\osd_binary.h">
@@ -86,6 +89,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\osd_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\osd_block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

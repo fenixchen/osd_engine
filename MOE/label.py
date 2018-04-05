@@ -15,20 +15,20 @@ logger = Log.get_logger("engine")
 
 class Label(Ingredient):
     def __init__(self, scene, id, text, color,
-                 width = None, height = None,
+                 max_chars=0,
+                 width=None, height=None,
                  state=0,
                  background=None,
                  font=None, font_size=None,
                  palette=None,
                  align=Align.LEFT.name,
                  mutable=False):
-
         super().__init__(scene, id, palette, mutable)
         self._width = width
         self._height = height
-
         self._color = color if type(color) is list else [color]
         self._text = text if type(text) is list else [text]
+
         if background is None:
             self._background = []
         else:
@@ -60,6 +60,7 @@ class Label(Ingredient):
                 self._ingredient_background.append(self._ingredient_background[0])
 
         self._state = min(state, self._state_count)
+        self._blocks = [[None, None]] * self._state_count
 
     @property
     def height(self):
@@ -75,26 +76,54 @@ class Label(Ingredient):
     def get_blocks(self, window, block_id, left, top):
         blocks = []
         assert self._state < self._state_count
-        if len(self._ingredient_background) > self._state:
-            bg = self._ingredient_background[self._state]
-            blocks.append(Block(window, '', bg, left, top))
 
-        text = self._ingredient_text[self._state]
-        if self._height is not None:
-            y_delta = int((self._height - text.height) / 2 + 0.5)
-        else:
-            y_delta = 0
-        blocks.extend(text.get_blocks(window, block_id, left, top + y_delta))
+        self._blocks = []
 
+        for i in range(self._state_count):
+            state_blocks = []
+            visible = (i == self._state)
+            if len(self._ingredient_background) > self._state:
+                bg = self._ingredient_background[i]
+                block = Block(window, '', bg, left, top, visible)
+                state_blocks.append(block)
+                blocks.append(block)
+            else:
+                state_blocks.append(None)
+
+            text = self._ingredient_text[i]
+            if self._height is not None:
+                y_delta = int((self._height - text.height) / 2 + 0.5)
+            else:
+                y_delta = 0
+            text_blocks = text.get_blocks(window, block_id, left, top + y_delta, visible)
+            state_blocks.append(text_blocks)
+            blocks.extend(text_blocks)
+            self._blocks.append(state_blocks)
         return blocks
 
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
-        bins = struct.pack('<Bxxx', IngredientType.BUTTON.value)
-        bins += struct.pack('<xxxx')
-        bins += struct.pack('<xxxx')
-        bins += struct.pack('<xxxx')
+        bins = struct.pack('<Bxxx', IngredientType.LABEL.value)
+        if self._mutable:
+            bins += struct.pack('<HH', self._state_count, self._state)
+            bins += struct.pack('<I', ram_offset)
+            bins += struct.pack('<xxxx')
+
+            for state_block in self._blocks:
+                bg_block = state_block[0]
+                char_blocks = state_block[1]
+                if bg_block is not None:
+                    ram += struct.pack('<I', bg_block.full_index)
+                else:
+                    ram += struct.pack('<I', INVALID_BLOCK_INDEX)
+                ram += struct.pack('<I', len(char_blocks))
+                for char in char_blocks:
+                    ram += struct.pack('<I', char.full_index)
+        else:
+            bins += struct.pack('<xxxx')
+            bins += struct.pack('<xxxx')
+            bins += struct.pack('<xxxx')
         return bins, ram
 
     def __str__(self):
