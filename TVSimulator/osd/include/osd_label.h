@@ -11,6 +11,8 @@ struct _osd_label {
     osd_label_priv *priv;
     void (*set_int)(osd_label *self, int value);
     void (*set_string)(osd_label *self, const t_wchar *str);
+    void (*set_text)(osd_label *self, int text_index);
+    int (*text)(osd_label *self);
     void (*set_state)(osd_label *self, int state);
     int (*state)(osd_label *self);
 };

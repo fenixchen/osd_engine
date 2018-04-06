@@ -169,21 +169,30 @@ struct _osd_bitmap_hw {
 
 typedef struct _osd_label_state osd_label_state;
 struct _osd_label_state {
+    u32  color_index;
     u32 bg_block_index;
+};
+typedef struct _osd_label_text osd_label_text;
+struct _osd_label_text {
     u32 char_block_count;
     u32 char_block_index[];
-    //u32 char_block[char_block_count]
-    //next osd_label_state
+};
+typedef struct _osd_label_data osd_label_data;
+struct _osd_label_data {
+    osd_label_state state[1]; //state_count
+    /*
+    osd_label_text label_text[text_count]
+    */
+
 };
 
 typedef struct _osd_label_hw osd_label_hw;
 struct _osd_label_hw {
     u16 state_count;
     u16 current_state;
-
-    u32 osd_label_state_addr; //pointer to osd_label_state
-
-    u32 reserved;
+    u16 text_count;
+    u16 current_text;
+    u32 osd_label_data_addr; //pointer to osd_label_data
 };
 
 #define OSD_INGREDIENT_RECTANGLE 1

@@ -18,6 +18,7 @@ enum _osd_key {
     OSD_KEY_LEFT,
     OSD_KEY_RIGHT,
     OSD_KEY_ENTER,
+    OSD_KEY_BACK,
 };
 typedef struct _osd_trigger_data osd_trigger_data;
 

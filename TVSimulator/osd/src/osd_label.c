@@ -6,11 +6,13 @@
 #include "osd_block.h"
 
 #define LABEL_MAX_STATE_COUNT 16
+#define LABEL_MAX_TEXT_COUNT 16
 
 struct _osd_label_priv {
     osd_scene *scene;
     osd_label_hw *label;
     osd_label_state *state[LABEL_MAX_STATE_COUNT];
+    osd_label_text *text[LABEL_MAX_TEXT_COUNT];
 };
 
 
@@ -49,13 +51,13 @@ static void osd_label_set_string(osd_label *self, const t_wchar *str) {
     osd_glyph *glyph;
     u16 glyph_blank_index;
     u32 block_index;
-    osd_label_state *label_state;
+    osd_label_text *label_text;
     osd_block *block;
     osd_scene *scene;
     TV_TYPE_GET_PRIV(osd_label_priv, self, priv);
     scene = priv->scene;
-    label_state = priv->state[priv->label->current_state];
-    block_index = label_state->char_block_index[0];
+    label_text = priv->text[priv->label->current_text];
+    block_index = label_text->char_block_index[0];
     block = priv->scene->block(priv->scene, block_index);
     character = priv->scene->character(priv->scene, block->ingredient_index(block));
 
@@ -67,12 +69,12 @@ static void osd_label_set_string(osd_label *self, const t_wchar *str) {
     TV_ASSERT(glyph_blank_index != OSD_SCENE_INVALID_GLYPH_INDEX);
 
     len = tv_wchar_len(str);
-    len = TV_MIN(len, label_state->char_block_count);
+    len = TV_MIN(len, label_text->char_block_count);
     for (i = 0; i < len; i ++) {
         u16 glyph_index;
         t_wchar ch = str[i];
 
-        block_index = label_state->char_block_index[i];
+        block_index = label_text->char_block_index[i];
         block = priv->scene->block(priv->scene, block_index);
         character = priv->scene->character(priv->scene, block->ingredient_index(block));
 
@@ -84,19 +86,47 @@ static void osd_label_set_string(osd_label *self, const t_wchar *str) {
             TV_ERR("Cannot find glyph for code(%d - %#x), font(%d), size(%d)\n", ch, ch, glyph->font_id, glyph->font_size);
         }
     }
-    for (i = len; i < label_state->char_block_count; i ++) {
-        block_index = label_state->char_block_index[i];
+    for (i = len; i < label_text->char_block_count; i ++) {
+        block_index = label_text->char_block_index[i];
         block = priv->scene->block(priv->scene, block_index);
         character = priv->scene->character(priv->scene, block->ingredient_index(block));
         character->set_glyph(character, glyph_blank_index);
     }
 }
 
+static void osd_label_set_text(osd_label *self, int text_index) {
+    u16 i, j;
+    u32 color;
+    TV_TYPE_GET_PRIV(osd_label_priv, self, priv);
+    TV_ASSERT(text_index < priv->label->text_count);
+    priv->label->current_text = text_index;
+    color = priv->state[priv->label->current_state]->color_index;
+    for (i = 0; i < priv->label->text_count; i ++) {
+        osd_label_text *label_text = priv->text[i];
+        int visible = text_index == i;
+        for (j = 0; j < label_text->char_block_count; j ++) {
+            osd_block *block = priv->scene->block(priv->scene, label_text->char_block_index[j]);
+            block->set_visible(block, visible);
+            if (visible) {
+                osd_character *character = priv->scene->character(priv->scene, block->ingredient_index(block));
+                character->set_color(character, color);
+            }
+        }
+    }
+}
+
+static int osd_label_get_text(osd_label *self) {
+    TV_TYPE_GET_PRIV(osd_label_priv, self, priv);
+    return priv->label->current_text;
+}
+
 void osd_label_set_state(osd_label *self, int state) {
     u16 i;
-    u32 j;
+    u32 j, color;
+    osd_label_text *label_text;
     TV_TYPE_GET_PRIV(osd_label_priv, self, priv);
     TV_ASSERT(state < priv->label->state_count);
+    if (priv->label->current_state == state) return;
     priv->label->current_state = state;
     for (i = 0; i < priv->label->state_count; i ++) {
         int visible = (i == state);
@@ -105,10 +135,15 @@ void osd_label_set_state(osd_label *self, int state) {
             osd_block *block = priv->scene->block(priv->scene, label_state->bg_block_index);
             block->set_visible(block, visible);
         }
-        for (j = 0; j < label_state->char_block_count; j ++) {
-            osd_block *block = priv->scene->block(priv->scene, label_state->char_block_index[j]);
-            block->set_visible(block, visible);
-        }
+    }
+
+    color = priv->state[state]->color_index;
+
+    label_text = priv->text[priv->label->current_text];
+    for (j = 0; j < label_text->char_block_count; j ++) {
+        osd_block *block = priv->scene->block(priv->scene, label_text->char_block_index[j]);
+        osd_character *character = priv->scene->character(priv->scene, block->ingredient_index(block));
+        character->set_color(character, color);
     }
 }
 
@@ -125,17 +160,21 @@ static void osd_label_destroy(osd_ingredient *self) {
 
 osd_label *osd_label_create(osd_scene *scene, osd_ingredient_hw *hw) {
     u16 i;
-    u8 *state_ram;
+    u8 *ram;
     osd_label *self = MALLOC_OBJECT(osd_label);
     self->priv = MALLOC_OBJECT(osd_label_priv);
     self->priv->scene = scene;
     self->priv->label = &hw->data.label;
 
     TV_ASSERT(self->priv->label->state_count < LABEL_MAX_STATE_COUNT);
-    state_ram = scene->ram(scene) + self->priv->label->osd_label_state_addr;
+    ram = scene->ram(scene) + self->priv->label->osd_label_data_addr;
     for (i = 0; i < self->priv->label->state_count; i ++) {
-        self->priv->state[i] = (osd_label_state *)state_ram;
-        state_ram += TV_OFFSET_OF(osd_label_state, char_block_index) + self->priv->state[i]->char_block_count * 4;
+        self->priv->state[i] = (osd_label_state *)ram;
+        ram += sizeof(osd_label_state);
+    }
+    for (i = 0; i < self->priv->label->text_count; i ++) {
+        self->priv->text[i] = (osd_label_text*)ram;
+        ram += sizeof(osd_label_text) + 4 * self->priv->text[i]->char_block_count;
     }
 
     self->parent.destroy = osd_label_destroy;
@@ -147,7 +186,8 @@ osd_label *osd_label_create(osd_scene *scene, osd_ingredient_hw *hw) {
 
     self->set_int = osd_label_set_int;
     self->set_string = osd_label_set_string;
-
+    self->set_text = osd_label_set_text;
+    self->text = osd_label_get_text;
     self->set_state = osd_label_set_state;
     self->state = osd_label_get_state;
 

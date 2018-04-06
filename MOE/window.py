@@ -24,7 +24,7 @@ class Window(OSDObject):
             base_left = 0
             base_top = 0
             for i, block_info in enumerate(blocks):
-                block_info = scene.format_tuple(block_info)
+                block_info = scene.format_list(block_info)
                 if len(block_info) == 4:
                     (block_id, ingredient_id, left, top) = block_info
                     visible = True

@@ -81,6 +81,15 @@ static void osd_character_dump(osd_ingredient *ingredient) {
 
 }
 
+static void osd_character_set_color(osd_character *self, u32 color) {
+    TV_TYPE_GET_PRIV(osd_character_priv, self, priv);
+    priv->character->color = color;
+}
+static u32 osd_character_color(osd_character *self) {
+    TV_TYPE_GET_PRIV(osd_character_priv, self, priv);
+    return priv->character->color;
+}
+
 static osd_glyph* osd_character_glyph(osd_character *self) {
     TV_TYPE_GET_PRIV(osd_character_priv, self, priv);
     return priv->glyph;
@@ -117,6 +126,8 @@ osd_character *osd_character_create(osd_scene *scene, osd_ingredient_hw *hw) {
 
     self->set_glyph = osd_character_set_glyph;
     self->glyph = osd_character_glyph;
-    TV_TYPE_FP_CHECK(self->set_glyph, self->set_glyph);
+    self->set_color = osd_character_set_color;
+    self->color = osd_character_color;
+    TV_TYPE_FP_CHECK(self->set_glyph, self->color);
     return self;
 }

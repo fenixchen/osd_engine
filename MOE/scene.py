@@ -313,34 +313,32 @@ class Scene(object):
         if root:
             self._windows.sort(key=lambda window: window.zorder, reverse=False)
 
-    def format_tuple(self, values):
-        new_values = []
-        for value in values:
-            if type(value) is str:
-                pos = value.find('$')
-                if pos >= 0:
-                    var_name = value[pos + 1:]
-                    if var_name in self._map_define:
-                        value = value[:pos] + str(self._map_define[var_name])
-                    else:
-                        raise Exception('Unknown variable <%s>' % value)
-            new_values.append(value)
-        return new_values
-
-    def format_dict(self, values):
-        for key, value in values.items():
-            if type(value) is not str:
-                continue
+    def format_var(self, value):
+        new_value = value
+        if type(value) is str:
             pos = value.find('$')
             if pos >= 0:
                 var_name = value[pos + 1:]
                 if var_name in self._map_define:
                     if pos > 0:
-                        values[key] = value[:pos - 1] + self._map_define[var_name]
+                        new_value = value[:pos - 1] + self._map_define[var_name]
                     else:
-                        values[key] = self._map_define[var_name]
+                        new_value = self._map_define[var_name]
                 else:
                     raise Exception('Unknown variable <%s>' % value)
+        elif type(value) is list:
+            new_value = self.format_list(value)
+        return new_value
+
+    def format_list(self, values):
+        new_values = []
+        for value in values:
+            new_values.append(self.format_var(value))
+        return new_values
+
+    def format_dict(self, values):
+        for key, value in values.items():
+            values[key] = self.format_var(value)
 
     def _create_object(self, item):
         assert (len(item.keys()) > 0)

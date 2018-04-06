@@ -85,9 +85,9 @@ Scene:
     - Label:
         id: label_menu_picture
         text: 'Picture'
-        color: [1, 2, 2]
         width: 280
         height: 75
+        color: [1, 2, 2]
         background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
         state: 0
@@ -96,7 +96,7 @@ Scene:
     - Label:
         id: label_menu_sound
         text: 'Sound'
-        color: [1, 2]
+        color: [1, 2, 2]
         width: 280
         height: 75
         background: [rect_left_normal, rect_left_selected, rect_left_focused]
@@ -107,7 +107,7 @@ Scene:
     - Label:
         id: label_menu_channel
         text: 'Channel'
-        color: [1, 2]
+        color: [1, 2, 2]
         width: 280
         height: 75
         background: [rect_left_normal, rect_left_selected, rect_left_focused]
@@ -118,7 +118,7 @@ Scene:
     - Label:
         id: label_menu_feature
         text: 'Feature'
-        color: [1, 2]
+        color: [1, 2, 2]
         width: 280
         height: 75
         background: [rect_left_normal, rect_left_selected, rect_left_focused]
@@ -129,7 +129,7 @@ Scene:
     - Label:
         id: label_menu_setup
         text: 'Setup'
-        color: [1, 2]
+        color: [1, 2, 2]
         width: 280
         height: 75
         background: [rect_left_normal, rect_left_selected, rect_left_focused]
@@ -261,7 +261,6 @@ Scene:
         width: 250
         align: CENTER
 
-
     - Label:
         id: label_contrast
         text: 'Contrast'
@@ -304,114 +303,109 @@ Scene:
         width: 250
         align: CENTER
 
+
     - Rectangle:
-        id: rect_input_picture_mode
+        id: rect_center_normal
+        bgcolor: $input_bg_color
+
+    - Rectangle:
+        id: rect_center_selected
         bgcolor: $input_bg_hl_color
-        width: 200
-        height: 40
 
     - Rectangle:
-        id: rect_input_brightness
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
-
-    - Rectangle:
-        id: rect_input_contrast
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
-
-    - Rectangle:
-        id: rect_input_sharpness
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
-
-    - Rectangle:
-        id: rect_input_color
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
-
-    - Rectangle:
-        id: rect_input_tint
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
-
-    - Rectangle:
-        id: rect_input_color_temp
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
-
-    - Rectangle:
-        id: rect_input_aspect_ratio
-        bgcolor: $input_bg_color
-        width: 200
-        height: 40
+        id: rect_center_focused
+        bgcolor: $input_bg_hl_color
+        border_weight: 4
+        border_color: 2
 
     - Label:
         id: text_picture_mode
-        text: 'Standard'
-        #text: 'Dynamic'
-        #text: 'Mild'
-        #text: 'User'
+        text: ['Standard', 'Dynamic', 'Mild', 'User']
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_hl_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
+
 
     - Label:
         id: text_brightness
         text: '50'
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
     - Label:
         id: text_contrast
         text: '50'
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
     - Label:
         id: text_sharpness
         text: '50'
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
     - Label:
         id: text_color
         text: '50'
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
     - Label:
         id: text_tint
         text: '50'
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
     - Label:
         id: text_color_temp
-        text: 'Standard'
-        #text: 'Cool'
-        #text: 'Warm'
+        text: ['Standard', 'Cool', 'Warm']
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
     - Label:
         id: text_aspect_ratio
         text: '50'
         width: 200
+        height: 40
+        mutable: True
         align: CENTER
-        color: $input_text_color
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        state: 0
 
   Windows:
     - Window:
@@ -441,16 +435,7 @@ Scene:
           - ['', label_color_temp, 0,   $font_height]
           - ['', label_aspect_ratio, 0,   $font_height]
 
-          - ['', rect_input_picture_mode, 280, 52]
-          - ['', rect_input_brightness, 280, $font_height]
-          - ['', rect_input_contrast, 280, $font_height]
-          - ['', rect_input_sharpness, 280, $font_height]
-          - ['', rect_input_color, 280, $font_height]
-          - ['', rect_input_tint, 280, $font_height]
-          - ['', rect_input_color_temp, 280, $font_height]
-          - ['', rect_input_aspect_ratio, 280, $font_height]
-
-          - ['', text_picture_mode, 280, 60]
+          - ['', text_picture_mode, 280, 52]
           - ['', text_brightness, 280, $font_height]
           - ['', text_contrast, 280, $font_height]
           - ['', text_sharpness, 280, $font_height]

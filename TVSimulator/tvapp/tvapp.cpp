@@ -386,7 +386,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 key = OSD_KEY_RIGHT;
                 break;
             case VK_RETURN:
+            case VK_SPACE:
                 key = OSD_KEY_ENTER;
+                break;
+            case VK_BACK:
+            case VK_ESCAPE:
+                key = OSD_KEY_BACK;
                 break;
             }
             if (key != OSD_KEY_NONE) {

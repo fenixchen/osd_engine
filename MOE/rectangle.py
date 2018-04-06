@@ -19,8 +19,8 @@ class Rectangle(Ingredient):
                  palette=None,
                  mutable=False):
         super().__init__(scene, id, palette, mutable)
-        self._width = width
-        self._height = height
+        self._width = 0 if width is None else width
+        self._height = 0 if height is None else height
         self._border_style = LineStyle[border_style]
         self._border_weight = border_weight
         if self._border_weight != 0:
@@ -234,11 +234,11 @@ class Rectangle(Ingredient):
 
     @width.setter
     def width(self, width):
-        self._width = width
+        self._width = 0 if width is None else width
 
     @height.setter
     def height(self, height):
-        self._height = height
+        self._height = 0 if height is None else height
 
     def __str__(self):
         return "%s(id:%s, (%d x %d)," \

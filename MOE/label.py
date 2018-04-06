@@ -34,18 +34,11 @@ class Label(Ingredient):
         else:
             self._background = background if type(background) is list else [background]
 
-        self._state_count = max(len(self._color), len(self._text), len(self._background))
+        self._state_count = max(len(self._color), len(self._background))
 
         for i in range(self._state_count - len(self._color)):
             self._color.append(self._color[0])
 
-        for i in range(self._state_count - len(self._text)):
-            self._text.append(self._text[0])
-
-        self._ingredient_text = []
-        for i in range(self._state_count):
-            text = Text(scene, self._text[i], self._color[i], font, font_size, self._width, align)
-            self._ingredient_text.append(text)
 
         self._ingredient_background = []
         for background in self._background:
@@ -59,8 +52,15 @@ class Label(Ingredient):
             for i in range(self._state_count - len(self._background)):
                 self._ingredient_background.append(self._ingredient_background[0])
 
-        self._state = min(state, self._state_count)
-        self._blocks = [[None, None]] * self._state_count
+        self._current_state = min(state, self._state_count)
+        self._state_blocks = []
+        self._text_blocks = []
+        self._current_text = 0
+
+        self._ingredient_text = []
+        for t in self._text:
+            text = Text(scene, t, self._color[self._current_state], font, font_size, self._width, align)
+            self._ingredient_text.append(text)
 
     @property
     def height(self):
@@ -75,30 +75,29 @@ class Label(Ingredient):
 
     def get_blocks(self, window, block_id, left, top):
         blocks = []
-        assert self._state < self._state_count
-
-        self._blocks = []
+        assert self._current_state < self._state_count
 
         for i in range(self._state_count):
-            state_blocks = []
-            visible = (i == self._state)
-            if len(self._ingredient_background) > self._state:
+            state_blocks = [self._color[i]]
+            visible = (i == self._current_state)
+            if len(self._ingredient_background) > self._current_state:
                 bg = self._ingredient_background[i]
                 block = Block(window, '', bg, left, top, visible)
                 state_blocks.append(block)
                 blocks.append(block)
             else:
                 state_blocks.append(None)
+            self._state_blocks.append(state_blocks)
 
-            text = self._ingredient_text[i]
+        for i, text in enumerate(self._ingredient_text):
             if self._height is not None:
                 y_delta = int((self._height - text.height) / 2 + 0.5)
             else:
                 y_delta = 0
-            text_blocks = text.get_blocks(window, block_id, left, top + y_delta, visible)
-            state_blocks.append(text_blocks)
-            blocks.extend(text_blocks)
-            self._blocks.append(state_blocks)
+            char_blocks = text.get_blocks(window, block_id, left, top + y_delta, i == 0)
+            blocks.extend(char_blocks)
+            self._text_blocks.append(char_blocks)
+
         return blocks
 
     def to_binary(self, ram_offset):
@@ -106,17 +105,21 @@ class Label(Ingredient):
         ram = b''
         bins = struct.pack('<Bxxx', IngredientType.LABEL.value)
         if self._mutable:
-            bins += struct.pack('<HH', self._state_count, self._state)
+            bins += struct.pack('<HH', self._state_count, self._current_state)
+            bins += struct.pack('<HH', len(self._text_blocks), self._current_text)
             bins += struct.pack('<I', ram_offset)
-            bins += struct.pack('<xxxx')
 
-            for state_block in self._blocks:
-                bg_block = state_block[0]
-                char_blocks = state_block[1]
+            for state_block in self._state_blocks:
+                color = state_block[0]
+                ram += struct.pack('<I', color)
+                bg_block = state_block[1]
+
                 if bg_block is not None:
                     ram += struct.pack('<I', bg_block.full_index)
                 else:
                     ram += struct.pack('<I', INVALID_BLOCK_INDEX)
+
+            for char_blocks in self._text_blocks:
                 ram += struct.pack('<I', len(char_blocks))
                 for char in char_blocks:
                     ram += struct.pack('<I', char.full_index)
