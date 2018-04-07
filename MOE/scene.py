@@ -535,7 +535,7 @@ class Scene(object):
                 f.write('#define OSD_WINDOW_%-16s %d\n' % (window.id.upper(), i))
                 for j, block in enumerate(window.blocks):
                     if block.mutable:
-                        f.write('#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), j))
+                        f.write('#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), block.full_index))
 
             f.write('\n#endif')
 

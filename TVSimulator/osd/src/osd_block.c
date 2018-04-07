@@ -40,6 +40,22 @@ osd_block_hw* osd_block_get_hw(osd_block *self) {
     return priv->hw;
 }
 
+static osd_point osd_block_position(osd_block *self) {
+    osd_point point;
+    TV_TYPE_GET_PRIV(osd_block_priv, self, priv);
+    point.x = priv->hw->x;
+    point.y = priv->hw->y;
+    return point;
+}
+
+static void	osd_block_set_position(osd_block *self, osd_point *point) {
+    TV_TYPE_GET_PRIV(osd_block_priv, self, priv);
+    TV_ASSERT(point);
+    priv->hw->x = point->x;
+    priv->hw->y = point->y;
+}
+
+
 static void osd_block_move_to(osd_block *self, int x, int y) {
     TV_TYPE_GET_PRIV(osd_block_priv, self, priv);
     priv->hw->x = x;
@@ -56,7 +72,8 @@ osd_block *osd_block_create(osd_scene *scene, osd_block_hw *hw) {
     self->ingredient_index = osd_block_ingredient_index;
     self->visible = osd_block_visible;
     self->set_visible = osd_block_set_visible;
-    self->move_to = osd_block_move_to;
+    self->position = osd_block_position;
+    self->set_position = osd_block_set_position;
     self->hw = osd_block_get_hw;
     self->dump = osd_block_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);

@@ -241,11 +241,13 @@ Scene:
         id: left
         bitmaps: 'images/left.bmp'
         transparent_color: 0xFE02FE
+        mutable: True
 
     - Bitmap:
         id: right
         bitmaps: 'images/right.bmp'
         transparent_color: 0xFE02FE
+        mutable: True
 
     - Label:
         id: label_picture_mode
@@ -398,7 +400,7 @@ Scene:
 
     - Label:
         id: text_aspect_ratio
-        text: '50'
+        text: ['16:9', '4:3']
         width: 200
         height: 40
         mutable: True
@@ -444,8 +446,8 @@ Scene:
           - ['', text_color_temp, 280, $font_height]
           - ['', text_aspect_ratio, 280, $font_height]
 
-          - ['', left, 260, 60]
-          - ['', right, 485, 60]
+          - ['LEFT_ARROW', left, 260, 60]
+          - ['RIGHT_ARROW', right, 485, 60]
 
           - ['', page_up, 300, 0]
           - ['', page_down, 300, 456]

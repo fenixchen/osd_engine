@@ -269,5 +269,10 @@ struct _osd_rect {
     u32 width, height;
 };
 
+typedef struct _osd_point osd_point;
+struct _osd_point {
+    u32 x, y;
+};
+
 #endif
 

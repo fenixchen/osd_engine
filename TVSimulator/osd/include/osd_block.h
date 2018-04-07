@@ -11,7 +11,8 @@ struct _osd_block {
     u16			  (*ingredient_index)(osd_block *self);
     int			  (*visible)(osd_block *self);
     void		  (*set_visible)(osd_block *self, int visible);
-    void		  (*move_to)(osd_block *self, int x, int y);
+    osd_point	  (*position)(osd_block *self);
+    void		  (*set_position)(osd_block *self, osd_point *point);
     osd_block_hw* (*hw)(osd_block *self);
     void		  (*dump)(osd_block *self);
 };
