@@ -15,7 +15,6 @@
 #define DUMP(object)
 #endif
 
-
 struct _osd_scene_priv {
     osd_scene_hw *hw;
     osd_proc *proc;
@@ -24,11 +23,11 @@ struct _osd_scene_priv {
     osd_window *windows[OSD_SCENE_MAX_WINDOW_COUNT];
     osd_glyph *glyphs[OSD_SCENE_MAX_GLYPH_COUNT];
     osd_binary *binary;
+    osd_window *focused_window;
 };
 
-
-static int osd_scene_trigger(osd_scene *self, osd_trigger_type type,
-                             osd_trigger_data *data) {
+static int osd_scene_trigger(osd_scene *self, osd_event_type type,
+                             osd_event_data *data) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
     if (priv->proc) {
         TV_ASSERT(priv->proc->event);
@@ -218,6 +217,27 @@ static void osd_scene_set_proc(osd_scene *self, osd_proc *proc) {
     proc->init_ui(proc);
 }
 
+static void osd_scene_set_focused_window(osd_scene *self, osd_window *window) {
+    osd_window *window_lost_focus;
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    if (priv->focused_window == window) {
+        return;
+    }
+    window_lost_focus = priv->focused_window;
+    priv->focused_window = window;
+
+    if (window_lost_focus) {
+        window_lost_focus->send_message(window_lost_focus, OSD_EVENT_WINDOW_LEAVE, NULL);
+    }
+    if (window) {
+        window->send_message(window, OSD_EVENT_WINDOW_ENTER, NULL);
+    }
+}
+static osd_window* osd_scene_focused_window(osd_scene *self) {
+    TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
+    return priv->focused_window;
+}
+
 static void osd_scene_destroy(osd_scene *self) {
     u32 i;
     TV_TYPE_GET_PRIV(osd_scene_priv, self, priv);
@@ -272,6 +292,8 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
     self->glyph_addr = osd_scene_glyph_addr;
     self->find_glyph = osd_scene_find_glyph;
     self->set_proc = osd_scene_set_proc;
+    self->set_focused_window = osd_scene_set_focused_window;
+    self->focused_window = osd_scene_focused_window;
     self->dump = osd_scene_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);
 

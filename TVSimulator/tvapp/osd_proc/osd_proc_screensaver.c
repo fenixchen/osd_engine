@@ -67,10 +67,10 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
 }
 
 static int osd_proc_screensaver_event(osd_proc *self,
-                                      osd_trigger_type type,
-                                      osd_trigger_data *data) {
+                                      osd_event_type type,
+                                      osd_event_data *data) {
     switch (type) {
-    case OSD_TRIGGER_TIMER:
+    case OSD_EVENT_TIMER:
         return osd_proc_screesaver_timer(self);
     default:
         return 0;

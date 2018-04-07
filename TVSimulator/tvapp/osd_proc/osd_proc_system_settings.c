@@ -10,15 +10,7 @@
 typedef struct _osd_proc_system_settings_priv osd_proc_system_settings_priv;
 struct _osd_proc_system_settings_priv {
     osd_scene *scene;
-    int current_menu_item;
-    int sub_menu_focused;
-    int current_sub_menu_item;
 };
-
-static int osd_proc_system_settings_timer(osd_proc *self) {
-    return 0;
-}
-
 
 static u32 menu_item[] = {
     OSD_INGREDIENT_LABEL_MENU_PICTURE,
@@ -28,24 +20,6 @@ static u32 menu_item[] = {
     OSD_INGREDIENT_LABEL_MENU_SETUP
 };
 #define menu_item_count (sizeof(menu_item) / sizeof(menu_item[0]))
-
-static void show_menu_item_state(osd_proc *self) {
-    int i;
-    osd_label *label;
-    TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
-    for (i = 0; i < menu_item_count; i ++) {
-        int state;
-        if (i == priv->current_menu_item) {
-            state = priv->sub_menu_focused ? 1 : 2;
-        } else {
-            state = 0;
-        }
-        label = priv->scene->label(priv->scene, menu_item[i]);
-        label->set_state(label, state);
-    }
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_LABEL_TITLE);
-    label->set_text(label, priv->current_menu_item);
-}
 
 static u32 picture_menu_item[] = {
     OSD_INGREDIENT_TEXT_PICTURE_MODE,
@@ -60,102 +34,198 @@ static u32 picture_menu_item[] = {
 
 #define picture_menu_item_count (sizeof(picture_menu_item) / sizeof(picture_menu_item[0]))
 
+struct window_left_data {
+    int focused_item;
+} left_data;
 
-static void show_sub_menu_item_state(osd_proc *self) {
-    int i;
+struct window_center_data {
+    int focused_item;
+} center_data;
+
+static int window_left_update_ui(osd_proc *self, osd_window *window_left, struct window_left_data *left_data,
+                                 osd_event_type type, osd_event_data *data) {
+    int i, focused;
     osd_label *label;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
+    focused = priv->scene->focused_window(priv->scene) == window_left;
+    for (i = 0; i < menu_item_count; i ++) {
+        int state;
+        if (i == left_data->focused_item) {
+            state = focused ? 2 : 1;
+        } else {
+            state = 0;
+        }
+        label = priv->scene->label(priv->scene, menu_item[i]);
+        label->set_state(label, state);
+    }
+    label = priv->scene->label(priv->scene, OSD_INGREDIENT_LABEL_TITLE);
+    label->set_text(label, left_data->focused_item);
+    return 1;
+}
+
+static int window_left_keydown(osd_proc *self, osd_window *window_left, struct window_left_data *left_data,
+                               osd_event_type type, osd_event_data *data) {
+    int focused_item;
+    osd_key key = data->data.keydown.key;
+    TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
+    focused_item = left_data->focused_item;
+    switch(key) {
+    case OSD_KEY_UP:
+        focused_item = TV_MAX(0, focused_item - 1);
+        break;
+    case OSD_KEY_DOWN:
+        focused_item = TV_MIN(menu_item_count - 1, focused_item + 1);
+        break;
+    case OSD_KEY_ENTER:
+        priv->scene->set_focused_window(priv->scene, priv->scene->window(priv->scene, OSD_WINDOW_CENTER));
+        return 1;
+    default:
+        return 0;
+    }
+    if (focused_item != left_data->focused_item) {
+        left_data->focused_item = focused_item;
+        return window_left_update_ui(self, window_left, left_data, type, data);
+    } else {
+        return 0;
+    }
+}
+
+static int osd_window_left_proc(osd_window_proc *proc,
+                                osd_event_type type, osd_event_data *data) {
+    struct window_left_data *priv_data = (struct window_left_data *)proc->priv;
+    osd_proc *self = proc->proc;
+    TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
+    switch (type) {
+    case OSD_EVENT_WINDOW_INIT:
+        priv_data->focused_item = 0;
+        return window_left_update_ui(self, proc->window, priv_data, type, data);
+    case OSD_EVENT_WINDOW_ENTER:
+        return window_left_update_ui(self, proc->window, priv_data, type, data);
+    case OSD_EVENT_WINDOW_LEAVE:
+        return window_left_update_ui(self, proc->window, priv_data, type, data);
+    case OSD_EVENT_KEYDOWN:
+        return window_left_keydown(self, proc->window, priv_data, type, data);
+    default:
+        return 0;
+    }
+}
+
+
+static int window_center_update_ui(osd_proc *self, osd_window *window_center, struct window_center_data *center_data,
+                                   osd_event_type type, osd_event_data *data) {
+    int i, focused;
+    osd_label *label;
+    TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
+    focused = priv->scene->focused_window(priv->scene) == window_center;
     for (i = 0; i < picture_menu_item_count; i ++) {
         int state;
-        if (i == priv->current_sub_menu_item) {
-            state = priv->sub_menu_focused ? 2 : 1;
+        if (i == center_data->focused_item) {
+            state = focused ? 2 : 1;
         } else {
             state = 0;
         }
         label = priv->scene->label(priv->scene, picture_menu_item[i]);
         label->set_state(label, state);
     }
+    return 1;
 }
 
-static int osd_proc_system_settings_keydown(osd_proc *self, osd_key key) {
-    int result = 0;
-    int menu_focus_changed = 0;
-    int current_menu_item, current_sub_menu_item, sub_menu_focused;
-    osd_scene *scene;
+static int window_center_keydown(osd_proc *self, osd_window *window_center, struct window_center_data *center_data,
+                                 osd_event_type type, osd_event_data *data) {
+    int focused_item;
+    osd_key key = data->data.keydown.key;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
-    scene = priv->scene;
-    current_menu_item = priv->current_menu_item;
-    current_sub_menu_item = priv->current_sub_menu_item;
-    sub_menu_focused = priv->sub_menu_focused;
-    switch (key) {
+    focused_item = center_data->focused_item;
+    switch(key) {
     case OSD_KEY_UP:
-        if (sub_menu_focused) {
-            current_sub_menu_item = TV_MAX(0, current_sub_menu_item - 1);
-        } else {
-            current_menu_item = TV_MAX(0, current_menu_item - 1);
-        }
+        focused_item = TV_MAX(0, focused_item - 1);
         break;
     case OSD_KEY_DOWN:
-        if (sub_menu_focused) {
-            current_sub_menu_item = TV_MIN(picture_menu_item_count - 1, current_sub_menu_item + 1);
-        } else {
-            current_menu_item = TV_MIN(menu_item_count - 1, current_menu_item + 1);
-        }
-        break;
-    case OSD_KEY_ENTER:
-        sub_menu_focused = 1;
+        focused_item = TV_MIN(picture_menu_item_count - 1, focused_item + 1);
         break;
     case OSD_KEY_BACK:
-        sub_menu_focused = 0;
-        break;
-    case OSD_KEY_LEFT:
-        break;
-    case OSD_KEY_RIGHT:
-        break;
+        priv->scene->set_focused_window(priv->scene, priv->scene->window(priv->scene, OSD_WINDOW_LEFT));
+        return 1;
     default:
         return 0;
     }
-
-    menu_focus_changed = sub_menu_focused != priv->sub_menu_focused;
-    if (menu_focus_changed) {
-        current_menu_item = TV_CLIP(current_menu_item, 0, menu_item_count);
-        current_sub_menu_item = TV_CLIP(current_sub_menu_item, 0, picture_menu_item_count);
-        priv->sub_menu_focused = sub_menu_focused;
+    if (focused_item != center_data->focused_item) {
+        center_data->focused_item = focused_item;
+        return window_center_update_ui(self, window_center, center_data, type, data);
+    } else {
+        return 0;
     }
-
-    if (current_menu_item != priv->current_menu_item || menu_focus_changed) {
-        priv->current_menu_item = current_menu_item;
-        show_menu_item_state(self);
-        result = 1;
-    }
-    if (current_sub_menu_item != priv->current_sub_menu_item || menu_focus_changed) {
-        priv->current_sub_menu_item = current_sub_menu_item;
-        show_sub_menu_item_state(self);
-        result = 1;
-    }
-    return result;
 }
+
+static int osd_window_center_proc(osd_window_proc *proc,
+                                  osd_event_type type, osd_event_data *data) {
+    struct window_center_data *priv_data = (struct window_center_data *)proc->priv;
+    osd_proc *self = proc->proc;
+    TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
+    switch (type) {
+    case OSD_EVENT_WINDOW_INIT:
+        priv_data->focused_item = 0;
+        return window_center_update_ui(self, proc->window, priv_data, type, data);
+    case OSD_EVENT_WINDOW_ENTER:
+        return window_center_update_ui(self, proc->window, priv_data, type, data);
+    case OSD_EVENT_WINDOW_LEAVE:
+        return window_center_update_ui(self, proc->window, priv_data, type, data);
+    case OSD_EVENT_KEYDOWN:
+        return window_center_keydown(self, proc->window, priv_data, type, data);
+    default:
+        return 0;
+    }
+}
+
+
+osd_window_proc window_proc_data[] = {
+    {OSD_WINDOW_LEFT,   NULL, NULL, &left_data,		osd_window_left_proc,	},
+    {OSD_WINDOW_CENTER, NULL, NULL, &center_data,	osd_window_center_proc,	},
+};
+
+#define window_data_count (sizeof(window_proc_data) / sizeof(window_proc_data[0]))
+
+
 
 static int osd_proc_system_settings_event(osd_proc *self,
-        osd_trigger_type type,
-        osd_trigger_data *data) {
+        osd_event_type type,
+        osd_event_data *data) {
+    osd_window *window;
+    TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
     switch (type) {
-    case OSD_TRIGGER_TIMER:
-        return osd_proc_system_settings_timer(self);
-    case OSD_TRIGGER_KEYDOWN:
-        return osd_proc_system_settings_keydown(self, data->data.keydown.key);
-    default:
-        return 0;
+    case OSD_EVENT_WINDOW_INIT:
+    case OSD_EVENT_WINDOW_DEINIT:
+    case OSD_EVENT_WINDOW_ENTER:
+    case OSD_EVENT_WINDOW_LEAVE: {
+        window = data->data.window.window;
+        return window->send_message(window, type, data);
     }
+    case OSD_EVENT_KEYDOWN: {
+        osd_window *window = priv->scene->focused_window(priv->scene);
+        if (window) {
+            return window->send_message(window, type, data);
+        }
+        break;
+    }
+    }
+    return 0;
 }
 
+
+
 static void osd_proc_system_settings_init_ui(osd_proc *self) {
+    int i;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
-    priv->current_menu_item = 0;
-    priv->sub_menu_focused = 0;
-    priv->current_sub_menu_item = -1;
-    show_menu_item_state(self);
-    show_sub_menu_item_state(self);
+
+    for (i = 0; i < window_data_count; i ++) {
+        osd_window_proc* wp = &window_proc_data[i];
+        osd_window *window = priv->scene->window(priv->scene, wp->window_id);
+        wp->proc = self;
+        wp->window = window;
+        window->set_window_proc(window, wp);
+        window->send_message(window, OSD_EVENT_WINDOW_INIT, NULL);
+    }
+    priv->scene->set_focused_window(priv->scene, window_proc_data[0].window);
 }
 
 static void osd_proc_system_settings_destroy(osd_proc *self) {
@@ -175,3 +245,4 @@ osd_proc *osd_proc_system_settings_create(osd_scene *scene) {
     TV_TYPE_FP_CHECK(self->destroy, self->event);
     return self;
 }
+

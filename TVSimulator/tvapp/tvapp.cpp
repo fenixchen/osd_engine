@@ -254,7 +254,7 @@ void DoSaveFB(HWND hWnd) {
 
 void DoTimer(HWND hWnd) {
     if (scene) {
-        if (scene->trigger(scene, OSD_TRIGGER_TIMER, NULL)) {
+        if (scene->trigger(scene, OSD_EVENT_TIMER, NULL)) {
             InvalidateRect(hWnd, NULL, FALSE);
         }
     }
@@ -370,7 +370,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
     case WM_KEYDOWN:
         if (scene) {
-            osd_trigger_data trigger;
+            osd_event_data trigger;
             osd_key key = OSD_KEY_NONE;
             switch (wParam) {
             case VK_DOWN:
@@ -396,7 +396,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             }
             if (key != OSD_KEY_NONE) {
                 trigger.data.keydown.key = key;
-                if (scene->trigger(scene, OSD_TRIGGER_KEYDOWN, &trigger)) {
+                if (scene->trigger(scene, OSD_EVENT_KEYDOWN, &trigger)) {
                     InvalidateRect(hWnd, NULL, FALSE);
                 }
             }

@@ -3,11 +3,15 @@
 
 #include "osd_types.h"
 
-typedef enum _osd_trigger_type osd_trigger_type;
+typedef enum _osd_event_type osd_event_type;
 
-enum _osd_trigger_type {
-    OSD_TRIGGER_TIMER,
-    OSD_TRIGGER_KEYDOWN,
+enum _osd_event_type {
+    OSD_EVENT_TIMER,
+    OSD_EVENT_KEYDOWN,
+    OSD_EVENT_WINDOW_INIT,
+    OSD_EVENT_WINDOW_DEINIT,
+    OSD_EVENT_WINDOW_ENTER,
+    OSD_EVENT_WINDOW_LEAVE,
 };
 
 typedef enum _osd_key osd_key;
@@ -20,9 +24,9 @@ enum _osd_key {
     OSD_KEY_ENTER,
     OSD_KEY_BACK,
 };
-typedef struct _osd_trigger_data osd_trigger_data;
+typedef struct _osd_event_data osd_event_data;
 
-struct _osd_trigger_data {
+struct _osd_event_data {
     union {
         struct {
             u32 tick;
@@ -30,6 +34,9 @@ struct _osd_trigger_data {
         struct {
             osd_key key;
         } keydown;
+        struct {
+            osd_window *window;
+        } window;
     } data;
 };
 

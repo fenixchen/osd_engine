@@ -21,12 +21,14 @@ struct _osd_scene {
     osd_window* (*window)(osd_scene *self, u32 index);
     const char * (*title)(osd_scene *self);
     int (*timer_interval)(osd_scene *self);
-    int (*trigger)(osd_scene *self, osd_trigger_type type, osd_trigger_data *data);
+    int (*trigger)(osd_scene *self, osd_event_type type, osd_event_data *data);
     osd_rect (*rect)(osd_scene *self);
     u8* (*ram)(osd_scene *self);
     u32 (*glyph_addr)(osd_scene *self, u16 index);
     u16 (*find_glyph)(osd_scene *self, u16 char_code, u8 font_id, u8 font_size);
     void (*set_proc)(osd_scene *self, osd_proc *proc);
+    void (*set_focused_window)(osd_scene *self, osd_window *window);
+    osd_window* (*focused_window)(osd_scene *self);
     void (*dump)(osd_scene *self);
 };
 

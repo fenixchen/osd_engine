@@ -41,12 +41,12 @@ static int osd_proc_animation_keydown(osd_proc *self, osd_key key) {
 
 
 static int osd_proc_animation_event(osd_proc *self,
-                                    osd_trigger_type type,
-                                    osd_trigger_data *data) {
+                                    osd_event_type type,
+                                    osd_event_data *data) {
     switch (type) {
-    case OSD_TRIGGER_TIMER:
+    case OSD_EVENT_TIMER:
         return osd_proc_animation_timer(self);
-    case OSD_TRIGGER_KEYDOWN:
+    case OSD_EVENT_KEYDOWN:
         return osd_proc_animation_keydown(self, data->data.keydown.key);
     default:
         return 0;

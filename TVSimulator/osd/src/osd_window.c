@@ -10,6 +10,7 @@ struct _osd_window_priv {
     osd_window_hw *hw;
     osd_scene *scene;
     osd_block** blocks;
+    osd_window_proc *window_proc;
 };
 
 static int osd_window_paint(osd_window *self,
@@ -102,6 +103,21 @@ static void osd_window_set_visible(osd_window *self, int visible) {
     priv->hw->visible = visible;
 }
 
+void osd_window_set_window_proc(osd_window *self, osd_window_proc *window_proc) {
+    TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
+    priv->window_proc = window_proc;
+}
+
+int	osd_window_send_message(osd_window *self, osd_event_type type, osd_event_data *data) {
+    TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
+    if (priv->window_proc && priv->window_proc->handler) {
+        osd_window_proc *window_proc = priv->window_proc;
+        return window_proc->handler(window_proc, type, data);
+    } else {
+        return 0;
+    }
+}
+
 static void osd_window_destroy(osd_window *self) {
     u32 i;
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
@@ -137,6 +153,8 @@ osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw) {
     self->alpha = osd_window_alpha;
     self->move_to = osd_window_move_to;
     self->block = osd_window_block;
+    self->set_window_proc = osd_window_set_window_proc;
+    self->send_message = osd_window_send_message;
     self->dump = osd_window_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
