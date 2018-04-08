@@ -225,8 +225,8 @@ struct _osd_block_hw {
     u16 visible: 1; //lowest bits
     u16 block_index: 15;
     u16 ingredient_index;
-    u16 x;
-    u16 y;
+    s16 x;
+    s16 y;
 };
 
 
@@ -265,13 +265,13 @@ struct _osd_window_hw {
 typedef struct _osd_rect osd_rect;
 
 struct _osd_rect {
-    u32 x, y;
+    s32 x, y;
     u32 width, height;
 };
 
 typedef struct _osd_point osd_point;
 struct _osd_point {
-    u32 x, y;
+    s32 x, y;
 };
 
 #endif

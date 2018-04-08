@@ -13,10 +13,12 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
                                       osd_block_hw *block,
                                       u32 *window_line_buffer,
                                       u32 y) {
-    u32 x, color, margin;
+    s32 x, margin;
+    u32 color;
     osd_rect window_rect;
     osd_rectangle_hw *rect;
-    u16 width, height;
+    s32 width, height;
+    s32 window_width = window->rect(window).width;
     osd_ingredient *ingredient = (osd_ingredient *)self;
     TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
     rect = priv->rectangle;
@@ -28,52 +30,62 @@ static int osd_rectangle_border_paint(osd_rectangle *self,
         color = ingredient->color(ingredient, rect->border_color_top);
         margin = rect->border_weight - (rect->border_weight - y);
         for (x = block->x + margin; x < block->x + width - margin; x ++) {
-            if (osd_line_style_check(rect->border_style, x))
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(rect->border_style, x))
                 window_line_buffer[x] = color;
         }
         color = ingredient->color(ingredient, rect->border_color_left);
-        for (x = block->x; x < block->x + y; x ++) {
-            if (osd_line_style_check(rect->border_style, y))
+        for (x = block->x; x < block->x + (s32)y; x ++) {
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
         }
         color = ingredient->color(ingredient, rect->border_color_right);
-        for (x = block->x + width - y; x < (u32)(block->x + width); x ++) {
-            if (osd_line_style_check(rect->border_style, y))
+        for (x = block->x + width - y; x < block->x + width; x ++) {
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
         }
         return 1;
     }
 
-    if (y >= (u32)(height - rect->border_weight)) {
+    if ((s32)y >= height - rect->border_weight) {
         color = ingredient->color(ingredient, rect->border_color_bottom);
         margin = height - y;
         for (x = block->x + margin; x < block->x + width - margin; x ++) {
-            if (osd_line_style_check(rect->border_style, x))
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(rect->border_style, x))
                 window_line_buffer[x] = color;
         }
 
         color = ingredient->color(ingredient, rect->border_color_left);
-        for (x = block->x; x < block->x + height - y; x ++) {
-            if (osd_line_style_check(rect->border_style, y))
+        for (x = block->x; x < block->x + height - (s32)y; x ++) {
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
         }
 
         color = ingredient->color(ingredient, rect->border_color_right);
-        for (x = block->x + width - height + y; x < (u32)(block->x + width); x ++) {
-            if (osd_line_style_check(rect->border_style, y))
+        for (x = block->x + width - height + y; x < block->x + width; x ++) {
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(rect->border_style, y))
                 window_line_buffer[x] = color;
         }
         return 1;
     }
 
     color = ingredient->color(ingredient, rect->border_color_left);
-    for (x = block->x; x < (u32)(block->x + rect->border_weight); x ++) {
-        window_line_buffer[x] = color;
+    for (x = block->x; x < block->x + rect->border_weight; x ++) {
+        if (TV_BETWEEN(x, 0, window_width)) {
+            window_line_buffer[x] = color;
+        }
     }
 
     color = ingredient->color(ingredient, rect->border_color_right);
-    for (x = block->x + width - rect->border_weight; x < (u32)(block->x + width); x ++) {
-        window_line_buffer[x] = color;
+    for (x = block->x + width - rect->border_weight; x < block->x + width; x ++) {
+        if (TV_BETWEEN(x, 0, window_width)) {
+            window_line_buffer[x] = color;
+        }
     }
 
     return 0;
@@ -86,13 +98,14 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
         osd_block_hw *block,
         u32 *window_line_buffer,
         u32 y) {
-    u32 x, bg_color_start, bg_color_end, color, color_steps;
+    s32 x;
+    u32 bg_color_start, bg_color_end, color, color_steps;
     double r_delta, g_delta, b_delta;
     osd_rect window_rect;
     u16 width, height, fill_width, fill_height;
     osd_rectangle_hw *rect;
     u32 factor_x, factor_y;
-
+    s32 window_width = window->rect(window).width;
     osd_ingredient *ingredient = (osd_ingredient *)self;
     TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
     rect = priv->rectangle;
@@ -139,7 +152,7 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
 
     color = bg_color_start;
     for (x = block->x + rect->border_weight;
-            x < (u32)(block->x + width - rect->border_weight); ++ x) {
+            x < block->x + width - rect->border_weight; ++ x) {
         u16 fill_x = x - (block->x + rect->border_weight);
         u16 fill_y = y - rect->border_weight;
         u32 factor;
@@ -180,7 +193,9 @@ static void osd_rectangle_backgroud_paint(osd_rectangle *self,
                               (int)(r_delta * factor),
                               (int)(g_delta * factor),
                               (int)(b_delta * factor));
-        window_line_buffer[x] = color;
+        if (TV_BETWEEN(x, 0, window_width)) {
+            window_line_buffer[x] = color;
+        }
     }
 }
 

@@ -16,8 +16,9 @@ extern "C"
 #include "osd_proc.h"
 }
 
-#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
+//#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\screensaver.osd"
+#define STARTUP_OSD_FILE "..\\scenes\\neg_block.osd"
 
 #define MAX_LOADSTRING 100
 

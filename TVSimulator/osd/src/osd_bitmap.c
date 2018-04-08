@@ -16,11 +16,13 @@ static void osd_bitmap_paint(osd_ingredient *self,
                              osd_block_hw *block,
                              u32 *window_line_buffer,
                              u32 y) {
-    u32 width, start, x, cx;
+    s32 x;
+    u32 width, start, cx;
     u32 bitmap_width, bitmap_height;
     u8 *bitmap_data;
     osd_bitmap_hw *bitmap;
     osd_bitmap *bitmap_self = (osd_bitmap *)self;
+    s32 window_width = window->rect(window).width;
     TV_TYPE_GET_PRIV(osd_bitmap_priv, bitmap_self, priv);
 
     bitmap = priv->bitmap;
@@ -38,19 +40,25 @@ static void osd_bitmap_paint(osd_ingredient *self,
             bitmap_width * (y % bitmap_height);
 
     cx = start;
-    for (x = start; x < start + width; x ++) {
-        u32 col = block->x + x - start;
+    for (x = start; x < (s32)(start + width); x ++) {
+        s32 col = block->x + x - start;
         u32 color = self->color2(self,
                                  bitmap_data,
                                  cx);
         if (bitmap->mask_color == 0) {
-            if (!bitmap->transparent || priv->data->transparent_color != color)
-                window_line_buffer[col] = color;
+            if (!bitmap->transparent || priv->data->transparent_color != color) {
+                if (TV_BETWEEN(col, 0, window_width)) {
+                    window_line_buffer[col] = color;
+                }
+            }
         } else {
             u8 alpha = color & 0xFF;
             if (alpha > 0) {
                 color = self->color(self, bitmap->mask_color);
-                window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col], color, alpha);
+                if (TV_BETWEEN(col, 0, window_width)) {
+                    window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col],
+                                              color, alpha);
+                }
             }
         }
         cx ++;

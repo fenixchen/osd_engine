@@ -67,19 +67,20 @@ class Line(Ingredient):
         if self._y2 == self._y1:
             if self._y1 <= y < self._y1 + self._weight:
                 for x in range(block_x + self._x1, block_x + self._x2):
-                    if self._check_style(x):
+                    if 0 <= x < window.width and self._check_style(x):
                         window_line_buf[x] = color
         elif self._x1 == self._x2:
             for i in range(self._weight):
                 index = block_x + self._x1 + i
-                if self._check_style(y):
+                if 0 <= x < window.width and self._check_style(y):
                     window_line_buf[index] = color
         else:
             slope = (self._x2 - self._x1) / (self._y2 - self._y1)
             px = self._x1 + int(slope * (y - self._y1) + 0.5)
             for i in range(self._weight):
-                if self._check_style(y):
-                    window_line_buf[block_x + px + i] = color
+                pos = block_x + px + i
+                if 0 <= pos < window.width and self._check_style(y):
+                    window_line_buf[pos] = color
 
     def __str__(self):
         return "%s(id:%s, (%d, %d) - (%d, %x), color:%#x, weight:%d, palette:%s)" % \

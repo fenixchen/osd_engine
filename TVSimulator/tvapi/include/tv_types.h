@@ -76,6 +76,8 @@ typedef int t_bool;
 
 #define TV_CLIP(x, lval, uval) TV_MIN(TV_MAX(x, lval), uval)
 
+#define TV_BETWEEN(x, lval, uval) ((x) >= (lval) && (x) < (uval))
+
 
 #endif
 

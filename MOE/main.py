@@ -27,10 +27,12 @@ if TEST_ALL:
         'scene/move.yaml',
         'scene/screensaver.yaml',
         'scene/button.yaml',
+        'scene/neg_block.yaml',
         'atv/system_settings.yaml']
 else:
-    yamls = ['atv/system_settings.yaml']
-    #yamls = ['scene/screensaver.yaml']
+    # yamls = ['atv/system_settings.yaml']
+    # yamls = ['scene/screensaver.yaml']
+    yamls = ['scene/neg_block.yaml']
 
 if __name__ == '__main__':
     scenes = []

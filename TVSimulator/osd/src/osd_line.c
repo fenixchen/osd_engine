@@ -13,10 +13,11 @@ void osd_line_paint(osd_ingredient *self,
                     osd_block_hw *block,
                     u32 *window_line_buffer,
                     u32 y) {
-    u32 x;
+    s32 x;
     osd_line_hw *line;
-    u32 color, x1, x2, y1, y2;
-
+    u32 color;
+    s32 x1, x2, y1, y2;
+    s32 window_width = window->rect(window).width;
     osd_ingredient *ingredient = (osd_ingredient *)self;
     osd_line *line_self = (osd_line *)self;
     TV_TYPE_GET_PRIV(osd_line_priv, line_self, priv);
@@ -29,26 +30,30 @@ void osd_line_paint(osd_ingredient *self,
     y2 = line->y2;
 
     if (y1 == y2) {
-        if (y1 <= y && y < y1 + line->weight) {
+        if (y1 <= (s32)y && (s32)y < y1 + line->weight) {
             for (x = block->x + x1; x < block->x + x2; x ++) {
-                if (osd_line_style_check(line->style, x)) {
+                if (TV_BETWEEN(x, 0, window_width) &&
+                        osd_line_style_check(line->style, x)) {
                     window_line_buffer[x] = color;
                 }
             }
         }
     } else if (x1 == x2) {
         for (x = 0; x < line->weight; x ++) {
-            if (osd_line_style_check(line->style, y)) {
+            if (TV_BETWEEN(x, 0, window_width) &&
+                    osd_line_style_check(line->style, y)) {
                 window_line_buffer[block->x + x1 + x] = color;
             }
         }
     } else {
         double slope = (double)((int)x2 - (int)x1) / (double)((int)y2 - (int)y1);
-        u32 px = x1 + (u32)(slope * (y - y1));
-        if (osd_line_style_check(line->style, y)) {
+        s32 px = x1 + (s32)(slope * ((s32)y - y1));
+         if (osd_line_style_check(line->style, y)) {
             for (x = 0; x < line->weight; x++) {
-                TV_ASSERT(block->x + px + x <= window->rect(window).width);
-                window_line_buffer[block->x + px + x] = color;
+                 s32 pos = block->x + px + x;
+                if (TV_BETWEEN(pos, 0, window_width)) {
+                    window_line_buffer[pos] = color;
+                }
             }
         }
     }

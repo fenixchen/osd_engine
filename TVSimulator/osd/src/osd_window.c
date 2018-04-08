@@ -25,7 +25,7 @@ static int osd_window_paint(osd_window *self,
     window_y = y - window->y;
     for (i = 0; i < window->block_count; i ++) {
         osd_ingredient *ingredient;
-        u32 block_start_y, block_height;
+        s32 block_start_y, block_height;
         osd_block_hw *block = priv->blocks[i]->hw(priv->blocks[i]);
         if (!block->visible) {
             continue;

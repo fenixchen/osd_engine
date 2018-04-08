@@ -59,13 +59,13 @@ class Character(Ingredient):
     def width(self):
         return self._glyph.width
 
-    def draw_line(self, line_buf, window, y, block_x):
+    def draw_line(self, window_line_buf, window, y, block_x):
         glyph = self._glyph
 
         if not 0 <= y < glyph.height:
             return
 
-        color = self.get_color( self._color)
+        color = self.get_color(self._color)
 
         width = min(glyph.width, window.width - block_x - glyph.left)
 
@@ -75,12 +75,12 @@ class Character(Ingredient):
             if glyph.monochrome:
                 intensity = glyph.data[offset + (x >> 3)]
                 intensity = intensity & (128 >> (x & 7))
-                if intensity > 0:
-                    line_buf[col] = color
+                if 0 <= col < window.width and intensity > 0:
+                    window_line_buf[col] = color
             else:
                 intensity = glyph.data[offset + x]
-                if intensity > 0:
-                    line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
+                if 0 <= col < window.width and intensity > 0:
+                    window_line_buf[col] = ImageUtil.blend_pixel(window_line_buf[col], color, intensity)
             col += 1
 
     def __str__(self):

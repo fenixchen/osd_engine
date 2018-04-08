@@ -137,7 +137,7 @@ static u16 osd_scene_timer_ms(osd_scene *self) {
 
 static void osd_scene_paint(osd_scene *self,
                             u32 *framebuffer) {
-    u32 y, i;
+    s32 y, i;
     u16 width, height;
     int painted = 0;
     u32 *line_buffer, *window_line_buffer;
@@ -159,8 +159,8 @@ static void osd_scene_paint(osd_scene *self,
             }
             rect = window->rect(window);
 
-            if (rect.y <= y && y < rect.y + rect.height) {
-                u16 len = TV_MIN(scene->hw->width - rect.x, rect.width);
+            if (rect.y <= y && y < rect.y + (s32)rect.height) {
+                u16 len = TV_MIN((s32)scene->hw->width - rect.x, (s32)rect.width);
                 memset(window_line_buffer, 0, sizeof(u32) * width);
                 if (window->paint(window, window_line_buffer, y)) {
                     osd_merge_line(line_buffer, window_line_buffer,

@@ -17,10 +17,12 @@ void osd_character_paint(osd_ingredient *ingredient,
                          osd_block_hw *block,
                          u32 *window_line_buffer,
                          u32 y) {
-    u32 x, width, offset, col;
+    s32 x, col;
+    u32 width, offset;
     u32 color;
     osd_glyph *glyph;
     u8 *glyph_data;
+    s32 window_width = window->rect(window).width;
     osd_character_hw *character;
     osd_character *self = (osd_character *)ingredient;
     TV_TYPE_GET_PRIV(osd_character_priv, self, priv);
@@ -36,17 +38,18 @@ void osd_character_paint(osd_ingredient *ingredient,
     width = TV_MIN(glyph->width, window->rect(window).width - block->x);
     offset = glyph->pitch * y;
     col = block->x + glyph->left;
-    for (x = 0; x < width; x ++) {
+    for (x = 0; x < (s32)width; x ++) {
         if (glyph->monochrome) {
             u8 pixel = glyph_data[offset + (x >> 3)];
             pixel &= (128 >> (x & 7));
-            if (pixel) {
+            if (TV_BETWEEN(col, 0, window_width) && pixel) {
                 window_line_buffer[col] = color;
             }
         } else {
             u8 alpha = glyph_data[offset + x];
-            if (alpha != 0) {
-                window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col], color, alpha);
+            if (TV_BETWEEN(col, 0, window_width) && alpha != 0) {
+                window_line_buffer[col] = osd_blend_pixel(window_line_buffer[col],
+                                          color, alpha);
             }
         }
         col ++;

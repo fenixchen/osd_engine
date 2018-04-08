@@ -75,7 +75,7 @@ class Bitmap(Ingredient):
         else:
             return min(self._width, self._bitmap_width)
 
-    def draw_line(self, line_buf, window, y, block_x):
+    def draw_line(self, window_line_buf, window, y, block_x):
         if y >= self.height:
             return
         if self._tiled:
@@ -92,13 +92,13 @@ class Bitmap(Ingredient):
             col = block_x + x - start
             if self._mask_color is None:
                 color = self.get_color( index)
-                if color != self._transparent_color:
-                    line_buf[col] = color
+                if 0 <= col < window.width and color != self._transparent_color:
+                    window_line_buf[col] = color
             else:
                 color = self.get_color( self._mask_color)
                 intensity = index
-                if intensity > 0:
-                    line_buf[col] = ImageUtil.blend_pixel(line_buf[col], color, intensity)
+                if 0 <= col < window.width and intensity > 0:
+                    window_line_buf[col] = ImageUtil.blend_pixel(window_line_buf[col], color, intensity)
 
             cx = cx + 1
             if cx - start >= self._bitmap_width:

@@ -181,6 +181,6 @@ class Window(OSDObject):
             i = 0
             for block in self._blocks:
                 block_flags = (1 if block.visible else 0) | (block.index << 1)
-                ram += struct.pack('<HHHH', block_flags, block.ingredient.object_index, block.x, block.y)
+                ram += struct.pack('<HHhh', block_flags, block.ingredient.object_index, block.x, block.y)
                 i += 1
         return bins, ram
