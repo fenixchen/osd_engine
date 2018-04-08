@@ -35,12 +35,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;..\tvapi\include;..\osd\include;..\tfd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;..\tvapi\include;..\osd\include;..\tfd\include;..\hal\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>osd.lib;tvapi.lib;tfd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>osd.lib;tvapi.lib;tfd.lib;hal.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\libs\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -50,15 +50,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\atv\system_settings.h" />
+    <ClInclude Include="atv_proc\osd_proc_sysset.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tvapp.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="atv_proc\osd_proc_sysset.c" />
+    <ClCompile Include="atv_proc\osd_proc_sysset_picture_mode.c" />
+    <ClCompile Include="atv_proc\osd_proc_sysset_left.c" />
     <ClCompile Include="osd_proc\osd_proc_animation.c" />
     <ClCompile Include="osd_proc\osd_proc_screensaver.c" />
-    <ClCompile Include="osd_proc\osd_proc_system_settings.c" />
     <ClCompile Include="osd_proc\osd_proc_tv.c" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

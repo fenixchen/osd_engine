@@ -16,6 +16,9 @@
     <Filter Include="osd_proc">
       <UniqueIdentifier>{844fd757-b518-46dd-b3ad-e3acc23fc4b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="atv_proc">
+      <UniqueIdentifier>{5c74e39a-1744-4550-982b-ae54d2ccb69d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="small.ico">
@@ -39,7 +42,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\atv\system_settings.h">
-      <Filter>osd_proc</Filter>
+      <Filter>atv_proc</Filter>
+    </ClInclude>
+    <ClInclude Include="atv_proc\osd_proc_sysset.h">
+      <Filter>atv_proc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -61,8 +67,14 @@
     <ClCompile Include="tfd_test.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="osd_proc\osd_proc_system_settings.c">
-      <Filter>osd_proc</Filter>
+    <ClCompile Include="atv_proc\osd_proc_sysset.c">
+      <Filter>atv_proc</Filter>
+    </ClCompile>
+    <ClCompile Include="atv_proc\osd_proc_sysset_left.c">
+      <Filter>atv_proc</Filter>
+    </ClCompile>
+    <ClCompile Include="atv_proc\osd_proc_sysset_picture_mode.c">
+      <Filter>atv_proc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

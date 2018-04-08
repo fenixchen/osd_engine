@@ -33,7 +33,7 @@ Scene:
         id: palette0
         colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
                  0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
-                 0x909090, 0x104E8B, 0xCDCD00, 0x9191E6]
+                 0x909090, 0x104E8B, 0xCDCD00, 0x9191E6, 0xEEB422]
 
   Ingredients:
     ####################################
@@ -77,7 +77,7 @@ Scene:
     - Rectangle:
         id: rect_left_focused
         border_weight: 3
-        border_color: 2
+        border_color: 14
         bgcolor: [5, 13]
         height: 70
         gradient_mode: CORNER_TO_CENTER
@@ -90,7 +90,7 @@ Scene:
         color: [1, 2, 2]
         background: [rect_left_normal, rect_left_selected, rect_left_focused]
         align: CENTER
-        state: 0
+        state: 2
         mutable: True
 
     - Label:
@@ -307,18 +307,18 @@ Scene:
 
 
     - Rectangle:
-        id: rect_center_normal
+        id: rect_center_readonly
         bgcolor: $input_bg_color
 
     - Rectangle:
-        id: rect_center_selected
+        id: rect_center_normal
         bgcolor: $input_bg_hl_color
 
     - Rectangle:
         id: rect_center_focused
         bgcolor: $input_bg_hl_color
         border_weight: 4
-        border_color: 2
+        border_color: 14
 
     - Label:
         id: text_picture_mode
@@ -328,7 +328,7 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 0
 
 
@@ -340,8 +340,8 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
-        state: 0
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
 
     - Label:
         id: text_contrast
@@ -351,8 +351,8 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
-        state: 0
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
 
     - Label:
         id: text_sharpness
@@ -362,8 +362,8 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
-        state: 0
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
 
     - Label:
         id: text_color
@@ -373,8 +373,8 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
-        state: 0
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
 
     - Label:
         id: text_tint
@@ -384,8 +384,8 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
-        state: 0
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
 
     - Label:
         id: text_color_temp
@@ -395,7 +395,7 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 0
 
     - Label:
@@ -406,12 +406,12 @@ Scene:
         mutable: True
         align: CENTER
         color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
-        background: [rect_center_normal, rect_center_selected, rect_center_focused]
-        state: 0
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
 
   Windows:
     - Window:
-        id: center
+        id: picture_mode
         x: 282
         y: 71
         width: 518
@@ -451,8 +451,6 @@ Scene:
 
           - ['', page_up, 300, 0]
           - ['', page_down, 300, 456]
-
-
 
     - Window:
         id: left

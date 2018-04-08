@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tvapi", "tvapi\tvapi.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tfd", "tfd\tfd.vcxproj", "{CEADBED6-4061-4E67-9F7E-99CFE480365E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hal", "hal\hal.vcxproj", "{793B0F2E-39F4-4368-9AA6-90410EB168D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,6 +41,10 @@ Global
 		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Debug|Win32.Build.0 = Debug|Win32
 		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Release|Win32.ActiveCfg = Release|Win32
 		{CEADBED6-4061-4E67-9F7E-99CFE480365E}.Release|Win32.Build.0 = Release|Win32
+		{793B0F2E-39F4-4368-9AA6-90410EB168D6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{793B0F2E-39F4-4368-9AA6-90410EB168D6}.Debug|Win32.Build.0 = Debug|Win32
+		{793B0F2E-39F4-4368-9AA6-90410EB168D6}.Release|Win32.ActiveCfg = Release|Win32
+		{793B0F2E-39F4-4368-9AA6-90410EB168D6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

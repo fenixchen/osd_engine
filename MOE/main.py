@@ -30,9 +30,9 @@ if TEST_ALL:
         'scene/neg_block.yaml',
         'atv/system_settings.yaml']
 else:
-    # yamls = ['atv/system_settings.yaml']
+    yamls = ['atv/system_settings.yaml']
     # yamls = ['scene/screensaver.yaml']
-    yamls = ['scene/neg_block.yaml']
+    #yamls = ['scene/neg_block.yaml']
 
 if __name__ == '__main__':
     scenes = []
