@@ -3,7 +3,10 @@
 #include "osd_label.h"
 #include "osd_proc.h"
 #include "osd_proc_sysset.h"
+
+#define OSD_ENABLE_MACROS_SYSTEM_SETTINGS
 #include "../../../atv/system_settings.h"
+
 #include "hal.h"
 
 static u32 picture_menu_item[] = {
@@ -50,7 +53,8 @@ struct _window_picture_mode_data {
     int aspect_ratio;
 } picture_mode_data;
 
-static int window_picture_mode_update_ui(osd_proc *self, osd_window *window_picture_mode,
+static int window_picture_mode_update_ui(osd_proc *self,
+        osd_window *window_picture_mode,
         window_picture_mode_data *picture_mode_data) {
     int i, focused;
     osd_label *label;
@@ -158,7 +162,10 @@ static void window_picture_mode_load_ui(osd_proc_system_settings_priv *priv,
                    99,
                    hal_tint_set);
 }
-static int window_picture_mode_change_ui(osd_proc *self, osd_window *window_picture_mode, window_picture_mode_data *picture_mode_data, int direction) {
+static int window_picture_mode_change_ui(osd_proc *self,
+        osd_window *window_picture_mode,
+        window_picture_mode_data *picture_mode_data,
+        int direction) {
     osd_label *label;
     int focused_item = picture_mode_data->focused_item;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
@@ -228,9 +235,11 @@ static int window_picture_mode_change_ui(osd_proc *self, osd_window *window_pict
     return 1;
 }
 
-static int window_picture_mode_keydown(osd_proc *self, osd_window *window_picture_mode,
+static int window_picture_mode_keydown(osd_proc *self,
+                                       osd_window *window_picture_mode,
                                        window_picture_mode_data *picture_mode_data,
-                                       osd_event_type type, osd_event_data *data) {
+                                       osd_event_type type,
+                                       osd_event_data *data) {
     int focused_item;
     osd_key key = data->data.keydown.key;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
@@ -273,7 +282,8 @@ static int window_picture_mode_keydown(osd_proc *self, osd_window *window_pictur
 }
 
 int osd_window_picture_mode_proc(osd_window_proc *proc,
-                                 osd_event_type type, osd_event_data *data) {
+                                 osd_event_type type,
+                                 osd_event_data *data) {
     window_picture_mode_data *picture_mode_data = (window_picture_mode_data *)proc->priv;
     osd_proc *self = proc->proc;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);

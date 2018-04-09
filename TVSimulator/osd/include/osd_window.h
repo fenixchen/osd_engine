@@ -37,4 +37,8 @@ struct _osd_window {
 
 osd_window *osd_window_create(osd_scene *scene, osd_window_hw *hw);
 
+#define osd_window_show(window) (window)->set_visible(window, 1)
+
+#define osd_window_hide(window) (window)->set_visible(window, 0)
+
 #endif

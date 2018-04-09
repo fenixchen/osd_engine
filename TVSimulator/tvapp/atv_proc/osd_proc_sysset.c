@@ -7,11 +7,14 @@
 #include "osd_label.h"
 #include "osd_block.h"
 #include "osd_proc_sysset.h"
+
+#define OSD_ENABLE_MACROS_SYSTEM_SETTINGS
 #include "../../../atv/system_settings.h"
 
+
 osd_window_proc window_proc_data[] = {
-    {OSD_WINDOW_LEFT,   NULL, NULL, &left_data,		osd_window_left_proc,	},
-    {OSD_WINDOW_PICTURE_MODE, NULL, NULL, &picture_mode_data,	osd_window_picture_mode_proc,	},
+    {OSD_WINDOW_LEFT,		  NULL, NULL, &left_data,			osd_window_left_proc,},
+    {OSD_WINDOW_PICTURE_MODE, NULL, NULL, &picture_mode_data,	osd_window_picture_mode_proc,},
 };
 
 #define window_data_count (sizeof(window_proc_data) / sizeof(window_proc_data[0]))
@@ -40,7 +43,7 @@ static int osd_proc_system_settings_event(osd_proc *self,
 }
 
 static void osd_proc_system_settings_init_ui(osd_proc *self) {
-    int i;
+    int i, focused_window = CENTER_WINDOW_PICTURE_MODE;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
 
     for (i = 0; i < window_data_count; i ++) {
@@ -51,7 +54,7 @@ static void osd_proc_system_settings_init_ui(osd_proc *self) {
         window->set_window_proc(window, wp);
         window->send_message(window, OSD_EVENT_WINDOW_INIT, NULL);
     }
-    priv->scene->set_focused_window(priv->scene, window_proc_data[0].window);
+    osd_scene_focus(priv->scene, priv->window_left);
 }
 
 static void osd_proc_system_settings_destroy(osd_proc *self) {
@@ -60,7 +63,7 @@ static void osd_proc_system_settings_destroy(osd_proc *self) {
     FREE_OBJECT(self);
 }
 
-osd_proc *osd_proc_system_settings_create(osd_scene *scene) {
+osd_proc *osd_proc_system_settings_create(tv_app *app, osd_scene *scene) {
     osd_proc *self = MALLOC_OBJECT(osd_proc);
     osd_proc_system_settings_priv *priv = MALLOC_OBJECT(osd_proc_system_settings_priv);
     self->priv = priv;
@@ -72,6 +75,17 @@ osd_proc *osd_proc_system_settings_create(osd_scene *scene) {
 
     priv->window_left = scene->window(scene, OSD_WINDOW_LEFT);
     priv->window_picture_mode = scene->window(scene, OSD_WINDOW_PICTURE_MODE);
+    priv->window_sound_mode = scene->window(scene, OSD_WINDOW_SOUND_MODE);
+    priv->window_channel = scene->window(scene, OSD_WINDOW_CHANNEL);
+    priv->window_feature = scene->window(scene, OSD_WINDOW_FEATURE);
+    priv->window_setup = scene->window(scene, OSD_WINDOW_SETUP);
+
+    priv->window_center[CENTER_WINDOW_PICTURE_MODE] = priv->window_picture_mode;
+    priv->window_center[CENTER_WINDOW_SOUND_MODE] = priv->window_sound_mode;
+    priv->window_center[CENTER_WINDOW_CHANNEL] = priv->window_channel;
+    priv->window_center[CENTER_WINDOW_FEATURE] = priv->window_feature;
+    priv->window_center[CENTER_WINDOW_SETUP] = priv->window_setup;
+
     return self;
 }
 

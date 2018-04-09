@@ -8,21 +8,22 @@
 #include <iostream>
 #include <fstream>
 #include <Commdlg.h>
-
+#include "winmain.h"
 extern "C"
 {
-#include "tvapp.h"
-#include "osd_scene.h"
-#include "osd_proc.h"
+#include "tv_app.h"
 }
+
+#define STARTUP_OSD_FILE "..\\atv\\no_signal.osd"
+//#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
+//#define STARTUP_OSD_FILE "..\\scenes\\screensaver.osd"
+
 
 #define SIMULATOR_VERSION "0.5"
 
-#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
-//#define STARTUP_OSD_FILE "..\\scenes\\screensaver.osd"
-//#define STARTUP_OSD_FILE "..\\scenes\\neg_block.osd"
-
 #define MAX_LOADSTRING 100
+
+tv_app *g_tv_app = NULL;
 
 
 // 全局变量:
@@ -117,11 +118,18 @@ ATOM MyRegisterClass(HINSTANCE hInstance) {
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
     HWND hWnd;
-
+    RECT rect;
+    int width = 800;
+    int height = 600;
     hInst = hInstance; // 将实例句柄存储在全局变量中
 
+    GetClientRect(GetDesktopWindow(), &rect);
+    rect.left = (rect.right/2) - (width/2);
+    rect.top = (rect.bottom/2) - (height/2);
+
     hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-                        CW_USEDEFAULT, 0, 640, 480, NULL, NULL, hInstance, NULL);
+                        rect.left, rect.top,
+                        width, height, NULL, NULL, hInstance, NULL);
 
     if (!hWnd) {
         return FALSE;
@@ -148,27 +156,6 @@ static void AdjustWindow(HWND hWnd, int width, int height) {
     GetClientRect(hWnd, &rect);
 }
 
-static osd_scene *scene = NULL;
-
-static osd_proc *proc = NULL;
-
-
-extern "C" osd_proc *osd_proc_screensaver_create(osd_scene *scene);
-extern "C" osd_proc *osd_proc_tv_create(osd_scene *scene);
-extern "C" osd_proc *osd_proc_animation_create(osd_scene *scene);
-extern "C" osd_proc *osd_proc_system_settings_create(osd_scene *scene);
-
-struct tv_scene_proc {
-    const char *title;
-    osd_proc* (*proc_create)(osd_scene *scene);
-} scene_procs[] = {
-    {"ScreenSaver", osd_proc_screensaver_create,},
-    {"tv", osd_proc_tv_create,},
-    {"animation", osd_proc_animation_create,},
-    {"sysset", osd_proc_system_settings_create,},
-    {NULL, NULL,},
-};
-
 void DoOpen(HWND hWnd, const char *osd_file) {
     char szFile[260];
     if (osd_file == NULL) {
@@ -190,39 +177,26 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         }
         osd_file = szFile;
     }
-    TV_TYPE_FREE(scene);
-    TV_TYPE_FREE(proc);
-    scene = osd_scene_create(osd_file, NULL);
-    if (scene) {
+    if (g_tv_app->load(g_tv_app, osd_file)) {
         char text[256];
-        const char *title = scene->title(scene);
-        osd_rect rect = scene->rect(scene);
+        osd_rect rect = g_tv_app->rect(g_tv_app);
+        const char *title = g_tv_app->title(g_tv_app);
         sprintf(text, "OSDSimulator v%s - %s %d x %d",
                 SIMULATOR_VERSION, title, rect.width, rect.height);
         SetWindowText(hWnd, text);
         KillTimer(hWnd, 0);
-        int timer_interval = scene->timer_interval(scene);
+        int timer_interval = g_tv_app->timer_interval(g_tv_app);
         if (timer_interval > 0) {
             SetTimer(hWnd, 0, timer_interval, NULL);
         }
         AdjustWindow(hWnd, rect.width, rect.height);
-
-        struct tv_scene_proc *scene_proc = scene_procs;
-        while (scene_proc->title && scene_proc->proc_create) {
-            if (stricmp(title, scene_proc->title) == 0) {
-                proc = scene_proc->proc_create(scene);
-                TV_ASSERT(proc);
-                scene->set_proc(scene, proc);
-            }
-            scene_proc ++;
-        }
+        InvalidateRect(hWnd, NULL, TRUE);
     }
-    InvalidateRect(hWnd, NULL, TRUE);
 }
 
 
 void DoSaveFB(HWND hWnd) {
-    if (!scene) {
+    if (!g_tv_app->active_scene(g_tv_app)) {
         ::MessageBox(hWnd, "Load scene first", "Information", MB_OK + MB_ICONINFORMATION);
         return;
     }
@@ -243,9 +217,9 @@ void DoSaveFB(HWND hWnd) {
     if (!GetSaveFileName(&ofn)) {
         return;
     }
-    u32 length = scene->rect(scene).width * scene->rect(scene).height * 4;
+    u32 length = g_tv_app->rect(g_tv_app).width * g_tv_app->rect(g_tv_app).height * 4;
     u32 *framebuffer = new u32[length];
-    scene->paint(scene, framebuffer);
+    g_tv_app->paint(g_tv_app, framebuffer);
     int fd = open(szFileName, O_CREAT | O_WRONLY | O_TRUNC);
     if (fd != -1) {
         write(fd, framebuffer, length);
@@ -257,16 +231,15 @@ void DoSaveFB(HWND hWnd) {
 }
 
 void DoTimer(HWND hWnd) {
-    if (scene) {
-        if (scene->trigger(scene, OSD_EVENT_TIMER, NULL)) {
+    if (g_tv_app->active_scene(g_tv_app)) {
+        if (g_tv_app->trigger(g_tv_app, OSD_EVENT_TIMER, NULL)) {
             InvalidateRect(hWnd, NULL, FALSE);
         }
     }
 }
 
-
 void DoPaint(HWND hWnd, HDC hDC) {
-    if (!scene) {
+    if (!g_tv_app->active_scene(g_tv_app)) {
         return;
     }
     //DWORD dwTick = GetTickCount();
@@ -289,12 +262,12 @@ void DoPaint(HWND hWnd, HDC hDC) {
     bmih.biCompression = BI_RGB;
     bmih.biPlanes = 1;
 
-    int width = scene->rect(scene).width;
-    int height = scene->rect(scene).height;
+    int width = g_tv_app->rect(g_tv_app).width;
+    int height = g_tv_app->rect(g_tv_app).height;
     u32 length = width * height * 4;
 
     u32 *framebuffer = new u32[length];
-    scene->paint(scene, framebuffer);
+    g_tv_app->paint(g_tv_app, framebuffer);
     int ret = SetDIBits(hDCMem,
                         hBmp,
                         0,
@@ -368,12 +341,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         DoTimer(hWnd);
         break;
     case WM_DESTROY:
-        TV_TYPE_FREE(scene);
-        TV_TYPE_FREE(proc);
+        g_tv_app->destroy(g_tv_app);
         PostQuitMessage(0);
         break;
     case WM_KEYDOWN:
-        if (scene) {
+        if (g_tv_app->active_scene(g_tv_app)) {
             osd_event_data trigger;
             osd_key key = OSD_KEY_NONE;
             switch (wParam) {
@@ -397,21 +369,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             case VK_ESCAPE:
                 key = OSD_KEY_BACK;
                 break;
+            case 'M':
+            case 'm':
+                key = OSD_KEY_MENU;
+                break;
             }
             if (key != OSD_KEY_NONE) {
                 trigger.data.keydown.key = key;
-                if (scene->trigger(scene, OSD_EVENT_KEYDOWN, &trigger)) {
+                if (g_tv_app->trigger(g_tv_app, OSD_EVENT_KEYDOWN, &trigger)) {
                     InvalidateRect(hWnd, NULL, FALSE);
                 }
             }
             break;
         }
     case WM_CREATE:
+        g_tv_app = tv_app_create();
         SetStdOutToNewConsole();
+        //tfd_test();
 #ifdef STARTUP_OSD_FILE
         DoOpen(hWnd, STARTUP_OSD_FILE);
 #endif
-    //tfd_test();
+        break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

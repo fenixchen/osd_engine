@@ -4,9 +4,9 @@
 #include "tv_api.h"
 
 #define OSD_SCENE_MAX_PALETE_COUNT 8
-#define OSD_SCENE_MAX_INGREDIENT_COUNT 1024
+#define OSD_SCENE_MAX_INGREDIENT_COUNT 4096
 #define OSD_SCENE_MAX_WINDOW_COUNT 32
-#define OSD_SCENE_MAX_GLYPH_COUNT 1024
+#define OSD_SCENE_MAX_GLYPH_COUNT 4096
 
 typedef struct _osd_block osd_block;
 typedef struct _osd_window osd_window;
@@ -26,6 +26,8 @@ typedef struct _osd_glyph osd_glyph;
 typedef struct _osd_bitmap osd_bitmap;
 
 typedef struct _osd_binary osd_binary;
+
+typedef struct _tv_app tv_app;
 
 #define PIXEL_FORMAT_RGB  1
 #define PIXEL_FORMAT_GRAY_SCALE 2

@@ -5,8 +5,9 @@
 #include "osd_ingredient.h"
 #include "osd_window.h"
 #include "osd_label.h"
-#include "../../../scenes/screensaver.h"
 
+#define OSD_ENABLE_MACROS_SCREENSAVER
+#include "../../../scenes/screensaver.h"
 
 typedef struct _osd_proc_screensaver_priv osd_proc_screensaver_priv;
 struct _osd_proc_screensaver_priv {
@@ -87,7 +88,7 @@ static void osd_proc_screensaver_destroy(osd_proc *self) {
     FREE_OBJECT(self);
 }
 
-osd_proc *osd_proc_screensaver_create(osd_scene *scene) {
+osd_proc *osd_proc_screensaver_create(tv_app *app, osd_scene *scene) {
     osd_proc *self = MALLOC_OBJECT(osd_proc);
     osd_proc_screensaver_priv *priv = MALLOC_OBJECT(osd_proc_screensaver_priv);
     self->priv = priv;

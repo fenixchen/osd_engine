@@ -19,6 +19,9 @@
     <Filter Include="atv_proc">
       <UniqueIdentifier>{5c74e39a-1744-4550-982b-ae54d2ccb69d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tvapp">
+      <UniqueIdentifier>{8d8c63e6-7e08-4107-b4d2-158970b13581}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="small.ico">
@@ -38,21 +41,24 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tvapp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\atv\system_settings.h">
       <Filter>atv_proc</Filter>
     </ClInclude>
     <ClInclude Include="atv_proc\osd_proc_sysset.h">
       <Filter>atv_proc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\atv\no_signal.h">
+      <Filter>atv_proc</Filter>
+    </ClInclude>
+    <ClInclude Include="winmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tv_app.h">
+      <Filter>tvapp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tvapp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="osd_proc\osd_proc_animation.c">
@@ -75,6 +81,15 @@
     </ClCompile>
     <ClCompile Include="atv_proc\osd_proc_sysset_picture_mode.c">
       <Filter>atv_proc</Filter>
+    </ClCompile>
+    <ClCompile Include="atv_proc\osd_proc_no_signal.c">
+      <Filter>atv_proc</Filter>
+    </ClCompile>
+    <ClCompile Include="winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tv_app.c">
+      <Filter>tvapp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

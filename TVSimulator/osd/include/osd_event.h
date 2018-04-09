@@ -22,6 +22,7 @@ enum _osd_key {
     OSD_KEY_RIGHT,
     OSD_KEY_ENTER,
     OSD_KEY_BACK,
+    OSD_KEY_MENU,
 };
 typedef struct _osd_event_data osd_event_data;
 

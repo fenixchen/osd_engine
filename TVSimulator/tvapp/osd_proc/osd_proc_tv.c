@@ -5,6 +5,8 @@
 #include "osd_ingredient.h"
 #include "osd_window.h"
 #include "osd_label.h"
+
+#define OSD_ENABLE_MACROS_TV
 #include "../../../scenes/tv.h"
 
 typedef struct _osd_proc_tv_priv osd_proc_tv_priv;
@@ -112,7 +114,7 @@ static void osd_proc_tv_destroy(osd_proc *self) {
     FREE_OBJECT(self);
 }
 
-osd_proc *osd_proc_tv_create(osd_scene *scene) {
+osd_proc *osd_proc_tv_create(tv_app *app, osd_scene *scene) {
     osd_proc *self = MALLOC_OBJECT(osd_proc);
     osd_proc_tv_priv *priv = MALLOC_OBJECT(osd_proc_tv_priv);
     self->priv = priv;

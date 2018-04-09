@@ -6,7 +6,7 @@
 #include "osd_block.h"
 
 #define LABEL_MAX_STATE_COUNT 16
-#define LABEL_MAX_TEXT_COUNT 16
+#define LABEL_MAX_TEXT_COUNT 64
 
 struct _osd_label_priv {
     osd_scene *scene;

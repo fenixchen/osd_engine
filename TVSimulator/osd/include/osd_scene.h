@@ -32,6 +32,8 @@ struct _osd_scene {
     void (*dump)(osd_scene *self);
 };
 
-EXTERNC osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc);
+osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc);
+
+#define osd_scene_focus(scene, window) (scene)->set_focused_window(scene, window)
 
 #endif

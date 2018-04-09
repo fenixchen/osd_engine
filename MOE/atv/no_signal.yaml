@@ -1,0 +1,73 @@
+Scene:
+  width: 800
+  height: 600
+  title: 'NO_SIGNAL'
+  timer_ms: 200
+  default_font_size: 22
+
+  Includes:
+    - Include:
+        file: common.yaml
+  Palettes:
+    - Palette:
+        id: palette1
+        colors: [0x000000, 0xFFFFFF, 0xAAAAAA, 0x0000FF, 0x202020,
+                 0xFF00FF, 0x404040, 0xA0A0A0, 0x5D478B, 0x191970,
+                 0xEEAD0E]
+
+  Ingredients:
+    - Rectangle:
+        id: rect_title_bg
+        bgcolor: [7, 6]
+        height: 60
+        gradient_mode: TOP_TO_BOTTOM
+
+    - Rectangle:
+        id: rect_title
+        bgcolor: [8, 9]
+        gradient_mode: TOP_TO_BOTTOM
+        border_weight: 1
+        border_color: [4, 7, 4, 4]
+
+    - Rectangle:
+        id: rect_content
+        height: 130
+        bgcolor: 1
+
+    - Rectangle:
+        id: rect_bottom
+        height: 20
+        bgcolor: [2, 4]
+        gradient_mode: TOP_TO_BOTTOM
+
+    - Label:
+        id: label_title
+        text: 'ATV'
+        color: 10
+        align: CENTER
+        width: 280
+        height: 40
+        background: rect_title
+
+    - Label:
+        id: label_center
+        text: 'No signal'
+        color: 0
+        width: 300
+        height: 120
+        align: CENTER
+        background: rect_content
+
+  Windows:
+    - Window:
+        id: no_signal
+        x: 100
+        y: 100
+        width: 300
+        height: 200
+        zorder: 1
+        blocks:
+          - ['', rect_title_bg, 0, 0]
+          - ['', label_title, 10, 10]
+          - ['', label_center, 0, '+50']
+          - ['', rect_bottom, 0, '+120']
