@@ -16,6 +16,8 @@ extern "C"
 #include "osd_proc.h"
 }
 
+#define SIMULATOR_VERSION "0.5"
+
 #define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\screensaver.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\neg_block.osd"
@@ -195,7 +197,8 @@ void DoOpen(HWND hWnd, const char *osd_file) {
         char text[256];
         const char *title = scene->title(scene);
         osd_rect rect = scene->rect(scene);
-        sprintf(text, "OSDSimulator - %s %d x %d", title, rect.width, rect.height);
+        sprintf(text, "OSDSimulator v%s - %s %d x %d",
+                SIMULATOR_VERSION, title, rect.width, rect.height);
         SetWindowText(hWnd, text);
         KillTimer(hWnd, 0);
         int timer_interval = scene->timer_interval(scene);
