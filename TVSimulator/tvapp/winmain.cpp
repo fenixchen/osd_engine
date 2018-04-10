@@ -14,6 +14,9 @@ extern "C"
 #include "tv_app.h"
 }
 
+#define TFD_TEST 0
+#define OS_TEST 0
+
 #define STARTUP_OSD_FILE "..\\atv\\no_signal.osd"
 //#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\screensaver.osd"
@@ -304,6 +307,7 @@ void SetStdOutToNewConsole() {
 }
 
 extern "C" void tfd_test();
+extern "C" void os_test();
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int wmId, wmEvent;
@@ -380,12 +384,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     InvalidateRect(hWnd, NULL, FALSE);
                 }
             }
-            break;
         }
+        break;
     case WM_CREATE:
-        g_tv_app = tv_app_create();
         SetStdOutToNewConsole();
-        //tfd_test();
+#if TFD_TEST == 1
+        tfd_test();
+#endif
+#if OS_TEST == 1
+        os_test();
+#endif
+        g_tv_app = tv_app_create();
 #ifdef STARTUP_OSD_FILE
         DoOpen(hWnd, STARTUP_OSD_FILE);
 #endif

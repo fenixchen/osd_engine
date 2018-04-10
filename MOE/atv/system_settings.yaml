@@ -4,7 +4,7 @@ Scene:
   default_palette: palette0
   default_font: mono_16
   default_font_size: 24
-  title: sysset
+  title: 'SYS_SET'
 
   Defines:
     transparant: 0
@@ -54,8 +54,13 @@ Scene:
         width: 262
 
     - Bitmap:
-        id: icon_photo
-        bitmaps: 'images/icon_photo.bmp'
+        id: icon_logo
+        bitmaps: ['images/icon_photo.bmp',
+          'images/icon_sound.bmp',
+          'images/icon_channel.bmp',
+          'images/icon_feature.bmp',
+          'images/icon_setup.bmp',]
+        mutable: True
         transparent_color: 0xFF00FF
 
     - Rectangle:
@@ -215,7 +220,7 @@ Scene:
         color: $white
 
     ####################################
-    ###           center             ###
+    ###           center common      ###
     ####################################
     - Rectangle:
         id: rect_center_bar_1
@@ -248,6 +253,25 @@ Scene:
         bitmaps: 'images/right.bmp'
         transparent_color: 0xFE02FE
         mutable: True
+
+    - Rectangle:
+        id: rect_center_readonly
+        bgcolor: $input_bg_color
+
+    - Rectangle:
+        id: rect_center_normal
+        bgcolor: $input_bg_hl_color
+
+    - Rectangle:
+        id: rect_center_focused
+        bgcolor: $input_bg_hl_color
+        border_weight: 4
+        border_color: 14
+
+
+    ####################################
+    ###           picture mode       ###
+    ####################################
 
     - Label:
         id: label_picture_mode
@@ -305,21 +329,6 @@ Scene:
         width: 250
         align: CENTER
 
-
-    - Rectangle:
-        id: rect_center_readonly
-        bgcolor: $input_bg_color
-
-    - Rectangle:
-        id: rect_center_normal
-        bgcolor: $input_bg_hl_color
-
-    - Rectangle:
-        id: rect_center_focused
-        bgcolor: $input_bg_hl_color
-        border_weight: 4
-        border_color: 14
-
     - Label:
         id: text_picture_mode
         text: ['Standard', 'Dynamic', 'Mild', 'User']
@@ -331,7 +340,6 @@ Scene:
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 0
 
-
     - Label:
         id: text_brightness
         text: '50'
@@ -339,7 +347,7 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 1
 
@@ -350,7 +358,7 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 1
 
@@ -361,7 +369,7 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 1
 
@@ -372,7 +380,7 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 1
 
@@ -383,7 +391,7 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 1
 
@@ -394,7 +402,7 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 0
 
@@ -405,9 +413,591 @@ Scene:
         height: 40
         mutable: True
         align: CENTER
-        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
         background: [rect_center_normal, rect_center_readonly, rect_center_focused]
         state: 1
+
+    ####################################
+    ###           sound              ###
+    ####################################
+
+    - Label:
+        id: label_sound_mode
+        text: 'Sound Mode'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_bass
+        text: 'Bass'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_treble
+        text: 'Treble'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_balance
+        text: 'Balance'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_surround
+        text: 'Surround'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_avl
+        text: 'AVL'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_spdif
+        text: 'SPDIF'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_audio_desc
+        text: 'Audio Description'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: text_sound_mode
+        text: ['Standard', 'Movie', 'Music', 'Speech', 'User']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_bass
+        text: '50'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_treble
+        text: '50'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_balance
+        text: '50'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_surround
+        text: ['On', 'Off']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_avl
+        text: ['On', 'Off']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_spdif
+        text: ['Off', 'PCM', 'Auto', 'Multi']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_audio_desc
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+
+    ####################################
+    ###           channel            ###
+    ####################################
+
+    - Label:
+        id: label_channel_mgmt
+        text: 'Channel Management'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_favorite_mgmt
+        text: 'Favorite Management'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_country
+        text: 'Country'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_tv_connection
+        text: 'TV Connection'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_auto_search
+        text: 'Auto Search'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_dtv_mannual_search
+        text: 'DTV Manual Search'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_atv_mannual_search
+        text: 'ATV Manual Search'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: text_channel_mgmt
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_favorite_mgmt
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_country
+        text: ['Germany', 'UK', 'France', 'Italy', 'Poland', 'Spain', 'Belgium',
+          'Netherlands', 'Switzerland', 'Portugal', 'Sweden', 'Finland',
+          'Czech Republic', 'Hungary', 'Slovenian', 'Greece', 'Russia',
+          'Turkey', 'Denmark', 'Norway', 'Taiwan', 'China', 'Ireland',
+          'Austria', 'Slovakia', 'Croatia', 'Serbia', 'Ghana',
+          'Australia', 'New Zealand', 'Singapore', 'Other']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_tv_connection
+        text: ['Cable', 'Air', 'Satellite']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_auto_search
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_dtv_mannual_search
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_atv_mannual_search
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    ####################################
+    ###           feature            ###
+    ####################################
+
+    - Label:
+        id: label_lock
+        text: 'Lock'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_language
+        text: 'Language'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_clock
+        text: 'Clock'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_sleep_timer
+        text: 'Sleep Timer'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_auto_power_off
+        text: 'Auto Power Off'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_hearing_impaired
+        text: 'Hearing Impaired'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_ci_info
+        text: 'CI Info'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_pvr
+        text: 'PVR/Timeshift'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: text_lock
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_language
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_clock
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_sleep_timer
+        text: ['Off', '10 Mins', '20 Mins', '30 Mins', '60 Mins',
+          '90 Mins', '120 Mins', '180 Mins', '240 Mins']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_auto_power_off
+        text: ['Off', '1 Hour', '2 Hours', '4 Hours']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_hearing_impaired
+        text: ['Off', 'On']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_ci_info
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_pvr
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    ####################################
+    ###           setup              ###
+    ####################################
+
+    - Label:
+        id: label_osd_timer
+        text: 'OSD Timer'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_auto_scart
+        text: 'Auto SCART'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_pc_setup
+        text: 'PC Setup'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_blue_screen
+        text: 'Sleep Timer'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_reset_tv
+        text: 'Reset TV Setting'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_software_upgrade
+        text: 'Software Upgrade'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_ota_upgrade
+        text: 'OTA Upgrade'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: label_version
+        text: 'Version'
+        color: $black
+        width: 250
+        align: CENTER
+
+    - Label:
+        id: text_osd_timer
+        text: ['Never', '5 seconds', '10 seconds', '15 seconds',
+          '20 seconds', '25 seconds', '30 seconds']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_hl_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_auto_scart
+        text: ['On', 'Off']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_pc_setup
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_blue_screen
+        text: ['Off', 'On']
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_reset_tv
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_software_upgrade
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
+
+    - Label:
+        id: text_ota_upgrade
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 1
+
+    - Label:
+        id: text_version
+        text: 'ENTER'
+        width: 200
+        height: 40
+        mutable: True
+        align: CENTER
+        color: [$input_text_color, $input_text_color, $input_text_hl_color]
+        background: [rect_center_normal, rect_center_readonly, rect_center_focused]
+        state: 0
 
   Windows:
     - Window:
@@ -416,6 +1006,7 @@ Scene:
         y: 71
         width: 518
         height: 482
+        visible: True
         blocks:
           - ['', rect_center_bar_1, 0, 0]
           - ['', rect_center_bar_2, 0, $height]
@@ -453,6 +1044,166 @@ Scene:
           - ['', page_down, 300, 456]
 
     - Window:
+        id: sound_mode
+        x: 282
+        y: 71
+        width: 518
+        height: 482
+        visible: False
+        blocks:
+          - ['', rect_center_bar_1, 0, 0]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+
+          - ['', label_sound_mode, 0, 60]
+          - ['', label_bass, 0,   $font_height]
+          - ['', label_treble, 0,   $font_height]
+          - ['', label_balance, 0,   $font_height]
+          - ['', label_surround, 0,   $font_height]
+          - ['', label_avl, 0,   $font_height]
+          - ['', label_spdif, 0,   $font_height]
+          - ['', label_audio_desc, 0,   $font_height]
+
+          - ['', text_sound_mode, 280, 52]
+          - ['', text_bass, 280, $font_height]
+          - ['', text_treble, 280, $font_height]
+          - ['', text_balance, 280, $font_height]
+          - ['', text_surround, 280, $font_height]
+          - ['', text_avl, 280, $font_height]
+          - ['', text_spdif, 280, $font_height]
+          - ['', text_audio_desc, 280, $font_height]
+
+          - ['LEFT_ARROW', left, 260, 60]
+          - ['RIGHT_ARROW', right, 485, 60]
+
+
+    - Window:
+        id: channel
+        x: 282
+        y: 71
+        width: 518
+        height: 482
+        visible: False
+        blocks:
+          - ['', rect_center_bar_1, 0, 0]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+
+          - ['', label_channel_mgmt, 0, 60]
+          - ['', label_favorite_mgmt, 0,   $font_height]
+          - ['', label_country, 0,   $font_height]
+          - ['', label_tv_connection, 0,   $font_height]
+          - ['', label_auto_search, 0,   $font_height]
+          - ['', label_dtv_mannual_search, 0,   $font_height]
+          - ['', label_atv_mannual_search, 0,   $font_height]
+
+          - ['', text_channel_mgmt, 280, 52]
+          - ['', text_favorite_mgmt, 280, $font_height]
+          - ['', text_country, 280, $font_height]
+          - ['', text_tv_connection, 280, $font_height]
+          - ['', text_auto_search, 280, $font_height]
+          - ['', text_dtv_mannual_search, 280, $font_height]
+          - ['', text_atv_mannual_search, 280, $font_height]
+
+          - ['LEFT_ARROW', left, 260, 60]
+          - ['RIGHT_ARROW', right, 485, 60]
+
+    - Window:
+        id: feature
+        x: 282
+        y: 71
+        width: 518
+        height: 482
+        visible: False
+        blocks:
+          - ['', rect_center_bar_1, 0, 0]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+
+          - ['', label_lock, 0, 60]
+          - ['', label_language, 0,   $font_height]
+          - ['', label_clock, 0,   $font_height]
+          - ['', label_sleep_timer, 0,   $font_height]
+          - ['', label_auto_power_off, 0,   $font_height]
+          - ['', label_hearing_impaired, 0,   $font_height]
+          - ['', label_ci_info, 0,   $font_height]
+          - ['', label_pvr, 0,   $font_height]
+
+          - ['', text_lock, 280, 52]
+          - ['', text_language, 280,   $font_height]
+          - ['', text_clock, 280,   $font_height]
+          - ['', text_sleep_timer, 280,   $font_height]
+          - ['', text_auto_power_off, 280,   $font_height]
+          - ['', text_hearing_impaired, 280,   $font_height]
+          - ['', text_ci_info, 280,   $font_height]
+          - ['', text_pvr, 280,   $font_height]
+
+
+          - ['LEFT_ARROW', left, 260, 60]
+          - ['RIGHT_ARROW', right, 485, 60]
+
+    - Window:
+        id: setup
+        x: 282
+        y: 71
+        width: 518
+        height: 482
+        visible: False
+        blocks:
+          - ['', rect_center_bar_1, 0, 0]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+          - ['', rect_center_bar_1, 0, $height]
+          - ['', rect_center_bar_2, 0, $height]
+
+          - ['', label_osd_timer, 0, 60]
+          - ['', label_auto_scart, 0,   $font_height]
+          - ['', label_pc_setup, 0,   $font_height]
+          - ['', label_blue_screen, 0,   $font_height]
+          - ['', label_reset_tv, 0,   $font_height]
+          - ['', label_software_upgrade, 0,   $font_height]
+          - ['', label_ota_upgrade, 0,   $font_height]
+          - ['', label_version, 0,   $font_height]
+
+          - ['', text_osd_timer, 280, 52]
+          - ['', text_auto_scart, 280,   $font_height]
+          - ['', text_pc_setup, 280,   $font_height]
+          - ['', text_blue_screen, 280,   $font_height]
+          - ['', text_reset_tv, 280,   $font_height]
+          - ['', text_software_upgrade, 280,   $font_height]
+          - ['', text_ota_upgrade, 280,   $font_height]
+          - ['', text_version, 280,   $font_height]
+
+          - ['LEFT_ARROW', left, 260, 60]
+          - ['RIGHT_ARROW', right, 485, 60]
+
+    - Window:
         id: left
         x: 0
         y: 0
@@ -462,8 +1213,7 @@ Scene:
           - ['', left_top_left, 0, 0]
           - ['', left_top_tile, 10, 0]
           - ['', left_top_right, 271, 0]
-          - ['', icon_photo, 90, 60]
-
+          - ['', icon_logo, 75, 60]
           - ['', label_menu_picture, 0, 175]
           - ['', label_menu_sound, 0, '+75']
           - ['', label_menu_channel, 0, '+75']

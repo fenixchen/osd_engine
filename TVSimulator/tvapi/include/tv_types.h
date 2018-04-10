@@ -38,6 +38,8 @@ typedef int t_bool;
 #define MALLOC_OBJECT(type) (type*)calloc(sizeof(type), 1)
 #define MALLOC_OBJECT_ARRAY(type, count) (type*)calloc(sizeof(type), count)
 #define FREE_OBJECT(obj) do { free(obj); obj = NULL; } while (0)
+#define MALLOC_BUFFER(size) calloc(size, 1)
+#define FREE_BUFFER(p) do { free(p); p = NULL; } while (0)
 
 
 #define TV_TYPE_GET_PRIV(type, self, var)	\
@@ -55,7 +57,6 @@ typedef int t_bool;
 }
 
 #define TV_TYPE_FREE(p) do { if (p) { p->destroy(p); p = NULL; } } while (0)
-
 
 #ifndef TV_MAX_PATH
 #define TV_MAX_PATH 256

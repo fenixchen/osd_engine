@@ -1,6 +1,11 @@
 #ifndef _SCENE_LINE_H_
 #define _SCENE_LINE_H_
 
+#define OSD_SCENE_LINE_TITLE "line"
+#define OSD_SCENE_LINE_BINARY "line.osd"
+
+/* define the macro to open the macros */
+#ifdef OSD_ENABLE_MACROS_LINE 
 
 #define OSD_WINDOW_WINDOW_RECT      0
 #define OSD_BLOCK_WINDOW_RECT_B0 0
@@ -15,5 +20,8 @@
 #define OSD_BLOCK_WINDOW_RECT_B0 9
 #define OSD_BLOCK_WINDOW_RECT_B0 10
 #define OSD_BLOCK_WINDOW_RECT_B0 11
+
+#endif
+
 
 #endif

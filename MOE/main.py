@@ -4,7 +4,7 @@ import app
 from scene import Scene
 import os
 
-TEST_ALL = False
+TEST_ALL = True
 GENERATE_BIN = True
 if TEST_ALL:
     yamls = [
@@ -28,11 +28,13 @@ if TEST_ALL:
         'scene/screensaver.yaml',
         'scene/button.yaml',
         'scene/neg_block.yaml',
-        'atv/system_settings.yaml']
+        'atv/system_settings.yaml',
+        'atv/no_signal.yaml']
 else:
-    yamls = ['atv/system_settings.yaml']
-    # yamls = ['scene/screensaver.yaml']
+    #yamls = ['atv/system_settings.yaml']
+    #yamls = ['scene/screensaver.yaml']
     #yamls = ['scene/neg_block.yaml']
+    yamls = ['atv/no_signal.yaml']
 
 if __name__ == '__main__':
     scenes = []

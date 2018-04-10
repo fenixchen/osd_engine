@@ -522,9 +522,17 @@ class Scene(object):
         with open(target_header, "w+") as f:
             f.truncate()
             a = ''
-            define = os.path.splitext(os.path.basename(target_header))[0].upper()
+            define = os.path.splitext(os.path.basename(target_header))[0].upper().strip()
             f.write('#ifndef _SCENE_%s_H_\n' % define)
             f.write('#define _SCENE_%s_H_\n\n' % define)
+
+            f.write("#define OSD_SCENE_%s_TITLE \"%s\"\n" % (define, self._title))
+            filename = os.path.basename(target_binary)
+            f.write("#define OSD_SCENE_%s_BINARY \"%s\"\n\n" % (define, filename))
+
+            f.write("/* define the macro to open the macros */");
+
+            f.write("\n#ifdef OSD_ENABLE_MACROS_%s \n" % define)
 
             for i, ingredient in enumerate(self._ingredients):
                 if ingredient.mutable and len(ingredient.id) > 0:
@@ -536,6 +544,8 @@ class Scene(object):
                 for j, block in enumerate(window.blocks):
                     if block.mutable:
                         f.write('#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), block.full_index))
+
+            f.write('\n#endif\n\n')
 
             f.write('\n#endif')
 

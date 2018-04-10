@@ -91,6 +91,9 @@
     <ClCompile Include="tv_app.c">
       <Filter>tvapp</Filter>
     </ClCompile>
+    <ClCompile Include="os_test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tvapp.rc">

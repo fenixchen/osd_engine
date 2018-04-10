@@ -35,12 +35,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\tvapi\include;..\osd\include;..\tfd\include;..\hal\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\tvapi\include;..\osd\include;..\tfd\include;..\hal\include;..\os\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>osd.lib;tvapi.lib;tfd.lib;hal.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>osd.lib;tvapi.lib;tfd.lib;hal.lib;os.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\libs\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -66,6 +66,7 @@
     <ClCompile Include="osd_proc\osd_proc_animation.c" />
     <ClCompile Include="osd_proc\osd_proc_screensaver.c" />
     <ClCompile Include="osd_proc\osd_proc_tv.c" />
+    <ClCompile Include="os_test.c" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>

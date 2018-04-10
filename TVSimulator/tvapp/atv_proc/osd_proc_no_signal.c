@@ -64,7 +64,7 @@ static int osd_proc_no_signal_keydown(osd_proc *self, osd_key key) {
     TV_TYPE_GET_PRIV(osd_proc_no_signal_priv, self, priv);
     switch (key) {
     case OSD_KEY_MENU:
-        priv->app->load(priv->app, OSD_SCENE_SYSTEM_SETTINGS_BINARY);
+        priv->app->load(priv->app, "../atv/"OSD_SCENE_SYSTEM_SETTINGS_BINARY);
         return 1;
     default:
         return 0;
