@@ -6,8 +6,8 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_TV 
-#define OSD_INGREDIENT_LABEL_BOTTOM_BIG 27
-#define OSD_INGREDIENT_LABEL_BOTTOM_SMALL 78
+#define OSD_INGREDIENT_LABEL_BOTTOM_BIG 4
+#define OSD_INGREDIENT_LABEL_BOTTOM_SMALL 5
 
 #define OSD_WINDOW_TOP              0
 #define OSD_WINDOW_CENTER           1

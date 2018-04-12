@@ -7,7 +7,6 @@ from enumerate import *
 from ingredient import Ingredient
 from log import Log
 from text import Text
-from rectangle import Rectangle
 from block import Block
 
 logger = Log.get_logger("engine")
@@ -15,7 +14,6 @@ logger = Log.get_logger("engine")
 
 class Label(Ingredient):
     def __init__(self, scene, id, text, color,
-                 max_chars=0,
                  width=None, height=None,
                  state=0,
                  background=None,
@@ -28,7 +26,7 @@ class Label(Ingredient):
         self._height = height
         self._color = color if type(color) is list else [color]
         self._text = text if type(text) is list else [text]
-
+        self._align = Align[align]
         if background is None:
             self._background = []
         else:
@@ -38,7 +36,6 @@ class Label(Ingredient):
 
         for i in range(self._state_count - len(self._color)):
             self._color.append(self._color[0])
-
 
         self._ingredient_background = []
         for background in self._background:
@@ -58,8 +55,15 @@ class Label(Ingredient):
         self._current_text = 0
 
         self._ingredient_text = []
-        for t in self._text:
-            text = Text(scene, t, self._color[self._current_state], font, font_size, self._width, align)
+        for i, t in enumerate(self._text):
+            text = Text(scene,
+                        "%s_text_%d" % (self.id, i),
+                        t,
+                        self._color[self._current_state],
+                        self._palette.id,
+                        font,
+                        font_size)
+            scene.add_text(text)
             self._ingredient_text.append(text)
 
     @property
@@ -94,7 +98,17 @@ class Label(Ingredient):
                 y_delta = int((self._height - text.height) / 2 + 0.5)
             else:
                 y_delta = 0
-            char_blocks = text.get_blocks(window, block_id, left, top + y_delta, i == 0)
+
+            text_width = text.width
+            x_delta = 0
+            if self._width is not None and self._width > text_width:
+                if self._align == Align.CENTER:
+                    x_delta = int((self._width - text_width) / 2)
+                elif self._align == Align.RIGHT:
+                    x_delta = int(self._width - text_width)
+
+            char_blocks = text.get_blocks(window, block_id,
+                                          left + x_delta, top + y_delta, i == 0)
             blocks.extend(char_blocks)
             self._text_blocks.append(char_blocks)
 

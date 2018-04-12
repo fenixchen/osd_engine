@@ -34,8 +34,8 @@ class Ingredient(OSDObject):
         assert self._palette is not None
         return self._palette.color(color_index)
 
-    def get_blocks(self, window, block_id, left, top):
-        block = Block(window, block_id, self, left, top)
+    def get_blocks(self, window, block_id, left, top, visible = True):
+        block = Block(window, block_id, self, left, top, visible)
         return block,
 
     def top_line(self):

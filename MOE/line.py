@@ -72,7 +72,7 @@ class Line(Ingredient):
         elif self._x1 == self._x2:
             for i in range(self._weight):
                 index = block_x + self._x1 + i
-                if 0 <= x < window.width and self._check_style(y):
+                if 0 <= index < window.width and self._check_style(y):
                     window_line_buf[index] = color
         else:
             slope = (self._x2 - self._x1) / (self._y2 - self._y1)

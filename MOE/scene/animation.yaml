@@ -3,6 +3,7 @@ Scene:
   height: 480
   timer_ms: 200
   frames: 255
+  default_palette: palette0
 
   Includes:
     - Include:

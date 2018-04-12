@@ -1,77 +1,94 @@
 # -*- coding:utf-8 -*-
 
+import struct
 
-from block import Block
 from enumerate import *
+from ingredient import Ingredient
+from log import Log
+from imageutil import ImageUtil
+
+logger = Log.get_logger("engine")
 
 
-class Text(object):
-    def __init__(self, scene, text, color,
+class Text(Ingredient):
+    def __init__(self, scene, id, text, color,
+                 palette=None,
                  font=None, font_size=None,
-                 width=None,
-                 align=Align.LEFT.name):
-        self._scene = scene
+                 mutable=False):
+        super().__init__(scene, id, palette, mutable)
         self._text = text
         self._color = color
+        self._font = font
         self._font_size = font_size
-        self._width = width
-        self._characters = []
-        self._align = Align[align]
-        if isinstance(self._text, str):
-            for char in self._text:
-                character = scene.get_character(char, color, font, font_size)
-                assert character is not None
-                self._characters.append(character)
+        self._glyphs = []
 
-        elif isinstance(self._text, int):
-            character = scene.get_character(self._text, color, font, font_size)
-            assert character is not None
-            self._characters.append(character)
-        else:
-            raise Exception('unknown type <%s>' % type(self._text))
+        if isinstance(self._text, int):
+            self._text = [self._text]
 
-    def get_blocks(self, window, block_id, left, top, visible=None):
-        blocks = []
-        left_origin = left
-        text_width = self.width
-
-        if self._width is not None and self._width > text_width:
-            if self._align == Align.CENTER:
-                left += int((self._width - text_width) / 2)
-            elif self._align == Align.RIGHT:
-                left += int(self._width - text_width)
-
-        for i, character in enumerate(self._characters):
-            glyph = character.glyph
-            sub_id = '%s_%d' % (block_id, i)
-            block = Block(window, sub_id, character, left, top, visible)
-            blocks.append(block)
-            left += glyph.advance_x
-
-            if self._width is not None and left - left_origin > self._width:
-                break
-
-        return blocks
-
-    @property
-    def width(self):
-        w = 0
-        for character in self._characters:
-            glyph = character.glyph
-            w += glyph.advance_x
-        return w
+        for char in self._text:
+            glyph = scene.get_glyph(char, font, font_size)
+            assert glyph is not None
+            self._glyphs.append(glyph)
 
     @property
     def height(self):
         h = 0
-        for character in self._characters:
-            glyph = character.glyph
+        for glyph in self._glyphs:
             h = max(h, glyph.advance_y)
         return h
 
+    @property
+    def width(self):
+        w = 0
+        for glyph in self._glyphs:
+            w += glyph.advance_x
+        return w
+
+    def top_line(self):
+        top = 0xFFFFFFFF
+        for glyph in self._glyphs:
+            top = min(top, glyph.top)
+        return top
+
+    def draw_line(self, window_line_buf, window, y, block_x):
+        top = self.top_line()
+        color = self.get_color(self._color)
+        left = block_x
+        for glyph in self._glyphs:
+            left += glyph.left
+            col = left
+            left += glyph.advance_x
+            if not 0 <= y - glyph.top + top < glyph.height:
+                continue
+
+            offset = (y - glyph.top + top) * glyph.pitch
+            for x in range(glyph.width):
+                if glyph.monochrome:
+                    bit = glyph.data[offset + (x >> 3)]
+                    bit = bit & (128 >> (x & 7))
+                    if 0 <= col < window.width and bit > 0:
+                        window_line_buf[col] = color
+                else:
+                    intensity = glyph.data[offset + x]
+                    if 0 <= col < window.width and intensity > 0:
+                        window_line_buf[col] = ImageUtil.blend_pixel(window_line_buf[col], color, intensity)
+                col += 1
+
     def __str__(self):
-        return "text:%s, color:%d, font_size:%d, width:%d" % (
-            self._text, self._color,
-            self._font_size if self._font_size is not None else self._scene.default_font_size,
-            0 if self._width is None else self._width
+        return "%s(id:%s, text:%s, color:%d)" % (
+            type(self), self.id, self._text, self._color
         )
+
+    def to_binary(self, ram_offset):
+        logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
+        ram = b''
+        bins = struct.pack('<BBxx', IngredientType.TEXT.value,
+                           self._palette.object_index)
+
+        bins += struct.pack('<Bxxx', self._color)
+
+        bins += struct.pack('<xxxx')
+
+        bins += struct.pack('<xxxx')
+
+        return bins, ram

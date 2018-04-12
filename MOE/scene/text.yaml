@@ -1,0 +1,44 @@
+Scene:
+  width: 640
+  height: 480
+  default_palette: palette0
+  default_font_size: 32
+  Includes:
+    - Include:
+        file: common.yaml
+
+  Palettes:
+    - Palette:
+        id: palette0
+        colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF,
+        0x505050, 0xF0F0F0, 0xFFFFFF, 0xFFFF00]
+
+  Ingredients:
+    - Rectangle:
+        id: rect1
+        border_color: 1
+        border_weight: 1
+
+    - Text:
+        id: text0
+        text: 'Hello world'
+        color: 1
+
+    - Label:
+        id: label0
+        text: 'Label0'
+        color: 2
+        width: 200
+        align: CENTER
+
+  Windows:
+    - Window:
+        id: window_text
+        x: 100
+        y: 100
+        width: 400
+        height: 300
+        blocks:
+          - ['', rect1, 0, 0]
+          - ['', text0, 10, 10]
+          - ['', label0, 10, 100]

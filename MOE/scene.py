@@ -9,13 +9,11 @@ from app import *
 from engine import *
 from font import Font
 from glyph import Glyph
-from charactor import Character
-from form import Form
+from text import Text
 from rectangle import Rectangle
 from bitmap import Bitmap
 from line import Line
 from label import Label
-from edit import Edit
 from preload import Preload
 from window import Window
 
@@ -30,9 +28,9 @@ class Scene(object):
         self._windows = []
         self._ingredients = []
         self._palettes = []
-        self._modifiers = []
         self._glyphs = []
         self._fonts = []
+        self._texts = []
         self._width = 0
         self._height = 0
         self._frames = 1
@@ -106,6 +104,13 @@ class Scene(object):
         self._fonts.append(new_font)
         new_font.object_index = len(self._fonts) - 1
 
+    def add_text(self, new_text):
+        for text in self._texts:
+            if text.id == new_text.id:
+                raise Exception('Duplicated text <%s>' % new_text.id)
+        self._texts.append(new_text)
+        new_text.object_index = len(self._texts) - 1
+
     def extend_color(self, color_data, palette):
         """
         :param color_data:
@@ -170,27 +175,6 @@ class Scene(object):
                 raise Exception('Duplicated window <%s>' % new_window.id)
         self._windows.append(new_window)
         new_window.object_index = len(self._windows) - 1
-
-    def get_character(self, char_code, color, font, font_size):
-        '''
-        find character, create it if not found
-        '''
-        if font_size is None:
-            font_size = self.default_font_size
-        if font is None:
-            font = self.default_font
-        else:
-            font = self.find_font(font)
-        if isinstance(char_code, str):
-            code = ord(char_code)
-        else:
-            code = char_code
-        character_id = 'ch_%s_%d_%d_%d' % (font.id, font_size, code, color)
-
-        character = Character(self, character_id, char_code, color, font, font_size)
-        logger.debug(character)
-        self.add_ingredient(character)
-        return character
 
     def get_glyph(self, char_code, font, font_size):
         """
@@ -543,7 +527,8 @@ class Scene(object):
                 f.write('#define OSD_WINDOW_%-16s %d\n' % (window.id.upper(), i))
                 for j, block in enumerate(window.blocks):
                     if block.mutable:
-                        f.write('#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), block.full_index))
+                        f.write(
+                            '#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), block.full_index))
 
             f.write('\n#endif\n\n')
 

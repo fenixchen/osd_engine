@@ -15,7 +15,6 @@ if TEST_ALL:
         'scene/symbol.yaml',
         'scene/inputbox.yaml',
         'scene/color.yaml',
-        'scene/form.yaml',
         'scene/label.yaml',
         'scene/label2.yaml',
         'scene/animation.yaml',
@@ -31,10 +30,10 @@ if TEST_ALL:
         'atv/system_settings.yaml',
         'atv/no_signal.yaml']
 else:
-    #yamls = ['atv/system_settings.yaml']
+    yamls = ['atv/system_settings.yaml']
     #yamls = ['scene/screensaver.yaml']
     #yamls = ['scene/neg_block.yaml']
-    yamls = ['atv/no_signal.yaml']
+    #yamls = ['scene/text.yaml']
 
 if __name__ == '__main__':
     scenes = []

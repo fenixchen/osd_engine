@@ -14,12 +14,9 @@ class IngredientType(Enum):
     INVALID = 0
     RECTANGLE = 1
     LINE = 2
-    CHARACTER = 3
+    TEXT = 3
     BITMAP = 4
     LABEL = 5
-    FORM = 6
-    BUTTON = 7
-    EDIT = 8
 
 
 class PixelFormat(Enum):
