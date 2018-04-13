@@ -104,23 +104,27 @@ class Bitmap(Ingredient):
                (type(self), self._id, self._palette, self._width, self._height,
                 self._bitmap_count, len(self._data))
 
+    @property
+    def ingredient_type(self):
+        return IngredientType.BITMAP.value
+
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
         ram = b''
         pixel_bits = self._palette.pixel_bits
-        bins = struct.pack('<BBxx', IngredientType.BITMAP.value, self._palette.object_index)
+        headers = struct.pack('<BBxx', self.ingredient_type, self._palette.object_index)
 
-        bins += struct.pack('<HH', self._width, self._height)
+        headers += struct.pack('<HH', self._width, self._height)
 
         flag = (1 if self._tiled else 0) | \
                (0 if self._transparent_color is None else 1) << 1
 
-        bins += struct.pack('<BBBx',
+        headers += struct.pack('<BBBx',
                             flag,
                             0 if self._mask_color is None else self._mask_color,
                             self._bitmap_count)
 
-        bins += struct.pack('<I', ram_offset)
+        headers += struct.pack('<I', ram_offset)
 
         data_size = len(self._data)
 
@@ -136,4 +140,4 @@ class Bitmap(Ingredient):
             ram += struct.pack('<%sH' % data_size, *self._data)
         else:
             raise Exception('Not implemented %d' % pixel_bits)
-        return bins, ram
+        return headers, ram

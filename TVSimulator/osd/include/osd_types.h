@@ -29,10 +29,6 @@ typedef struct _osd_binary osd_binary;
 
 typedef struct _tv_app tv_app;
 
-#define PIXEL_FORMAT_RGB  1
-#define PIXEL_FORMAT_GRAY_SCALE 2
-#define PIXEL_FORMAT_LUT 3
-
 #define OSD_SCENE_HW_DATA_SIZE sizeof(osd_scene_hw)
 
 typedef struct _osd_scene_hw osd_scene_hw;
@@ -42,32 +38,27 @@ struct _osd_scene_hw {
 
     u32 ram_offset;
 
-    u8 palette_data_size;
-    u8 ingredient_data_size;
-    u8 window_data_size;
+    u8 palette_header_size;
+    u8 ingredient_header_size;
+    u8 window_header_size;
     u8 glyph_header_size;
 
-    u8 palette_count;
     u8 window_count;
-    u16 ingredient_count;
-
-    char title[12]; //3 bytes
-
+    u8 reserved;
     u16 timer_ms; //0 means no timer
-    u16 glyph_count;
+
+    char title[16]; //4 words
 };
 
 #define OSD_PALETTE_DATA_SIZE sizeof(osd_palette_hw)
 
 typedef struct _osd_palette_hw osd_palette_hw;
 struct _osd_palette_hw {
-    u8 pixel_format;
-    u8 pixel_bits; // 0, 1, 2, 4, 8, 16
+    u8 pixel_bits; // 1, 2, 4, 8, 16
+    u8 reserved;
     u16 entry_count;
     u32 luts_addr;
 };
-
-#define OSD_PALETTE_INDEX_INVALID 0xFF
 
 #define OSD_LINE_STYLE_DASH_WIDTH 10
 
@@ -89,8 +80,6 @@ struct _osd_palette_hw {
 
 typedef struct _osd_rectangle_hw osd_rectangle_hw;
 struct _osd_rectangle_hw {
-    u16 width;
-    u16 height;
 
     u8 border_color_top, border_color_bottom;
     u8 border_color_left, border_color_right;
@@ -100,6 +89,7 @@ struct _osd_rectangle_hw {
     u8 gradient_mode:4; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX, higher 4 bit
     u8 bgcolor_start, bgcolor_end;
 
+    u32 reserved;
 };
 
 typedef struct _osd_line_hw osd_line_hw;
@@ -111,8 +101,7 @@ struct _osd_line_hw {
     u8 weight;
     u8 style;	//OSD_LINE_STYLE_XXX
     u8 color;
-    u8 reserved2;
-
+    u8 reserved;
 };
 
 #define OSD_SCENE_INVALID_GLYPH_INDEX 0xFFFF
@@ -133,16 +122,15 @@ struct _osd_glyph {
     u16 monochrome:1;
 };
 
-typedef struct _osd_character_hw osd_character_hw;
-struct _osd_character_hw {
+typedef struct _osd_text_hw osd_text_hw;
+struct _osd_text_hw {
     u8 color;
-    u8 reserved1;
-    u16 reserved2;
+    u8 reserved;
+    u16 glphy_count;
 
-    u32 glyph_addr; //pointer to _osd_glyph
+    u32 glyph_index_array;
 
-    u32 reserved3;
-
+    u32 reserved2;
 };
 
 typedef struct _osd_bitmap_data osd_bitmap_data;
@@ -155,9 +143,6 @@ struct _osd_bitmap_data {
 
 typedef struct _osd_bitmap_hw osd_bitmap_hw;
 struct _osd_bitmap_hw {
-    u16 width;
-    u16 height;
-
     u8 tiled: 1;
     u8 transparent: 1;
     u8 reserved: 6;
@@ -166,6 +151,8 @@ struct _osd_bitmap_hw {
     u8 current_bitmap;
 
     u32 data_addr; //pointer to osd_bitmap_data
+
+    u32 reserved;
 };
 
 
@@ -185,7 +172,6 @@ struct _osd_label_data {
     /*
     osd_label_text label_text[text_count]
     */
-
 };
 
 typedef struct _osd_label_hw osd_label_hw;
@@ -199,12 +185,9 @@ struct _osd_label_hw {
 
 #define OSD_INGREDIENT_RECTANGLE 1
 #define OSD_INGREDIENT_LINE		 2
-#define OSD_INGREDIENT_CHARACTER 3
+#define OSD_INGREDIENT_TEXT 3
 #define OSD_INGREDIENT_BITMAP	 4
 #define OSD_INGREDIENT_LABEL	 5
-#define OSD_INGREDIENT_FORM		 6
-#define OSD_INGREDIENT_BUTTON	 7
-#define OSD_INGREDIENT_EDIT		 8
 
 #define OSD_INGREDIENT_DATA_SIZE sizeof(osd_ingredient_hw)
 
@@ -217,7 +200,7 @@ struct _osd_ingredient_hw {
         osd_rectangle_hw rectangle;
         osd_line_hw line;
         osd_bitmap_hw bitmap;
-        osd_character_hw character;
+        osd_text_hw text;
         osd_label_hw label;
     } data;
 };
@@ -227,8 +210,12 @@ struct _osd_block_hw {
     u16 visible: 1; //lowest bits
     u16 block_index: 15;
     u16 ingredient_index;
+
     s16 x;
     s16 y;
+
+    u16 width;
+    u16 height;
 };
 
 
@@ -236,18 +223,32 @@ struct _osd_block_hw {
 typedef struct _osd_window_hw osd_window_hw;
 
 struct _osd_window_hw {
-    u8 reserved;
     u8 visible;
     u8 alpha;
     u8 z_order;
+    u8 palette_count;
 
     u16 x, y;
 
     u16 width, height;
 
-    u32 block_count;
+    u8 bitmap_count;
+    u8 text_count;
+    u8 rectangle_count;
+    u8 line_count;
 
-    u32 blocks_addr;
+    u8 other_ingredient_count;
+    u8 block_count;
+    u16 glyph_count;
+
+
+    u32 ingredient_addr; //==> osd_ingredient[bitmap_count + text_count + rectangle_count + line_count]
+
+    u32 block_addr;		//==> osd_block[block_count]
+
+    u32 glyph_addr;		//==> glyph_data[glyph_count]
+
+    u32 palette_addr;	//==> osd_palette_hw[palette_count]
 };
 
 #define OSD_RGB(r, g, b) ((u32)(((u8)(r)|((u16)((u8)(g))<<8))|(((u32)(u8)(b))<<16)))

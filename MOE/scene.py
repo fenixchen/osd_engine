@@ -2,9 +2,8 @@
 
 import os
 
-import hexdump
 import yaml
-
+import hexdump
 from app import *
 from engine import *
 from font import Font
@@ -237,12 +236,6 @@ class Scene(object):
 
     def __str__(self):
         str = 'Scene(%d x %d, %s)\n' % (self._width, self._height, self._yaml_file)
-        str += 'Palettes[%d]\n' % len(self._palettes)
-        for palette in self._palettes:
-            str += '\t%s\n' % palette
-        str += 'Ingredients[%d]\n' % len(self._ingredients)
-        for ingredient in self._ingredients:
-            str += '\t%s\n' % ingredient
         return str
 
     def _debug_file(self, filename):
@@ -257,13 +250,13 @@ class Scene(object):
         bins += struct.pack('<I', ram_offset)
 
         bins += struct.pack('<BBBB',
-                            OSD_PALETTE_DATA_SIZE, OSD_INGREDIENT_DATA_SIZE,
-                            OSD_WINDOW_DATA_SIZE, OSD_GLYPH_HEADER_SIZE)
+                            OSD_PALETTE_HEADER_SIZE, OSD_INGREDIENT_HEADER_SIZE,
+                            OSD_WINDOW_HEADER_SIZE, OSD_GLYPH_HEADER_SIZE)
+
+        bins += struct.pack('<BxH', len(self._windows), self._timer_ms);
 
         bins += struct.pack('<%dB' % len(self._title), *self._title.encode('utf-8'))
         bins += struct.pack('<%dx' % (OSD_SCENE_TITLE_MAX_LEN - len(self._title)))
-
-        bins += struct.pack('<HH', self._timer_ms, len(self._glyphs))
 
         binary_size[self] = len(bins)
 
@@ -283,7 +276,7 @@ class Scene(object):
         rams = b''
         for palette in self._palettes:
             bin, ram = palette.to_binary(ram_offset)
-            assert len(bin) == OSD_PALETTE_DATA_SIZE
+            assert len(bin) == OSD_PALETTE_HEADER_SIZE
             binary_size[palette] = len(ram)
             bins += bin
             rams += ram
@@ -296,7 +289,7 @@ class Scene(object):
         rams = b''
         for ingredient in self._ingredients:
             bin, ram = ingredient.to_binary(ram_offset)
-            assert len(bin) == OSD_INGREDIENT_DATA_SIZE
+            assert len(bin) == OSD_INGREDIENT_HEADER_SIZE
             binary_size[ingredient] = len(ram)
             bins += bin
             rams += ram
@@ -309,15 +302,16 @@ class Scene(object):
         rams = b''
         for window in self._windows:
             bin, ram = window.to_binary(ram_offset)
-            assert len(bin) == OSD_WINDOW_DATA_SIZE
+            assert len(bin) == OSD_WINDOW_HEADER_SIZE
             binary_size[window] = len(ram)
             bins += bin
             rams += ram
             ram_offset += len(ram)
+
         return bins, rams
 
     def generate_binary(self, target_binary, target_header, taget_address=0):
-        return
+
         assert self._yaml_file is not None
 
         binary_size = {}
@@ -326,7 +320,7 @@ class Scene(object):
 
         ram_offset += OSD_SCENE_HEADER_SIZE
 
-        ram_offset += OSD_WINDOW_DATA_SIZE * len(self._windows)
+        ram_offset += OSD_WINDOW_HEADER_SIZE * len(self._windows)
 
         header_size = ram_offset
 
@@ -334,39 +328,21 @@ class Scene(object):
         assert len(scene_bin) == OSD_SCENE_HEADER_SIZE
         binary_size['scene_bin'] = len(scene_bin)
 
-        palette_bin, palette_ram = self._generate_palettes_bin(binary_size, ram_offset)
-        assert len(palette_bin) == OSD_PALETTE_DATA_SIZE * len(self._palettes)
-        binary_size['palette_bin'] = len(palette_bin)
-        ram_offset += len(palette_ram)
-
-        glyph_ram = self._generate_glyhs_bin(binary_size, ram_offset)
-        ram_offset += len(glyph_ram)
-
-        ingredient_bin, ingredient_ram = self._generate_ingredients_bin(binary_size, ram_offset)
-        assert len(ingredient_bin) == OSD_INGREDIENT_DATA_SIZE * len(self._ingredients)
-        binary_size['ingredient_bin'] = len(ingredient_bin)
-        ram_offset += len(ingredient_ram)
-
         window_bin, window_ram = self._generate_windows_bin(binary_size, ram_offset)
         binary_size['window_bin'] = len(window_bin)
-        assert len(window_bin) == OSD_WINDOW_DATA_SIZE * len(self._windows)
+        assert len(window_bin) == OSD_WINDOW_HEADER_SIZE * len(self._windows)
 
         # create empty ram.bin
         with open(target_binary, "wb") as f:
             f.truncate()
             size = f.write(scene_bin)
-            size += f.write(palette_bin)
-            size += f.write(ingredient_bin)
             size += f.write(window_bin)
             assert size == header_size
-            f.write(glyph_ram)
-            f.write(palette_ram)
-            f.write(ingredient_ram)
             f.write(window_ram)
 
-        self._log_binary_size(binary_size)
+        # self._log_binary_size(binary_size)
 
-        self._generate_header_file(target_header, target_binary)
+        # self._generate_header_file(target_header, target_binary)
 
     def _generate_header_file(self, target_header, target_binary):
         # create header files

@@ -40,6 +40,11 @@ class Ingredient(OSDObject):
 
     @property
     @abc.abstractmethod
+    def ingredient_type(self):
+        pass
+
+    @property
+    @abc.abstractmethod
     def height(self):
         raise Exception("must implemented by child")
 

@@ -1,13 +1,12 @@
 # -*- coding:utf-8 -*-
 
 import struct
-
+from enumerate import *
 from log import Log
 from osdobject import *
 from font import Font
 from palette import Palette
 from glyph import Glyph
-from block import Block
 from text import Text
 from rectangle import Rectangle
 from bitmap import Bitmap
@@ -91,6 +90,7 @@ class Window(OSDObject):
                     self._blocks.append(block)
             else:
                 raise Exception('cannot find ingredient <%s>' % id)
+        self._blocks.sort()
 
     def _create_object(self, item):
         assert (len(item.keys()) > 0)
@@ -313,22 +313,92 @@ class Window(OSDObject):
             ret += "\t%s @(%d, %d)\n" % (block.ingredient.id, block.x, block.y)
         return ret.rstrip('\n')
 
+    def _stat_ingredient(self):
+        bitmap_count = 0
+        text_count = 0
+        rectangle_count = 0
+        line_count = 0
+        other_count = 0
+        for ingredient in self._ingredients:
+            if isinstance(ingredient, Bitmap):
+                bitmap_count += 1
+            elif isinstance(ingredient, Text):
+                text_count += 1
+            elif isinstance(ingredient, Rectangle):
+                rectangle_count += 1
+            elif isinstance(ingredient, Line):
+                line_count += 1
+            else:
+                other_count += 1
+        return bitmap_count, text_count, rectangle_count, line_count, other_count
+
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
-        bins = struct.pack('<BBBB', 0,
-                           1 if self._visible else 0,
-                           self._alpha,
-                           self._zorder)
-        bins += struct.pack('<HHHH', self._x, self._y, self._width, self._height)
-        bins += struct.pack('<I', len(self._blocks))
-        ram = b''
+
+        rams = b''
+        bins = b''
+
+        bins += struct.pack('<BBBB',
+                            1 if self._visible else 0,
+                            self._alpha,
+                            self._zorder,
+                            len(self._palettes))
+
+        bins += struct.pack('<HH', self._x, self._y)
+
+        bins += struct.pack('<HH', self._width, self._height)
+
+        bitmap_count, text_count, rectangle_count, line_count, other_count = \
+            self._stat_ingredient()
+
+        bins += struct.pack('<BBBB', bitmap_count, text_count, rectangle_count, line_count)
+
+        bins += struct.pack('<BBH', other_count, len(self._blocks), len(self._glyphs))
+
+        ram_offset += OSD_PALETTE_HEADER_SIZE * len(self._palettes) + \
+                      OSD_INGREDIENT_HEADER_SIZE * len(self._ingredients) + \
+                      OSD_BLOCK_HEADER_SIZE * len(self._blocks) + \
+                      OSD_GLYPH_HEADER_SIZE * len(self._glyphs)
+
+        # ingredient offset
+        if len(self._ingredients) == 0:
+            bins += struct.pack('<I', 0)
+        else:
+            bins += struct.pack('<I', ram_offset)
+
+        # ingredient_offset
+        if len(self._palettes) == 0:
+            bins += struct.pack('<I', 0)
+        else:
+            bins += struct.pack('<I', ram_offset)
+            palette_header_rams = b''
+            palette_data_rams = b''
+            for i, palette in enumerate(self._palettes):
+                header_ram, data_ram = palette.to_binary(ram_offset)
+                assert len(header_ram) == OSD_PALETTE_HEADER_SIZE
+                palette_header_rams += header_ram
+                palette_data_rams += data_ram
+                ram_offset += len(data_ram)
+
+            rams += palette_header_rams
+            rams += palette_data_rams
+
         if len(self._blocks) == 0:
             bins += struct.pack('<I', 0)
         else:
             bins += struct.pack('<I', ram_offset)
-            i = 0
             for block in self._blocks:
-                block_flags = (1 if block.visible else 0) | (block.index << 1)
-                ram += struct.pack('<HHhh', block_flags, block.ingredient.object_index, block.x, block.y)
-                i += 1
-        return bins, ram
+                header, ram = block.to_binary()
+                rams += ram
+                ram_offset += len(ram)
+
+        if len(self._glyphs) == 0:
+            bins += struct.pack('<I', 0)
+        else:
+            bins += struct.pack('<I', ram_offset)
+            for glyph in self._glyphs:
+                ram = glyph.to_binary(ram_offset)
+                rams += ram
+                ram_offset += len(ram)
+
+        return bins, rams

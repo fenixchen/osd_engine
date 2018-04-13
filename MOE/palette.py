@@ -79,13 +79,13 @@ class Palette(OSDObject):
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
         lut_len = len(self._lut)
-        bins = struct.pack('<xBH',
+        header = struct.pack('<xBH',
                            self.pixel_bits,
                            len(self._lut))
         if len(self._lut) > 0:
             ram = struct.pack('<%dI' % len(self._lut), *self._lut)
-            bins += struct.pack('<I', ram_offset)
+            header += struct.pack('<I', ram_offset)
         else:
             ram = b''
-            bins += struct.pack('<I', 0)
-        return bins, ram
+            header += struct.pack('<I', 0)
+        return header, ram

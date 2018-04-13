@@ -114,14 +114,18 @@ class Label(Ingredient):
 
         return blocks
 
+    @property
+    def ingredient_type(self):
+        return IngredientType.LABEL.value
+
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
-        bins = struct.pack('<Bxxx', IngredientType.LABEL.value)
+        header = struct.pack('<Bxxx', self.ingredient_type)
         if self._mutable:
-            bins += struct.pack('<HH', self._state_count, self._current_state)
-            bins += struct.pack('<HH', len(self._text_blocks), self._current_text)
-            bins += struct.pack('<I', ram_offset)
+            header += struct.pack('<HH', self._state_count, self._current_state)
+            header += struct.pack('<HH', len(self._text_blocks), self._current_text)
+            header += struct.pack('<I', ram_offset)
 
             for state_block in self._state_blocks:
                 color = state_block[0]
@@ -138,10 +142,10 @@ class Label(Ingredient):
                 for char in char_blocks:
                     ram += struct.pack('<I', char.full_index)
         else:
-            bins += struct.pack('<xxxx')
-            bins += struct.pack('<xxxx')
-            bins += struct.pack('<xxxx')
-        return bins, ram
+            header += struct.pack('<xxxx')
+            header += struct.pack('<xxxx')
+            header += struct.pack('<xxxx')
+        return header, ram
 
     def __str__(self):
         return "%s(id:%s, text(%s), palette:%s)" % (

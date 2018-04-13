@@ -250,18 +250,22 @@ class Rectangle(Ingredient):
                    -1 if self._bgcolor_end is None else self._bgcolor_end,
                    self._palette.id if self._palette is not None else 'None')
 
+    @property
+    def ingredient_type(self):
+        return IngredientType.RECTANGLE.value
+
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
-        bins = struct.pack('<BBxx', IngredientType.RECTANGLE.value, self.palette_index())
-        bins += struct.pack('<HH',
+        headers = struct.pack('<BBxx', self.ingredient_type, self.palette_index())
+        headers += struct.pack('<HH',
                             self._width if self._width != 0 else 0xFFFF,
                             self._height if self._height != 0 else 0xFFFF)
-        bins += struct.pack('<BBBB', self._border_color_top, self._border_color_bottom, self._border_color_left,
+        headers += struct.pack('<BBBB', self._border_color_top, self._border_color_bottom, self._border_color_left,
                             self._border_color_right)
-        bins += struct.pack('<BBBB', self._border_weight,
+        headers += struct.pack('<BBBB', self._border_weight,
                             (self._gradient_mode.value << 4) | self._border_style.value,
                             0 if self._bgcolor_start is None else self._bgcolor_start,
                             0 if self._bgcolor_end is None else self._bgcolor_end)
 
-        return bins, ram
+        return headers, ram

@@ -79,11 +79,14 @@ class Text(Ingredient):
             type(self), self.id, self._text, self._color
         )
 
+    @property
+    def ingredient_type(self):
+        return IngredientType.TEXT.value
+
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
-        bins = struct.pack('<BBxx', IngredientType.TEXT.value,
-                           self._palette.object_index)
+        bins = struct.pack('<BBxx', self.ingredient_type, self._palette.object_index)
 
         bins += struct.pack('<Bxxx', self._color)
 

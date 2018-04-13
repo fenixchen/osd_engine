@@ -1,9 +1,13 @@
 # -*- coding:utf-8 -*-
 
+import struct
+import functools
 
+
+@functools.total_ordering
 class Block(object):
     def __init__(self, window, id, ingredient, x, y,
-                 visible = True, mutable = False):
+                 visible=True, mutable=False):
         self._window = window
         self._id = id
         self._x = window.get_x(self, x)
@@ -12,6 +16,23 @@ class Block(object):
         self._visible = visible
         self._index = 0
         self._mutable = mutable
+
+    def __eq__(self, other):
+        return self.ingredient.ingredient_type == other.ingredient.ingredient_type and \
+               self.x == other.x and self.y == other.y
+
+    def __lt__(self, other):
+        if self.ingredient.ingredient_type < other.ingredient.ingredient_type:
+            return True
+        elif self.ingredient.ingredient_type > other.ingredient.ingredient_type:
+            return False
+
+        if self.x < other.x:
+            return True
+        elif self.x > other.x:
+            return False
+
+        return self.y < other.y
 
     @property
     def index(self):
@@ -83,3 +104,12 @@ class Block(object):
     @property
     def ingredient(self):
         return self._ingredient
+
+    def to_binary(self):
+        header = b''
+        ram = b''
+        block_flags = (1 if self.visible else 0) | (self.index << 1)
+        ram += struct.pack('<HH', block_flags, self.ingredient.object_index)
+        ram += struct.pack('<hh', self._x, self._y)
+        ram += struct.pack('<HH', self.width, self.height)
+        return header, ram

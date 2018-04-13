@@ -88,11 +88,14 @@ class Line(Ingredient):
                 self._color,
                 self._weight,
                 self._palette)
+    @property
+    def ingredient_type(self):
+        return IngredientType.LINE.value
 
     def to_binary(self, ram_offset):
         logger.debug('Generate Line <%s>' % self._id)
         ram = b''
-        bins = struct.pack('<BBxx', IngredientType.LINE.value, self.palette_index())
+        bins = struct.pack('<BBxx', self.ingredient_type, self.palette_index())
         bins += struct.pack('<HHHH', self._x1, self._y1, self._x2, self._y2)
         bins += struct.pack('<BBBx', self._weight, self._style.value, self._color)
         return bins, ram

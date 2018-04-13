@@ -12,12 +12,11 @@ class FontStyle(Enum):
 
 class IngredientType(Enum):
     INVALID = 0
-    RECTANGLE = 1
-    LINE = 2
-    TEXT = 3
-    BITMAP = 4
+    BITMAP = 1
+    TEXT = 2
+    RECTANGLE = 3
+    LINE = 4
     LABEL = 5
-
 
 class GradientMode(Enum):
     NONE = 0
@@ -52,16 +51,18 @@ DASH_WIDTH = 10
 # all size are bytes based
 
 
-OSD_PALETTE_DATA_SIZE = 2 * 4  # struct _osd_palette
+OSD_PALETTE_HEADER_SIZE = 2 * 4  # struct _osd_palette_hw
 
-OSD_INGREDIENT_DATA_SIZE = 4 * 4  # struct _osd_ingredient
+OSD_INGREDIENT_HEADER_SIZE = 4 * 4  # struct _osd_ingredient_hw
 
-OSD_WINDOW_DATA_SIZE = 5 * 4  # struct _osd_window
+OSD_WINDOW_HEADER_SIZE = 8 * 4  # struct _osd_window_hw
 
-OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_scene
+OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_glyph
 
-OSD_SCENE_TITLE_MAX_LEN = 12
+OSD_SCENE_HEADER_SIZE = 8 * 4 # struct _osd_scene_hw
 
-OSD_SCENE_HEADER_SIZE = 8 * 4
+OSD_BLOCK_HEADER_SIZE = 3 * 4 # struct _osd_block_hw
+
+OSD_SCENE_TITLE_MAX_LEN = 16
 
 OSD_DEFAULT_FONT_SIZE = 16
