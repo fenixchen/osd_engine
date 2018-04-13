@@ -9,64 +9,6 @@ Scene:
     - Include:
         file: common.yaml
 
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0, 0xFFFFFF, 0x505050, 0xF0F0F0, 0xE0E0E0, 0x808080, 0x800000]
-
-  Ingredients:
-    - Label:
-        id: button0
-        text: 'Normal'
-        color: 1
-        align: CENTER
-
-    - Label:
-        id: button1
-        text: 'Pressed'
-        color: 1
-        align: CENTER
-
-    - Rectangle:
-        id: rect1
-        width: 300
-        height: 200
-        border_weight: 1
-        border_color: 6
-
-    - Label:
-        id: label1
-        text: '姓名:'
-        color: 1
-        font: chn
-
-    - Label:
-        id: label2
-        text: 'Address:'
-        color: 1
-
-    - Label:
-        id: edit0
-        text: ''
-        color: 1
-        width: 180
-
-    - Label:
-        id: edit1
-        text: ''
-        color: 1
-        width: 180
-
-    - Label:
-        id: button2
-        text: 'Submit'
-        color: 1
-
-    - Label:
-        id: button3
-        text: 'Reset'
-        color: 1
-
 
   Windows:
     - Window:
@@ -76,9 +18,7 @@ Scene:
         width: 500
         height: 400
         visible: true
-        blocks:
-          - ['', button0, 100, 0]
-          - ['', button1, 380, 0]
+        Blocks:
           - ['', rect1, 150, 150]
           - ['', label1, 160, 180]
           - ['', label2, 160, 220]
@@ -86,3 +26,70 @@ Scene:
           - ['', edit0, 240, 220]
           - ['', button2, 200, 300]
           - ['', button3, 320, 300]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0xFFFFFF, 0x505050, 0xF0F0F0, 0xE0E0E0, 0x808080, 0x800000]
+
+        Ingredients:
+          - Rectangle:
+              id: rect1
+              width: 300
+              height: 200
+              border_weight: 1
+              border_color: 6
+
+          - Rectangle:
+              id: rect_edit
+              border_weight: 1
+              border_color: 1
+              bgcolor: 1
+
+          - Rectangle:
+              id: rect_button
+              border_weight: 1
+              border_color: 1
+              bgcolor: 2
+
+          - Label:
+              id: label1
+              text: '姓名:'
+              color: 1
+              font: chn
+
+          - Label:
+              id: label2
+              text: 'Address:'
+              color: 1
+
+          - Label:
+              id: edit0
+              text: ''
+              color: 1
+              width: 180
+              height: 25
+              background: rect_edit
+
+          - Label:
+              id: edit1
+              text: ''
+              color: 1
+              width: 180
+
+          - Label:
+              id: button2
+              text: 'Submit'
+              color: 1
+              height: 30
+              align: CENTER
+              width: 100
+              background: rect_button
+
+          - Label:
+              id: button3
+              text: 'Reset'
+              color: 1
+              height: 30
+              align: CENTER
+              width: 100
+              background: rect_button

@@ -10,10 +10,10 @@ logger = Log.get_logger("engine")
 
 
 class Line(Ingredient):
-    def __init__(self, scene, id, color, weight, x1, y1, x2, y2,
+    def __init__(self, window, id, color, weight, x1, y1, x2, y2,
                  style=LineStyle.SOLID.name,
                  palette=None):
-        super().__init__(scene, id, palette)
+        super().__init__(window, id, palette)
         self._color = color
         self._weight = weight
         self._x1, self._y1, self._x2, self._y2 = x1, y1, x2, y2

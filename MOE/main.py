@@ -8,32 +8,29 @@ TEST_ALL = True
 GENERATE_BIN = True
 if TEST_ALL:
     yamls = [
-        'scene/tv.yaml',
-        'scene/ico.yaml',
-        'scene/bitmap.yaml',
-        'scene/monitor.yaml',
-        'scene/symbol.yaml',
-        'scene/inputbox.yaml',
-        'scene/color.yaml',
-        'scene/label.yaml',
-        'scene/label2.yaml',
         'scene/animation.yaml',
+        'scene/bitmap.yaml',
+        'scene/button.yaml',
+        'scene/font.yaml',
         'scene/hello.yaml',
+        'scene/ico.yaml',
+        'scene/inputbox.yaml',
+        'scene/label.yaml',
         'scene/line.yaml',
         'scene/menu.yaml',
-        'scene/rect.yaml',
-        'scene/progressbar.yaml',
-        'scene/move.yaml',
-        'scene/screensaver.yaml',
-        'scene/button.yaml',
+        'scene/monitor.yaml',
         'scene/neg_block.yaml',
-        'atv/system_settings.yaml',
-        'atv/no_signal.yaml']
+        'scene/progressbar.yaml',
+        'scene/rect.yaml',
+        'scene/screensaver.yaml',
+        'scene/text.yaml',
+        'scene/tv.yaml',
+        'atv/no_signal.yaml',
+        'atv/system_settings.yaml']
 else:
-    yamls = ['atv/system_settings.yaml']
-    #yamls = ['scene/screensaver.yaml']
-    #yamls = ['scene/neg_block.yaml']
-    #yamls = ['scene/text.yaml']
+    #yamls = ['scene/tv.yaml']
+    yamls = ['atv/no_signal.yaml']
+    #yamls = ['atv/system_settings.yaml']
 
 if __name__ == '__main__':
     scenes = []

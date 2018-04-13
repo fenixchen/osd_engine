@@ -7,367 +7,6 @@ Scene:
   Includes:
     - Include:
         file: common.yaml
-  Fonts:
-    - Preload:
-        id: preload0
-        font: mono_16
-        size: 16
-        text: '0123456789 '
-    - Preload:
-        id: preload1
-        font: mono_16
-        size: 24
-        text: '0123456789 快速指南 连接 遥控器和外围设备 智能功能 电视观看 图像和声音 系统和支持 故障排除 注意事项和说明 使用说明书'
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0,
-        0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
-        0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
-        0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
-        0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
-        0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
-        0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
-        0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
-        ]
-
-  Ingredients:
-    - Rectangle:
-        id: rect_top
-        bgcolor: [4, 9]
-        gradient_mode: LEFT_TO_RIGHT
-
-    - Rectangle:
-        id: rect_border
-        border_weight: 1
-        border_color: 6
-        bgcolor: 1
-
-    - Label:
-        id: label_top_1
-        text: 'E-Manual'
-        font_size: 36
-        color: 2
-
-    - Label:
-        id: label_top_2
-        text: 'v 1.2.0'
-        font_size: 16
-        color: 6
-
-    - Label:
-        id: label_bottom_big
-        text: '智能功能    '
-        font_size: 24
-        color: 2
-        mutable: True
-
-    - Label:
-        id: label_bottom_small
-        text: '通过使用特殊智能功能，您可以更充分的享受电视带来的乐趣。使用Smart Hub功能，或用语音控制电视'
-        font_size: 16
-        color: 2
-        mutable: True
-
-    - Label:
-        id: icon_search
-        text: 0x26
-        font: wingding2
-        font_size: 36
-        color: 2
-
-    - Label:
-        id: icon_refresh
-        text: 0x33
-        font: wingding2
-        font_size: 36
-        color: 2
-
-    - Rectangle:
-        id: rect_0_0
-        width: 150
-        height: 110
-        bgcolor: 11
-
-    - Rectangle:
-        id: rect_0_0_b
-        width: 150
-        height: 40
-        bgcolor: 21
-
-    - Label:
-        id: label_0_0
-        text: '快速指南'
-        font_size: 16
-        color: 2
-
-    - Label:
-        id: icon_0_0
-        text: 0x26
-        font: wingding
-        font_size: 48
-        color: 1
-
-
-    - Rectangle:
-        id: rect_0_1
-        width: 150
-        height: 110
-        bgcolor: 12
-
-    - Rectangle:
-        id: rect_0_1_b
-        width: 150
-        height: 40
-        bgcolor: 22
-
-    - Label:
-        id: label_0_1
-        text: '连接'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_0_1
-        text: 0x30
-        font: wingding
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_0_2
-        width: 150
-        height: 110
-        bgcolor: 13
-
-    - Rectangle:
-        id: rect_0_2_b
-        width: 150
-        height: 40
-        bgcolor: 23
-
-    - Label:
-        id: label_0_2
-        text: '遥控器和外围设备'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_0_2
-        text: 0x28
-        font: wingding
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_0_3
-        width: 150
-        height: 110
-        bgcolor: 14
-
-    - Rectangle:
-        id: rect_0_3_b
-        width: 150
-        height: 40
-        bgcolor: 24
-
-    - Label:
-        id: label_0_3
-        text: '智能功能'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_0_3
-        text: 0x2A
-        font: wingding
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_0_4
-        width: 150
-        height: 110
-        bgcolor: 15
-
-    - Rectangle:
-        id: rect_0_4_b
-        width: 150
-        height: 40
-        bgcolor: 25
-    - Label:
-        id: icon_0_4
-        text: 0x2B
-        font: wingding
-        font_size: 48
-        color: 1
-
-    - Label:
-        id: label_0_4
-        text: '电视观看'
-        font_size: 16
-        color: 2
-
-    - Rectangle:
-        id: rect_1_0
-        width: 150
-        height: 110
-        bgcolor: 16
-    - Rectangle:
-        id: rect_1_0_b
-        width: 150
-        height: 40
-        bgcolor: 26
-    - Label:
-        id: label_1_0
-        text: '图像和声音'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_1_0
-        text: 0x9F
-        font: webdings
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_1_1
-        width: 150
-        height: 110
-        bgcolor: 17
-    - Rectangle:
-        id: rect_1_1_b
-        width: 150
-        height: 40
-        bgcolor: 27
-    - Label:
-        id: label_1_1
-        text: '系统和支持'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_1_1
-        text: 0x9C
-        font: webdings
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_1_2
-        width: 150
-        height: 110
-        bgcolor: 18
-    - Rectangle:
-        id: rect_1_2_b
-        width: 150
-        height: 40
-        bgcolor: 28
-    - Label:
-        id: label_1_2
-        text: '故障排除'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_1_2
-        text: 0x40
-        font: webdings
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_1_3
-        width: 150
-        height: 110
-        bgcolor: 19
-    - Rectangle:
-        id: rect_1_3_b
-        width: 150
-        height: 40
-        bgcolor: 29
-    - Label:
-        id: label_1_3
-        text: '注意事项和说明'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_1_3
-        text: 0x9D
-        font: webdings
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_1_4
-        width: 150
-        height: 110
-        bgcolor: 20
-    - Rectangle:
-        id: rect_1_4_b
-        width: 150
-        height: 40
-        bgcolor: 30
-    - Label:
-        id: label_1_4
-        text: '使用说明书'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_1_4
-        text: 0xA7
-        font: webdings
-        font_size: 48
-        color: 1
-
-    - Rectangle:
-        id: rect_hl
-        border_weight: 2
-        border_color: 2
-
-    - Rectangle:
-        id: rect_msgbox1
-        height: 30
-        bgcolor: [31, 32]
-        border_color: 31
-        border_weight: 1
-        gradient_mode: LEFT_TO_RIGHT
-
-    - Rectangle:
-        id: rect_msgbox2
-        height: 170
-        bgcolor: [2]
-        border_color: 31
-        border_weight: 1
-
-    - Rectangle:
-        id: rect_msgbox_button
-        height: 30
-        width: 80
-        bgcolor: [6,7]
-        gradient_mode: TOP_TO_BOTTOM
-        border_color: 6
-        border_weight: 1
-        border_style: DOT3
-
-    - Label:
-        id: label_msgbox
-        text: '提示信息'
-        font_size: 16
-        color: 1
-
-    - Label:
-        id: label_msgbox_content
-        text: '电视菜单演示程序，按回车键关闭'
-        font_size: 16
-        color: 9
-
-    - Label:
-        id: label_msgbox_close
-        text: '关闭'
-        font_size: 16
-        color: 2
-    - Label:
-        id: icon_close
-        text: 0xCD
-        font: wingding2
-        font_size: 20
-        color: 1
 
   Windows:
     - Window:
@@ -376,12 +15,55 @@ Scene:
         y: 0
         width: 800
         height: 80
-        blocks:
+        Blocks:
           - ['', rect_top, 0, 0]
           - ['', label_top_1, 20, 20]
           - ['', label_top_2, 200, 40]
           - ['', icon_search, 700, 30]
           - ['', icon_refresh, 750, 30]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0,
+              0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
+              0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
+              0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
+              0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
+              0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
+              0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
+              0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
+              ]
+        Ingredients:
+          - Rectangle:
+              id: rect_top
+              bgcolor: [4, 9]
+              gradient_mode: LEFT_TO_RIGHT
+
+          - Label:
+              id: label_top_1
+              text: 'E-Manual'
+              font_size: 36
+              color: 2
+
+          - Label:
+              id: label_top_2
+              text: 'v 1.2.0'
+              font_size: 16
+              color: 6
+
+          - Label:
+              id: icon_search
+              text: 0x26
+              font: wingding2
+              font_size: 36
+              color: 2
+
+          - Label:
+              id: icon_refresh
+              text: 0x33
+              font: wingding2
+              font_size: 36
+              color: 2
 
     - Window:
         id: center
@@ -389,7 +71,7 @@ Scene:
         y: 120
         width: 770
         height: 400
-        blocks:
+        Blocks:
           - ['', rect_0_0, 0, 0]
           - ['', rect_0_0_b, 0, 110]
           - ['', label_0_0, 40, 120]
@@ -439,16 +121,297 @@ Scene:
           - ['', rect_1_4_b, 608, 262]
           - ['', label_1_4, 643, 272]
           - ['', icon_1_4, 653, 182]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0,
+              0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
+              0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
+              0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
+              0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
+              0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
+              0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
+              0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
+              ]
+        Ingredients:
+          - Rectangle:
+              id: rect_0_0
+              width: 150
+              height: 110
+              bgcolor: 11
 
+          - Rectangle:
+              id: rect_0_0_b
+              width: 150
+              height: 40
+              bgcolor: 21
+
+          - Label:
+              id: label_0_0
+              text: '快速指南'
+              font_size: 16
+              color: 2
+
+          - Label:
+              id: icon_0_0
+              text: 0x26
+              font: wingding
+              font_size: 48
+              color: 1
+
+
+          - Rectangle:
+              id: rect_0_1
+              width: 150
+              height: 110
+              bgcolor: 12
+
+          - Rectangle:
+              id: rect_0_1_b
+              width: 150
+              height: 40
+              bgcolor: 22
+
+          - Label:
+              id: label_0_1
+              text: '连接'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_0_1
+              text: 0x30
+              font: wingding
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_0_2
+              width: 150
+              height: 110
+              bgcolor: 13
+
+          - Rectangle:
+              id: rect_0_2_b
+              width: 150
+              height: 40
+              bgcolor: 23
+
+          - Label:
+              id: label_0_2
+              text: '遥控器和外围设备'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_0_2
+              text: 0x28
+              font: wingding
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_0_3
+              width: 150
+              height: 110
+              bgcolor: 14
+
+          - Rectangle:
+              id: rect_0_3_b
+              width: 150
+              height: 40
+              bgcolor: 24
+
+          - Label:
+              id: label_0_3
+              text: '智能功能'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_0_3
+              text: 0x2A
+              font: wingding
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_0_4
+              width: 150
+              height: 110
+              bgcolor: 15
+
+          - Rectangle:
+              id: rect_0_4_b
+              width: 150
+              height: 40
+              bgcolor: 25
+          - Label:
+              id: icon_0_4
+              text: 0x2B
+              font: wingding
+              font_size: 48
+              color: 1
+
+          - Label:
+              id: label_0_4
+              text: '电视观看'
+              font_size: 16
+              color: 2
+
+          - Rectangle:
+              id: rect_1_0
+              width: 150
+              height: 110
+              bgcolor: 16
+          - Rectangle:
+              id: rect_1_0_b
+              width: 150
+              height: 40
+              bgcolor: 26
+          - Label:
+              id: label_1_0
+              text: '图像和声音'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_1_0
+              text: 0x9F
+              font: webdings
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_1_1
+              width: 150
+              height: 110
+              bgcolor: 17
+          - Rectangle:
+              id: rect_1_1_b
+              width: 150
+              height: 40
+              bgcolor: 27
+          - Label:
+              id: label_1_1
+              text: '系统和支持'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_1_1
+              text: 0x9C
+              font: webdings
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_1_2
+              width: 150
+              height: 110
+              bgcolor: 18
+          - Rectangle:
+              id: rect_1_2_b
+              width: 150
+              height: 40
+              bgcolor: 28
+          - Label:
+              id: label_1_2
+              text: '故障排除'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_1_2
+              text: 0x40
+              font: webdings
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_1_3
+              width: 150
+              height: 110
+              bgcolor: 19
+          - Rectangle:
+              id: rect_1_3_b
+              width: 150
+              height: 40
+              bgcolor: 29
+          - Label:
+              id: label_1_3
+              text: '注意事项和说明'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_1_3
+              text: 0x9D
+              font: webdings
+              font_size: 48
+              color: 1
+
+          - Rectangle:
+              id: rect_1_4
+              width: 150
+              height: 110
+              bgcolor: 20
+          - Rectangle:
+              id: rect_1_4_b
+              width: 150
+              height: 40
+              bgcolor: 30
+          - Label:
+              id: label_1_4
+              text: '使用说明书'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_1_4
+              text: 0xA7
+              font: webdings
+              font_size: 48
+              color: 1
     - Window:
         id: bottom
         x: 0
         y: 500
         width: 800
         height: 100
-        blocks:
+        Blocks:
           - ['', label_bottom_big, 30, 10]
           - ['', label_bottom_small, 30, 45]
+        Preloads:
+          - Preload:
+              id: preload0
+              font: mono_16
+              size: 16
+              text: '0123456789 '
+          - Preload:
+              id: preload1
+              font: mono_16
+              size: 24
+              text: '0123456789 快速指南 连接 遥控器和外围设备 智能功能 电视观看 图像和声音 系统和支持 故障排除 注意事项和说明 使用说明书'
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0,
+              0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
+              0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
+              0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
+              0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
+              0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
+              0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
+              0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
+              ]
+        Ingredients:
+          - Label:
+              id: label_bottom_big
+              text: '智能功能    '
+              font_size: 24
+              color: 2
+              mutable: True
+
+          - Label:
+              id: label_bottom_small
+              text: '通过使用特殊智能功能，您可以更充分的享受电视带来的乐趣。使用Smart Hub功能，或用语音控制电视'
+              font_size: 16
+              color: 2
+              mutable: True
+
 
     - Window:
         id: item_highlight
@@ -457,8 +420,25 @@ Scene:
         width: 150
         height: 150
         zorder: 1
-        blocks:
+        Blocks:
           - ['', rect_hl, 0, 0]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0,
+              0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
+              0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
+              0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
+              0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
+              0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
+              0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
+              0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
+              ]
+        Ingredients:
+          - Rectangle:
+              id: rect_hl
+              border_weight: 2
+              border_color: 2
 
     - Window:
         id: messagebox
@@ -468,7 +448,7 @@ Scene:
         height: 200
         visible: false
         alpha: 0xE0
-        blocks:
+        Blocks:
           - ['', rect_msgbox1, 0, 0]
           - ['', rect_msgbox2, 0, 30]
           - ['', rect_msgbox_button, 110, 150]
@@ -476,3 +456,64 @@ Scene:
           - ['', label_msgbox, 5, 5]
           - ['', icon_close, 280, 5]
           - ['', label_msgbox_content, 40, 80]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0,
+              0x000000, 0xFFFFFF, 0xFF0000, 0x0000FF, 0x00FF00,
+              0x808080, 0xA0A0A0, 0xA4D3EE, 0x8080FF, 0x000000,
+              0x1E90FF, 0xFFFF00, 0x00FF00, 0xFF1493, 0x00CED1,
+              0xFF0000, 0x87CEFA, 0x6495ED, 0x008B8B, 0x6A5ACD,
+              0x0070AF, 0xBFBF00, 0x00BF00, 0xBF0073, 0x00AEA1,
+              0xAF0000, 0x67AEAA, 0x4475AD, 0x005B5B, 0x4A3AAD,
+              0xA00000, 0xFFFFFF, 0x808080, 0xD0D0D0,
+              ]
+        Ingredients:
+          - Rectangle:
+              id: rect_msgbox1
+              height: 30
+              bgcolor: [31, 32]
+              border_color: 31
+              border_weight: 1
+              gradient_mode: LEFT_TO_RIGHT
+
+          - Rectangle:
+              id: rect_msgbox2
+              height: 170
+              bgcolor: [2]
+              border_color: 31
+              border_weight: 1
+
+          - Rectangle:
+              id: rect_msgbox_button
+              height: 30
+              width: 80
+              bgcolor: [6,7]
+              gradient_mode: TOP_TO_BOTTOM
+              border_color: 6
+              border_weight: 1
+              border_style: DOT3
+
+          - Label:
+              id: label_msgbox
+              text: '提示信息'
+              font_size: 16
+              color: 1
+
+          - Label:
+              id: label_msgbox_content
+              text: '电视菜单演示程序，按回车键关闭'
+              font_size: 16
+              color: 9
+
+          - Label:
+              id: label_msgbox_close
+              text: '关闭'
+              font_size: 16
+              color: 2
+          - Label:
+              id: icon_close
+              text: 0xCD
+              font: wingding2
+              font_size: 20
+              color: 1

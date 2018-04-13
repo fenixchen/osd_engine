@@ -5,28 +5,6 @@ Scene:
     - Include:
         file: common.yaml
 
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0, 0xFFFFFF]
-
-  Ingredients:
-
-    - Rectangle:
-        id: rect_bg
-        bgcolor: 1
-
-
-
-    - Bitmap:
-        id: bg
-        bitmaps: 'images/bg.bmp'
-
-    - Bitmap:
-        id: icon_photo
-        bitmaps: 'images/button_enter.bmp'
-        transparent_color: 0xFF00FF
-
   Windows:
     - Window:
         id: window0
@@ -35,7 +13,26 @@ Scene:
         width: 200
         height: 200
         zorder: 0
-        blocks:
+        Blocks:
           - ['', rect_bg, 0, 0]
           - ['', bg, 0, 0]
           - ['', icon_photo, 20, 20]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0xFFFFFF]
+
+        Ingredients:
+
+          - Rectangle:
+              id: rect_bg
+              bgcolor: 1
+
+          - Bitmap:
+              id: bg
+              bitmaps: 'images/bg.bmp'
+
+          - Bitmap:
+              id: icon_photo
+              bitmaps: 'images/button_enter.bmp'
+              transparent_color: 0xFF00FF

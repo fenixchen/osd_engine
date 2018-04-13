@@ -4,117 +4,7 @@ Scene:
   Includes:
     - Include:
         file: common.yaml
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0xFF0000, 0x00FF00, 0x0000FF, 0x0000FF, 0xFF0000,
-        0x00FF00, 0xFF00FF, 0x101010,0xFFFFFF, 0xFFFFFF]
 
-  Ingredients:
-    - Rectangle:
-        id: rect1
-        width: 150
-        height: 150
-        border_color: [3, 4, 5, 6]
-        border_weight: 20
-        bgcolor: [7, 8]
-        gradient_mode: TOP_TO_BOTTOM
-
-    - Rectangle:
-        id: rect12
-        width: 150
-        height: 150
-        border_color: [3, 4, 5, 6]
-        border_weight: 20
-        bgcolor: [7, 8]
-        gradient_mode: LEFT_TO_RIGHT
-
-    - Rectangle:
-        id: rect13
-        width: 150
-        height: 150
-        border_color: [3, 4, 5, 6]
-        border_weight: 20
-        bgcolor: [7, 8]
-        gradient_mode: TOP_LEFT_TO_BOTTOM_RIGHT
-
-    - Rectangle:
-        id: rect14
-        width: 150
-        height: 150
-        border_color: [3, 4, 5, 6]
-        border_weight: 20
-        bgcolor: [7, 8]
-        gradient_mode: BOTTOM_LEFT_TO_TOP_RIGHT
-
-    - Rectangle:
-        id: rect15
-        width: 150
-        height: 150
-        border_color: [3, 4, 5, 6]
-        border_weight: 20
-        bgcolor: [7, 8]
-        gradient_mode: CORNER_TO_CENTER
-
-    - Rectangle:
-        id: rect2
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: SOLID
-        gradient_mode: NONE
-
-    - Rectangle:
-        id: rect3
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: DOT1
-        gradient_mode: NONE
-
-    - Rectangle:
-        id: rect4
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: DOT2
-        gradient_mode: NONE
-
-    - Rectangle:
-        id: rect5
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: DOT3
-        gradient_mode: NONE
-
-    - Rectangle:
-        id: rect6
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: DASH
-
-    - Rectangle:
-        id: rect7
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: DASH_DOT
-
-    - Rectangle:
-        id: rect8
-        width: 150
-        height: 150
-        border_weight: 1
-        border_color: 9
-        border_style: DASH_DOT_DOT
 
   Windows:
     - Window:
@@ -123,7 +13,7 @@ Scene:
         y: 10
         width: 760
         height: 550
-        blocks:
+        Blocks:
           - ['', rect1, 0, 0]
           - ['', rect12, 160, 0]
           - ['', rect13, 320, 0]
@@ -136,3 +26,114 @@ Scene:
           - ['', rect7, 160, 320]
           - ['', rect8, 320, 320]
           - ['', rect15, 480, 320]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0xFF0000, 0x00FF00, 0x0000FF, 0x0000FF, 0xFF0000,
+              0x00FF00, 0xFF00FF, 0x101010,0xFFFFFF, 0xFFFFFF]
+
+        Ingredients:
+          - Rectangle:
+              id: rect1
+              width: 150
+              height: 150
+              border_color: [3, 4, 5, 6]
+              border_weight: 20
+              bgcolor: [7, 8]
+              gradient_mode: TOP_TO_BOTTOM
+
+          - Rectangle:
+              id: rect12
+              width: 150
+              height: 150
+              border_color: [3, 4, 5, 6]
+              border_weight: 20
+              bgcolor: [7, 8]
+              gradient_mode: LEFT_TO_RIGHT
+
+          - Rectangle:
+              id: rect13
+              width: 150
+              height: 150
+              border_color: [3, 4, 5, 6]
+              border_weight: 20
+              bgcolor: [7, 8]
+              gradient_mode: TOP_LEFT_TO_BOTTOM_RIGHT
+
+          - Rectangle:
+              id: rect14
+              width: 150
+              height: 150
+              border_color: [3, 4, 5, 6]
+              border_weight: 20
+              bgcolor: [7, 8]
+              gradient_mode: BOTTOM_LEFT_TO_TOP_RIGHT
+
+          - Rectangle:
+              id: rect15
+              width: 150
+              height: 150
+              border_color: [3, 4, 5, 6]
+              border_weight: 20
+              bgcolor: [7, 8]
+              gradient_mode: CORNER_TO_CENTER
+
+          - Rectangle:
+              id: rect2
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: SOLID
+              gradient_mode: NONE
+
+          - Rectangle:
+              id: rect3
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: DOT1
+              gradient_mode: NONE
+
+          - Rectangle:
+              id: rect4
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: DOT2
+              gradient_mode: NONE
+
+          - Rectangle:
+              id: rect5
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: DOT3
+              gradient_mode: NONE
+
+          - Rectangle:
+              id: rect6
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: DASH
+
+          - Rectangle:
+              id: rect7
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: DASH_DOT
+
+          - Rectangle:
+              id: rect8
+              width: 150
+              height: 150
+              border_weight: 1
+              border_color: 9
+              border_style: DASH_DOT_DOT

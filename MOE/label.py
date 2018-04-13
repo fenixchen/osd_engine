@@ -13,7 +13,7 @@ logger = Log.get_logger("engine")
 
 
 class Label(Ingredient):
-    def __init__(self, scene, id, text, color,
+    def __init__(self, window, id, text, color,
                  width=None, height=None,
                  state=0,
                  background=None,
@@ -21,7 +21,7 @@ class Label(Ingredient):
                  palette=None,
                  align=Align.LEFT.name,
                  mutable=False):
-        super().__init__(scene, id, palette, mutable)
+        super().__init__(window, id, palette, mutable)
         self._width = width
         self._height = height
         self._color = color if type(color) is list else [color]
@@ -39,7 +39,7 @@ class Label(Ingredient):
 
         self._ingredient_background = []
         for background in self._background:
-            ingredient_bg = scene.find_ingredient(background)
+            ingredient_bg = window.find_ingredient(background)
             assert ingredient_bg is not None
             ingredient_bg.width = self._width
             ingredient_bg.height = self._height
@@ -56,14 +56,14 @@ class Label(Ingredient):
 
         self._ingredient_text = []
         for i, t in enumerate(self._text):
-            text = Text(scene,
+            text = Text(window,
                         "%s_text_%d" % (self.id, i),
                         t,
                         self._color[self._current_state],
                         self._palette.id,
                         font,
                         font_size)
-            scene.add_text(text)
+            window.add_ingredient(text)
             self._ingredient_text.append(text)
 
     @property

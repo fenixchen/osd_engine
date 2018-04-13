@@ -19,12 +19,11 @@ class Bitmap(Ingredient):
     def width(self):
         return self._width
 
-    def __init__(self, scene, id, bitmaps, palette=None,
+    def __init__(self, window, id, bitmaps, palette=None,
                  mask_color=None, width=None, height=None, tiled=False,
                  transparent_color=None, mutable=False):
 
-        super().__init__(scene, id, palette, mutable)
-        assert self._palette is not None
+        super().__init__(window, id, palette, mutable)
 
         self._data = []
         if isinstance(bitmaps, str):
@@ -41,15 +40,11 @@ class Bitmap(Ingredient):
         color_data = []
         for bitmap in bitmaps:
             self._bitmap_width, self._bitmap_height, data = ImageUtil.load(bitmap)
-            if self._palette.pixel_format == PixelFormat.LUT:
-                color_data.extend(data)
-            else:
-                self._data.extend(data)
+            color_data.extend(data)
 
         assert self._bitmap_width > 0 and self._bitmap_height > 0
 
-        if self._palette.pixel_format == PixelFormat.LUT:
-            self._palette, self._data = scene.extend_color(color_data, self._palette)
+        self._palette, self._data = window.extend_color(color_data, self._palette)
 
         self._current = 0
 

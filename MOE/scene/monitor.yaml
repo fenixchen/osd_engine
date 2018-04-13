@@ -8,255 +8,6 @@ Scene:
     - Include:
         file: common.yaml
 
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080, 0xA0A0A0, 0xEED3A4]
-
-  Ingredients:
-    - Label:
-        id: label_dell
-        text: 'Dell SE2416H'
-        color: 2
-
-    - Label:
-        id: icon_resolution
-        text: 0x38
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: label_energy_use
-        text: 'Energy Use'
-        color: 2
-
-    - Label:
-        id: label_resolution
-        text: 'Resolution: 1920 x 1080, 60HZ'
-        color: 2
-
-    - Rectangle:
-        id: rect_green
-        width: 3
-        height: 16
-        bgcolor: 5
-
-    - Rectangle:
-        id: rect_gray
-        width: 4
-        height: 16
-        border_weight: 1
-        border_color: 6
-
-    - Rectangle:
-        id: rect_border
-        border_weight: 1
-        border_color: 6
-        bgcolor: 1
-
-    - Rectangle:
-        id: rect_bg_gray1
-        border_weight: 1
-        border_color: 6
-        bgcolor: 6
-
-
-    - Rectangle:
-        id: rect_bg_gray2
-        border_weight: 1
-        border_color: 6
-        bgcolor: 7
-
-    - Label:
-        id: icon_brightness
-        text: 0xd5
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_auto_adjust
-        text: 0x3E
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_input_source
-        text: 0x37
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_color
-        text: 0x21
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_display
-        text: 0x26
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_energy
-        text: 0x53
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_menu
-        text: 0x34
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_personalize
-        text: 0x7B
-        font: wingding
-        font_size: 24
-        color: 2
-
-    - Label:
-        id: icon_others
-        text: 0x4F
-        font: wingding
-        font_size: 24
-        color: 2
-
-
-    - Label:
-        id: label_brightness
-        text: 'Brightness/Contrast'
-        color: 2
-
-    - Label:
-        id: label_auto_adjust
-        text: 'Auto Adjust'
-        color: 2
-
-    - Label:
-        id: label_input_source
-        text: 'Input Source'
-        color: 2
-
-    - Label:
-        id: label_color
-        text: 'Color'
-        color: 2
-
-    - Label:
-        id: label_display
-        text: 'Display'
-        color: 2
-
-    - Label:
-        id: label_energy
-        text: 'Energy'
-        color: 2
-
-    - Label:
-        id: label_menu
-        text: 'Menu'
-        color: 2
-
-    - Label:
-        id: label_personalize
-        text: 'Personalize'
-        color: 2
-
-    - Label:
-        id: label_others
-        text: 'Others'
-        color: 2
-
-    - Line:
-        id: line0
-        x1: 10
-        y1: 0
-        x2: 340
-        y2: 0
-        color: 2
-        weight: 2
-
-    - Rectangle:
-        id: rect_highlight
-        height: 35
-        bgcolor: 8
-
-#right panel
-    - Label:
-        id: icon_right_arrow
-        text: 0x34
-        font: 'webdings'
-        font_size: 14
-        color: 2
-
-    - Label:
-        id: label_aspect_ratio
-        text: 'Aspect Ratio'
-        color: 2
-    - Label:
-        id: label_wide_16_9
-        text: 'Wide 16:9'
-        color: 2
-    - Label:
-        id: label_50
-        text: '50'
-        color: 2
-
-    - Label:
-        id: label_49
-        text: '49'
-        color: 2
-
-    - Label:
-        id: label_hori
-        text: 'Horizontal Position'
-        color: 2
-
-    - Label:
-        id: label_vert
-        text: 'Vertical Position'
-        color: 2
-
-    - Label:
-        id: label_sharpness
-        text: 'Sharpness'
-        color: 2
-
-    - Label:
-        id: label_pixel_clock
-        text: 'Pixel Clock'
-        color: 2
-
-    - Label:
-        id: label_phase
-        text: 'Phase'
-        color: 2
-
-    - Label:
-        id: label_dynamic_contrast
-        text: 'Dynamic Contrast'
-        color: 1
-
-    - Label:
-        id: label_response_time
-        text: 'Response Time'
-        color: 2
-
-    - Label:
-        id: label_reset_display_settings
-        text: 'Reset Display Settings'
-        color: 2
-
   Windows:
     - Window:
         id: top
@@ -264,7 +15,7 @@ Scene:
         y: 100
         width: 600
         height: 30
-        blocks:
+        Blocks:
           - ['', rect_border, 0, 0]
           - ['', label_dell, 10, 10]
           - ['', label_energy_use, 400, 10]
@@ -283,6 +34,35 @@ Scene:
           - ['', rect_gray, 578, 10]
           - ['', rect_gray, 584, 10]
           - ['', rect_gray, 590, 10]
+        Palettes:
+            - Palette:
+                id: palette0
+                colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080, 0xA0A0A0, 0xEED3A4]
+        Ingredients:
+            - Rectangle:
+                id: rect_border
+                border_weight: 1
+                border_color: 6
+                bgcolor: 1
+            - Label:
+                id: label_dell
+                text: 'Dell SE2416H'
+                color: 2
+            - Label:
+                id: label_energy_use
+                text: 'Energy Use'
+                color: 2
+            - Rectangle:
+                id: rect_green
+                width: 3
+                height: 16
+                bgcolor: 5
+            - Rectangle:
+                id: rect_gray
+                width: 4
+                height: 16
+                border_weight: 1
+                border_color: 6
 
     - Window:
         id: left
@@ -290,7 +70,7 @@ Scene:
         y: 130
         width: 250
         height: 340
-        blocks:
+        Blocks:
           - ['', rect_bg_gray1, 0, 0]
           - ['', rect_highlight, 0, 140]
 
@@ -313,14 +93,136 @@ Scene:
           - ['', label_menu, 40, 220]
           - ['', label_personalize, 40, 255]
           - ['', label_others, 40, 290]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080, 0xA0A0A0, 0xEED3A4]
+        Ingredients:
+          - Rectangle:
+              id: rect_bg_gray1
+              border_weight: 1
+              border_color: 6
+              bgcolor: 6
+          - Rectangle:
+              id: rect_highlight
+              height: 35
+              bgcolor: 8
 
+          - Label:
+              id: icon_brightness
+              text: 0xd5
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_auto_adjust
+              text: 0x3E
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_input_source
+              text: 0x37
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_color
+              text: 0x21
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_display
+              text: 0x26
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_energy
+              text: 0x53
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_menu
+              text: 0x34
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_personalize
+              text: 0x7B
+              font: wingding
+              font_size: 24
+              color: 2
+
+          - Label:
+              id: icon_others
+              text: 0x4F
+              font: wingding
+              font_size: 24
+              color: 2
+
+
+          - Label:
+              id: label_brightness
+              text: 'Brightness/Contrast'
+              color: 2
+
+          - Label:
+              id: label_auto_adjust
+              text: 'Auto Adjust'
+              color: 2
+
+          - Label:
+              id: label_input_source
+              text: 'Input Source'
+              color: 2
+
+          - Label:
+              id: label_color
+              text: 'Color'
+              color: 2
+
+          - Label:
+              id: label_display
+              text: 'Display'
+              color: 2
+
+          - Label:
+              id: label_energy
+              text: 'Energy'
+              color: 2
+
+          - Label:
+              id: label_menu
+              text: 'Menu'
+              color: 2
+
+          - Label:
+              id: label_personalize
+              text: 'Personalize'
+              color: 2
+
+          - Label:
+              id: label_others
+              text: 'Others'
+              color: 2
     - Window:
         id: right
         x: 350
         y: 130
         width: 350
         height: 340
-        blocks:
+        Blocks:
           - ['', rect_bg_gray2, 0, 0]
           - ['', line0, 0, 35]
           - ['', line0, 0, 70]
@@ -366,18 +268,117 @@ Scene:
           - ['', label_reset_display_settings, 10, 290]
           - ['', icon_right_arrow, 210, 290]
           - ['', label_50, 230, 290]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080, 0xA0A0A0, 0xEED3A4]
+        Ingredients:
+          - Rectangle:
+              id: rect_bg_gray2
+              border_weight: 1
+              border_color: 6
+              bgcolor: 7
+          - Line:
+              id: line0
+              x1: 10
+              y1: 0
+              x2: 340
+              y2: 0
+              color: 2
+              weight: 2
+          - Label:
+              id: icon_right_arrow
+              text: 0x34
+              font: 'webdings'
+              font_size: 14
+              color: 2
 
+          - Label:
+              id: label_aspect_ratio
+              text: 'Aspect Ratio'
+              color: 2
+          - Label:
+              id: label_wide_16_9
+              text: 'Wide 16:9'
+              color: 2
+          - Label:
+              id: label_50
+              text: '50'
+              color: 2
+
+          - Label:
+              id: label_49
+              text: '49'
+              color: 2
+
+          - Label:
+              id: label_hori
+              text: 'Horizontal Position'
+              color: 2
+
+          - Label:
+              id: label_vert
+              text: 'Vertical Position'
+              color: 2
+
+          - Label:
+              id: label_sharpness
+              text: 'Sharpness'
+              color: 2
+
+          - Label:
+              id: label_pixel_clock
+              text: 'Pixel Clock'
+              color: 2
+
+          - Label:
+              id: label_phase
+              text: 'Phase'
+              color: 2
+
+          - Label:
+              id: label_dynamic_contrast
+              text: 'Dynamic Contrast'
+              color: 1
+
+          - Label:
+              id: label_response_time
+              text: 'Response Time'
+              color: 2
+
+          - Label:
+              id: label_reset_display_settings
+              text: 'Reset Display Settings'
+              color: 2
     - Window:
         id: bottom
         x: 100
         y: 470
         width: 600
         height: 30
-        blocks:
+        Blocks:
           - ['', rect_border, 0, 0]
           - ['', icon_resolution, 5, 5]
           - ['', label_resolution, 35, 10]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0x000000, 0xFFFFFF, 0x0000FF, 0xFF0000, 0x00FF00, 0x808080, 0xA0A0A0, 0xEED3A4]
 
-
-
+        Ingredients:
+          - Rectangle:
+              id: rect_border
+              border_weight: 1
+              border_color: 6
+              bgcolor: 1
+          - Label:
+              id: icon_resolution
+              text: 0x38
+              font: wingding
+              font_size: 24
+              color: 2
+          - Label:
+              id: label_resolution
+              text: 'Resolution: 1920 x 1080, 60HZ'
+              color: 2
 

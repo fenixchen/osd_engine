@@ -3,22 +3,11 @@ Scene:
   height: 480
   timer_ms: 200
   frames: 255
-  default_palette: palette0
 
   Includes:
     - Include:
         file: common.yaml
 
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: []
-
-  Ingredients:
-    - Bitmap:
-        id: bitmap_ani
-        mutable: true
-        bitmaps: ['images/1.bmp','images/2.bmp', 'images/3.bmp','images/4.bmp','images/5.bmp','images/6.bmp']
 
   Windows:
     - Window:
@@ -30,5 +19,16 @@ Scene:
         zorder: 2
         alpha: 255
         visible: true
-        blocks:
+        Blocks:
           - [ani, bitmap_ani, 0, 0]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: []
+
+        Ingredients:
+          - Bitmap:
+              id: bitmap_ani
+              mutable: true
+              bitmaps: ['images/1.bmp','images/2.bmp', 'images/3.bmp',
+              'images/4.bmp','images/5.bmp','images/6.bmp']

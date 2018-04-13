@@ -5,58 +5,57 @@ Scene:
     - Include:
         file: common.yaml
 
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF0000, 0x00FF00, 0x808080,
-        0xFF00FF]
-
-  Ingredients:
-    - Rectangle:
-        id: rect1
-        width: 100
-        height: 100
-        bgcolor: [4,5]
-        gradient_mode: LEFT_TO_RIGHT
-        border_weight: 1
-        border_color: 6
-
-    - Rectangle:
-        id: border
-        border_weight: 1
-        border_color: 2
-
-    - Line:
-        id: line0
-        x1: 0
-        y1: 200
-        x2: 200
-        y2: 0
-        color: 7
-        weight: 2
-
-    - Bitmap:
-        id: icon
-        bitmaps: 'images/test.ico'
-        width: 200
-        height: 200
-        tiled: true
-        mask_color: 5
-
-    - Label:
-        id: label0
-        text: 'Hello world, this is a test'
-        color: 3
-
   Windows:
     - Window:
         id: window7
         x: 200
-        y: 400
+        y: 200
         width: 200
         height: 200
         zorder: 0
-        blocks:
+        Blocks:
           - ['', label0, 50, 50]
           - ['', label0, -50, 100]
           - ['', border, 0, 0]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF0000, 0x00FF00, 0x808080,
+              0xFF00FF]
+
+        Ingredients:
+          - Rectangle:
+              id: rect1
+              width: 100
+              height: 100
+              bgcolor: [4,5]
+              gradient_mode: LEFT_TO_RIGHT
+              border_weight: 1
+              border_color: 6
+
+          - Rectangle:
+              id: border
+              border_weight: 1
+              border_color: 2
+
+          - Line:
+              id: line0
+              x1: 0
+              y1: 200
+              x2: 200
+              y2: 0
+              color: 7
+              weight: 2
+
+          - Bitmap:
+              id: icon
+              bitmaps: 'images/test.ico'
+              width: 200
+              height: 200
+              tiled: true
+              mask_color: 5
+
+          - Label:
+              id: label0
+              text: 'Hello world, this is a test'
+              color: 3

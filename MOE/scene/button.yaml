@@ -8,30 +8,6 @@ Scene:
     - Include:
         file: common.yaml
 
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0x000000, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF00FF]
-
-  Ingredients:
-    - Rectangle:
-        id: button0_bg
-        bgcolor: 2
-
-    - Rectangle:
-        id: button0_bg_hl
-        bgcolor: 3
-
-    - Label:
-        id: button0
-        text: ['Normal', 'Highlight']
-        color: [0,1]
-        width: 100
-        height: 40
-        align: CENTER
-        background: [button0_bg, button0_bg_hl]
-        state: 1
-
   Windows:
     - Window:
         id: window0
@@ -40,5 +16,28 @@ Scene:
         width: 500
         height: 400
         visible: true
-        blocks:
+        Blocks:
           - ['', button0, 100, 0]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF00FF]
+
+        Ingredients:
+          - Rectangle:
+              id: button0_bg
+              bgcolor: 2
+
+          - Rectangle:
+              id: button0_bg_hl
+              bgcolor: 3
+
+          - Label:
+              id: button0
+              text: ['Normal', 'Highlight']
+              color: [0,1]
+              width: 100
+              height: 40
+              align: CENTER
+              background: [button0_bg, button0_bg_hl]
+              state: 1

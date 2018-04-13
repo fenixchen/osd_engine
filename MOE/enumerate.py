@@ -19,13 +19,6 @@ class IngredientType(Enum):
     LABEL = 5
 
 
-class PixelFormat(Enum):
-    INVALID = 0
-    RGB = 1
-    GRAY_SCALE = 2
-    LUT = 3
-
-
 class GradientMode(Enum):
     NONE = 0
     SOLID = 1

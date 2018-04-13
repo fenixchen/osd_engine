@@ -4,69 +4,24 @@ Scene:
   Includes:
     - Include:
         file: common.yaml
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0x808080, 0xA0A0A0,
-        0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0xD0D0D0, 0xF0F0F0]
-
-    - Palette:
-        id: palette1
-        colors: []
-
-
-  Ingredients:
-    - Bitmap:
-        id: arraw_right
-        palette: palette1
-        bitmaps: 'images/arrow_right.bmp'
-    - Label:
-        id: label0
-        text: 'menu0'
-        color: 0
-    - Label:
-        id: label1
-        text: 'menu1'
-        color: 0
-    - Label:
-        id: label2
-        text: 'menu2'
-        color: 0
-    - Label:
-        id: label3
-        text: 'menu3'
-        color: 0
-    - Label:
-        id: label4
-        text: 'menu4'
-        color: 0
-
-    - Rectangle:
-        id: rect_inactive
-        height: 25
-        border_weight: 1
-        border_color: [1, 2, 3, 4]
-        bgcolor: [5, 6]
-        gradient_mode: LEFT_TO_RIGHT
-
-    - Rectangle:
-        id: rect_active
-        height: 25
-        border_weight: 1
-        border_color: [7, 8, 9, 10]
-        bgcolor: [11, 12]
-        gradient_mode: LEFT_TO_RIGHT
-
 
   Windows:
     - Window:
-        id: arraw
+        id: arrow
         x: 50
         y: 140
         width: 42
         height: 40
-        blocks:
-          - [b1, arraw_right, 0, 10]
+        Blocks:
+          - [b1, arrow_right, 0, 10]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: []
+        Ingredients:
+          - Bitmap:
+              id: arrow_right
+              bitmaps: 'images/arrow_right.bmp'
 
     - Window:
         id: menu0
@@ -75,7 +30,7 @@ Scene:
         width: 200
         height: 400
         visible: true
-        blocks:
+        Blocks:
           - ['', rect_inactive, 0, 0]
           - ['', label0,     5,  5]
           - ['', rect_inactive, 0, 25]
@@ -87,3 +42,45 @@ Scene:
           - ['', rect_inactive, 0, 100]
           - ['', label4,     5,  105]
 
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0, 0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0x808080, 0xA0A0A0,
+              0xF0F0F0, 0x505050, 0xF0F0F0, 0x505050, 0xD0D0D0, 0xF0F0F0]
+        Ingredients:
+          - Label:
+              id: label0
+              text: 'menu0'
+              color: 0
+          - Label:
+              id: label1
+              text: 'menu1'
+              color: 0
+          - Label:
+              id: label2
+              text: 'menu2'
+              color: 0
+          - Label:
+              id: label3
+              text: 'menu3'
+              color: 0
+          - Label:
+              id: label4
+              text: 'menu4'
+              color: 0
+
+          - Rectangle:
+              id: rect_inactive
+              height: 25
+              border_weight: 1
+              border_color: [1, 2, 3, 4]
+              bgcolor: [5, 6]
+              gradient_mode: LEFT_TO_RIGHT
+
+          - Rectangle:
+              id: rect_active
+              height: 25
+              border_weight: 1
+              border_color: [7, 8, 9, 10]
+              bgcolor: [11, 12]
+              gradient_mode: LEFT_TO_RIGHT

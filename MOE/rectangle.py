@@ -11,14 +11,14 @@ logger = Log.get_logger("engine")
 
 
 class Rectangle(Ingredient):
-    def __init__(self, scene, id,
+    def __init__(self, window, id,
                  width=0, height=0,
                  border_color=0, border_weight=0, bgcolor=None,
                  gradient_mode=GradientMode.SOLID.name,
                  border_style=LineStyle.SOLID.name,
                  palette=None,
                  mutable=False):
-        super().__init__(scene, id, palette, mutable)
+        super().__init__(window, id, palette, mutable)
         self._width = 0 if width is None else width
         self._height = 0 if height is None else height
         self._border_style = LineStyle[border_style]

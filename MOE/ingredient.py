@@ -8,12 +8,12 @@ from osdobject import OSDObject
 
 class Ingredient(OSDObject):
 
-    def __init__(self, scene, id, palette, mutable=False):
-        super().__init__(scene, id)
+    def __init__(self, window, id, palette, mutable=False):
+        super().__init__(window.scene, id)
         if palette is None:
-            self._palette = scene.default_palette
+            self._palette = window.default_palette
         else:
-            self._palette = scene.find_palette(palette)
+            self._palette = window.find_palette(palette)
         self._mutable = mutable
 
     @property
@@ -25,10 +25,7 @@ class Ingredient(OSDObject):
         return self._palette
 
     def palette_index(self):
-        if self._palette is None:
-            return 0xFF
-        else:
-            return self._palette.object_index
+        return self._palette.object_index
 
     def get_color(self, color_index):
         assert self._palette is not None

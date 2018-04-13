@@ -4,13 +4,29 @@ import struct
 
 from log import Log
 from osdobject import *
+from font import Font
+from palette import Palette
+from glyph import Glyph
+from block import Block
+from text import Text
+from rectangle import Rectangle
+from bitmap import Bitmap
+from line import Line
+from label import Label
+from preload import Preload
 
 logger = Log.get_logger("engine")
 
 
 class Window(OSDObject):
-    def __init__(self, scene, id, x, y, width, height, blocks,
-                 zorder=0, alpha=255, visible=True):
+    def __init__(self, scene, id, x, y, width, height,
+                 zorder=0, alpha=255, visible=True,
+                 Blocks=[],
+                 Palettes=[],
+                 Ingredients=[],
+                 Preloads=[],
+                 default_font=None,
+                 default_font_size=16):
         super().__init__(scene, id)
         self._scene = scene
         self._x = scene.get_x(x)
@@ -19,35 +35,167 @@ class Window(OSDObject):
         self._height = scene.get_y(height)
         self._zorder = zorder
         self._visible = visible
-        self._blocks = []
-        if blocks is not None:
-            base_left = 0
-            base_top = 0
-            for i, block_info in enumerate(blocks):
-                block_info = scene.format_list(block_info)
-                if len(block_info) == 4:
-                    (block_id, ingredient_id, left, top) = block_info
-                    visible = True
-                else:
-                    (block_id, ingredient_id, left, top, visible) = block_info
-                mutable = len(block_id) > 0
-                ingredient = self._scene.find_ingredient(ingredient_id)
-                if ingredient is not None:
-                    if len(block_id) == 0:
-                        block_id = '%s_block_%d' % (self.id, i)
-                    base_left = self._get_coord(base_left, left)
-                    base_top = self._get_coord(base_top, top)
-                    blocks = ingredient.get_blocks(self, block_id, base_left, base_top)
-                    for block in blocks:
-                        if block.visible is None:
-                            block.visible = visible
-                        if block.mutable is None:
-                            block.mutable = mutable
-                        block.index = len(self._blocks)
-                        self._blocks.append(block)
-                else:
-                    raise Exception('cannot find ingredient <%s>' % id)
         self._alpha = alpha
+        self._ingredients = []
+        self._palettes = []
+        self._glyphs = []
+        self._texts = []
+        self._default_font_size = default_font_size
+
+        if default_font is None:
+            self._default_font = scene._fonts[0]
+        else:
+            self._default_font = scene.find_font(default_font)
+
+        self._blocks = []
+
+        for preload_info in Preloads:
+            preload = self._create_object(preload_info)
+
+        for palette_info in Palettes:
+            palette = self._create_object(palette_info)
+            self.add_palette(palette)
+
+        assert len(self._palettes) > 0
+
+        self._default_palette = self._palettes[0]
+
+        for ingredient_info in Ingredients:
+            ingredient = self._create_object(ingredient_info)
+            self.add_ingredient(ingredient)
+
+        base_left = 0
+        base_top = 0
+        for i, block_info in enumerate(Blocks):
+            block_info = scene.format_list(block_info)
+            if len(block_info) == 4:
+                (block_id, ingredient_id, left, top) = block_info
+                visible = True
+            else:
+                (block_id, ingredient_id, left, top, visible) = block_info
+            mutable = len(block_id) > 0
+
+            ingredient = self.find_ingredient(ingredient_id)
+            if ingredient is not None:
+                if len(block_id) == 0:
+                    block_id = '%s_block_%d' % (self.id, i)
+                base_left = self._get_coord(base_left, left)
+                base_top = self._get_coord(base_top, top)
+                blocks = ingredient.get_blocks(self, block_id, base_left, base_top)
+                for block in blocks:
+                    if block.visible is None:
+                        block.visible = visible
+                    if block.mutable is None:
+                        block.mutable = mutable
+                    block.index = len(self._blocks)
+                    self._blocks.append(block)
+            else:
+                raise Exception('cannot find ingredient <%s>' % id)
+
+    def _create_object(self, item):
+        assert (len(item.keys()) > 0)
+        cls_name = list(item.keys())[0]
+        values = item[cls_name]
+        logger.debug('Construct Class \'%s\' by %s' % (cls_name, values))
+        if cls_name not in globals():
+            raise Exception('Undefined class <%s>' % cls_name)
+        cls = globals()[cls_name]
+        self.scene.format_dict(values)
+        obj = cls(window=self, **values)
+        logger.debug(obj)
+        return obj
+
+    @property
+    def default_font(self):
+        return self._default_font
+
+    @property
+    def default_font_size(self):
+        return self._default_font_size
+
+    @property
+    def default_palette(self):
+        return self._default_palette
+
+    @property
+    def scene(self):
+        return self._scene
+
+    def extend_color(self, color_data, palette):
+        """
+        :param color_data:
+        :param palette:
+        :return: palette, data_index
+        """
+
+        color_set = set()
+        for color in color_data:
+            color_set.add(color)
+
+        if palette.can_extend(color_set):
+            return palette, palette.extend(color_data)
+
+        for pal in self._palettes:
+            if pal is palette:
+                continue
+            if pal.can_extend(color_set):
+                return pal, pal.extend(color_data)
+
+        palette = Palette(self,
+                          'palette_%d' % (len(self._palettes) + 1),
+                          [])
+        self.add_palette(palette)
+        if palette.can_extend(color_set, 65536):
+            return palette, palette.extend(color_data)
+
+        assert False
+
+    def find_palette(self, id):
+        for palette in self._palettes:
+            if palette.id == id:
+                return palette
+        raise Exception('Cannot find palette <%s>' % id)
+
+    def add_palette(self, new_palette):
+        for palette in self._palettes:
+            if palette.id == new_palette.id:
+                raise Exception('Duplicated palette <%s>' % new_palette.id)
+        self._palettes.append(new_palette)
+        new_palette.object_index = len(self._palettes) - 1
+
+    def find_ingredient(self, id):
+        for ingredient in self._ingredients:
+            if ingredient.id == id:
+                return ingredient
+        raise Exception('cannot find ingredient <%s>' % id)
+
+    def add_ingredient(self, new_ingredient):
+        self._ingredients.append(new_ingredient)
+        new_ingredient.object_index = len(self._ingredients) - 1
+
+    def get_glyph(self, char_code, font, font_size):
+        """
+        find glyph, create it if not found
+        """
+        if font_size is None:
+            font_size = self.default_font_size
+        if font is None:
+            font = self.default_font
+        elif isinstance(font, Font):
+            font = font
+        else:
+            font = self._scene.find_font(font)
+
+        for glyph in self._glyphs:
+            if glyph.char_code == char_code and \
+                    glyph.font == font and \
+                    glyph.font_size == font_size:
+                return glyph
+
+        glyph = Glyph(char_code, font, font_size)
+        logger.debug(glyph)
+        self._glyphs.append(glyph)
+        return glyph
 
     def _get_coord(self, base, value):
         if type(value) is int:

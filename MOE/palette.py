@@ -10,22 +10,14 @@ logger = Log.get_logger("engine")
 
 
 class Palette(OSDObject):
-    def __init__(self, scene, id, colors):
+    def __init__(self, window, id, colors):
         self._id = id
-        self._scene = scene
+        self._window = window
         self._lut = []
         self._lut_map = {}
         self._pixel_bits = 0
-        if isinstance(colors, str):
-            if colors == 'RGB24':
-                self._pixel_format = PixelFormat.RGB
-            elif colors == 'GRAYSCALE':
-                self._pixel_format = PixelFormat.GRAY_SCALE
-            else:
-                raise Exception('Unknown colors %s' % colors)
-        else:
-            self._pixel_format = PixelFormat.LUT
-            self._lut = colors
+
+        self._lut = colors
 
         for i, color in enumerate(self._lut):
             self._lut_map[color] = i
@@ -36,10 +28,6 @@ class Palette(OSDObject):
         while (1 << pixel_bits) < len(self._lut):
             pixel_bits *= 2
         return 8 if pixel_bits <= 8 else pixel_bits
-
-    @property
-    def pixel_format(self):
-        return self._pixel_format
 
     @property
     def id(self):
@@ -61,13 +49,8 @@ class Palette(OSDObject):
         return len(self._lut) - 1
 
     def color(self, index):
-        if self._pixel_format == PixelFormat.RGB:
-            return index
-        else:
-            if index >= len(self._lut):
-                pass
-            assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
-            return self._lut[index]
+        assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
+        return self._lut[index]
 
     def can_extend(self, color_set, max_color_count = 256):
         old_count = self.count
@@ -90,14 +73,13 @@ class Palette(OSDObject):
         return data
 
     def __str__(self):
-        return "%s(id: %s, %s, size:%d)" % \
-               (type(self), self._id, self._pixel_format, len(self._lut))
+        return "%s(id: %s, size:%d)" % \
+               (type(self), self._id, len(self._lut))
 
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
         lut_len = len(self._lut)
-        bins = struct.pack('<BBH',
-                           self._pixel_format.value,
+        bins = struct.pack('<xBH',
                            self.pixel_bits,
                            len(self._lut))
         if len(self._lut) > 0:

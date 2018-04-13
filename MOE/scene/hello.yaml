@@ -1,45 +1,10 @@
 Scene:
   width: 640
   height: 480
-  default_palette: palette0
 
   Includes:
     - Include:
         file: common.yaml
-
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF,
-        0x505050, 0xF0F0F0, 0xFFFFFF, 0xFFFF00]
-
-  Ingredients:
-    - Rectangle:
-        id: rect1
-        width: 150
-        height: 150
-        border_color: [1, 2, 3, 4]
-        border_weight: 20
-        bgcolor: [5, 6]
-        gradient_mode: TOP_TO_BOTTOM
-
-    - Line:
-        id: line1
-        x1: 10
-        y1: 10
-        x2: 100
-        y2: 100
-        color: 7
-        weight: 5
-
-    - Bitmap:
-        id: bitmap1
-        bitmaps: 'images/bg.bmp'
-
-    - Text:
-        id: text0
-        text: 'Hello'
-        color: 6
 
   Windows:
     - Window:
@@ -48,8 +13,43 @@ Scene:
         y: 100
         width: 400
         height: 300
-        blocks:
+
+        Blocks:
           - ['', rect1, 250, 150]
           - ['', line1, 0, 180]
           - ['', text0, 100, 180]
           - ['', bitmap1, 0, 0]
+
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF,
+              0x505050, 0xF0F0F0, 0xFFFFFF, 0xFFFF00]
+
+        Ingredients:
+          - Rectangle:
+              id: rect1
+              width: 150
+              height: 150
+              border_color: [1, 2, 3, 4]
+              border_weight: 20
+              bgcolor: [5, 6]
+              gradient_mode: TOP_TO_BOTTOM
+
+          - Line:
+              id: line1
+              x1: 10
+              y1: 10
+              x2: 100
+              y2: 100
+              color: 7
+              weight: 5
+
+          - Bitmap:
+              id: bitmap1
+              bitmaps: 'images/bg.bmp'
+
+          - Text:
+              id: text0
+              text: 'Hello'
+              color: 6

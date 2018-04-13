@@ -9,12 +9,6 @@ from app import *
 from engine import *
 from font import Font
 from glyph import Glyph
-from text import Text
-from rectangle import Rectangle
-from bitmap import Bitmap
-from line import Line
-from label import Label
-from preload import Preload
 from window import Window
 
 logger = Log.get_logger("engine")
@@ -26,34 +20,15 @@ class Scene(object):
     def __init__(self, yaml_file=None):
         self._yaml_file = None
         self._windows = []
-        self._ingredients = []
-        self._palettes = []
-        self._glyphs = []
         self._fonts = []
-        self._texts = []
         self._width = 0
         self._height = 0
         self._frames = 1
         self._ticks = 20
         self._timer_ms = 0
         self._title = ''
-        self._default_font_size = 16
-        self._default_font = None
-        self._default_palette = None
         self._map_define = {}
         self.load(yaml_file, True)
-
-    @property
-    def default_font(self):
-        return self._default_font
-
-    @property
-    def default_font_size(self):
-        return self._default_font_size
-
-    @property
-    def default_palette(self):
-        return self._default_palette
 
     @property
     def filename(self):
@@ -104,64 +79,17 @@ class Scene(object):
         self._fonts.append(new_font)
         new_font.object_index = len(self._fonts) - 1
 
-    def add_text(self, new_text):
-        for text in self._texts:
-            if text.id == new_text.id:
-                raise Exception('Duplicated text <%s>' % new_text.id)
-        self._texts.append(new_text)
-        new_text.object_index = len(self._texts) - 1
+    @property
+    def fonts(self):
+        return self._fonts
 
-    def extend_color(self, color_data, palette):
-        """
-        :param color_data:
-        :param palette:
-        :return: palette, data_index
-        """
-
-        color_set = set()
-        for color in color_data:
-            color_set.add(color)
-
-        if palette.can_extend(color_set):
-            return palette, palette.extend(color_data)
-
-        for pal in self._palettes:
-            if pal is palette:
-                continue
-            if pal.can_extend(color_set):
-                return pal, pal.extend(color_data)
-
-        palette = Palette(self,
-                          'palette_%d' % (len(self._palettes) + 1),
-                          [])
-        self.add_palette(palette)
-        if palette.can_extend(color_set, 65536):
-            return palette, palette.extend(color_data)
-
-        assert False
-
-    def find_palette(self, id):
-        for palette in self._palettes:
-            if palette.id == id:
-                return palette
-        raise Exception('Cannot find palette <%s>' % id)
-
-    def add_palette(self, new_palette):
-        for palette in self._palettes:
-            if palette.id == new_palette.id:
-                raise Exception('Duplicated palette <%s>' % new_palette.id)
-        self._palettes.append(new_palette)
-        new_palette.object_index = len(self._palettes) - 1
-
-    def find_ingredient(self, id):
-        for ingredient in self._ingredients:
-            if ingredient.id == id:
-                return ingredient;
-        raise Exception('cannot find ingredient <%s>' % id)
-
-    def add_ingredient(self, new_ingredient):
-        self._ingredients.append(new_ingredient)
-        new_ingredient.object_index = len(self._ingredients) - 1
+    def find_block(self, id):
+        ids = id.split('.')
+        if len(ids) == 2:
+            window = self.find_window(ids[0])
+            if window is not None:
+                return window.find_block(ids[1])
+        raise Exception('cannot find block <%s>' % id)
 
     def find_window(self, id):
         for window in self._windows:
@@ -175,38 +103,6 @@ class Scene(object):
                 raise Exception('Duplicated window <%s>' % new_window.id)
         self._windows.append(new_window)
         new_window.object_index = len(self._windows) - 1
-
-    def get_glyph(self, char_code, font, font_size):
-        """
-        find glyph, create it if not found
-        """
-        if font_size is None:
-            font_size = self.default_font_size
-        if font is None:
-            font = self.default_font
-        elif isinstance(font, Font):
-            font = font
-        else:
-            font = self.find_font(font)
-
-        for glyph in self._glyphs:
-            if glyph.char_code == char_code and \
-                    glyph.font == font and \
-                    glyph.font_size == font_size:
-                return glyph
-
-        glyph = Glyph(char_code, font, font_size)
-        logger.debug(glyph)
-        self._glyphs.append(glyph)
-        return glyph
-
-    def find_block(self, id):
-        ids = id.split('.')
-        if len(ids) == 2:
-            window = self.find_window(ids[0])
-            if window is not None:
-                return window.find_block(ids[1])
-        raise Exception('cannot find block <%s>' % id)
 
     def _set_base_dir(self):
         Scene._BASE_DIR = os.path.dirname(self._yaml_file) + '/'
@@ -260,33 +156,6 @@ class Scene(object):
         if 'Fonts' in config:
             for item in config['Fonts']:
                 self.add_font(self._create_object(item))
-
-        if 'Palettes' in config:
-            for item in config['Palettes']:
-                self.add_palette(self._create_object(item))
-
-        assert len(self._fonts) > 0
-        if root:
-            if 'default_font' in config:
-                self._default_font = self.find_font(config['default_font'])
-            else:
-                self._default_font = self._fonts[0]
-
-            if 'default_font_size' in config:
-                self._default_font_size = int(config['default_font_size'])
-            else:
-                self._default_font_size = OSD_DEFAULT_FONT_SIZE
-
-            assert len(self._palettes) > 0
-
-            if 'default_palette' in config:
-                self._default_palette = self.find_palette(config['default_palette'])
-            else:
-                self._default_palette = self._palettes[0]
-
-        if 'Ingredients' in config:
-            for item in config['Ingredients']:
-                self.add_ingredient(self._create_object(item))
 
         if 'Windows' in config:
             for item in config['Windows']:
@@ -391,8 +260,6 @@ class Scene(object):
                             OSD_PALETTE_DATA_SIZE, OSD_INGREDIENT_DATA_SIZE,
                             OSD_WINDOW_DATA_SIZE, OSD_GLYPH_HEADER_SIZE)
 
-        bins += struct.pack('<BBH', len(self._palettes), len(self._windows), len(self._ingredients))
-
         bins += struct.pack('<%dB' % len(self._title), *self._title.encode('utf-8'))
         bins += struct.pack('<%dx' % (OSD_SCENE_TITLE_MAX_LEN - len(self._title)))
 
@@ -450,6 +317,7 @@ class Scene(object):
         return bins, rams
 
     def generate_binary(self, target_binary, target_header, taget_address=0):
+        return
         assert self._yaml_file is not None
 
         binary_size = {}
@@ -457,10 +325,6 @@ class Scene(object):
         ram_offset = taget_address
 
         ram_offset += OSD_SCENE_HEADER_SIZE
-
-        ram_offset += OSD_PALETTE_DATA_SIZE * len(self._palettes)
-
-        ram_offset += OSD_INGREDIENT_DATA_SIZE * len(self._ingredients)
 
         ram_offset += OSD_WINDOW_DATA_SIZE * len(self._windows)
 
@@ -470,13 +334,13 @@ class Scene(object):
         assert len(scene_bin) == OSD_SCENE_HEADER_SIZE
         binary_size['scene_bin'] = len(scene_bin)
 
-        glyph_ram = self._generate_glyhs_bin(binary_size, ram_offset)
-        ram_offset += len(glyph_ram)
-
         palette_bin, palette_ram = self._generate_palettes_bin(binary_size, ram_offset)
         assert len(palette_bin) == OSD_PALETTE_DATA_SIZE * len(self._palettes)
         binary_size['palette_bin'] = len(palette_bin)
         ram_offset += len(palette_ram)
+
+        glyph_ram = self._generate_glyhs_bin(binary_size, ram_offset)
+        ram_offset += len(glyph_ram)
 
         ingredient_bin, ingredient_ram = self._generate_ingredients_bin(binary_size, ram_offset)
         assert len(ingredient_bin) == OSD_INGREDIENT_DATA_SIZE * len(self._ingredients)
@@ -502,6 +366,9 @@ class Scene(object):
 
         self._log_binary_size(binary_size)
 
+        self._generate_header_file(target_header, target_binary)
+
+    def _generate_header_file(self, target_header, target_binary):
         # create header files
         with open(target_header, "w+") as f:
             f.truncate()

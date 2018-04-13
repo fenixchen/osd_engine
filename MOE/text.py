@@ -11,11 +11,11 @@ logger = Log.get_logger("engine")
 
 
 class Text(Ingredient):
-    def __init__(self, scene, id, text, color,
+    def __init__(self, window, id, text, color,
                  palette=None,
                  font=None, font_size=None,
                  mutable=False):
-        super().__init__(scene, id, palette, mutable)
+        super().__init__(window, id, palette, mutable)
         self._text = text
         self._color = color
         self._font = font
@@ -26,7 +26,7 @@ class Text(Ingredient):
             self._text = [self._text]
 
         for char in self._text:
-            glyph = scene.get_glyph(char, font, font_size)
+            glyph = window.get_glyph(char, font, font_size)
             assert glyph is not None
             self._glyphs.append(glyph)
 

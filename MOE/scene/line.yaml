@@ -4,121 +4,6 @@ Scene:
   Includes:
     - Include:
         file: common.yaml
-  Palettes:
-    - Palette:
-        id: palette0
-        colors: [0x0, 0x0000FF, 0xFF00FF, 0x00FFFF, 0x00FF00, 0x0000FF, 0xFF00FF, 0x0000FF, 0x00FF00, 0xFFFFFF, 0xFFFFFF]
-
-  Ingredients:
-    - Line:
-        id: line1
-        x1: 10
-        y1: 10
-        x2: 100
-        y2: 100
-        color: 1
-        weight: 1
-
-    - Line:
-        id: line2
-        x1: 100
-        y1: 10
-        x2: 10
-        y2: 100
-        color: 2
-        weight: 2
-
-    - Line:
-        id: line3
-        x1: 50
-        y1: 0
-        x2: 50
-        y2: 100
-        color: 3
-        weight: 3
-
-    - Line:
-        id: line4
-        x1: 0
-        y1: 50
-        x2: 100
-        y2: 50
-        color: 4
-        weight: 5
-
-    - Line:
-        id: line5
-        x1: 10
-        y1: 10
-        x2: 100
-        y2: 100
-        color: 5
-        weight: 10
-
-    - Line:
-        id: line6
-        x1: 100
-        y1: 10
-        x2: 10
-        y2: 100
-        color: 6
-        weight: 4
-
-    - Line:
-        id: line7
-        x1: 10
-        y1: 10
-        x2: 100
-        y2: 100
-        style: DASH
-        color: 7
-        weight: 2
-
-    - Line:
-        id: line8
-        x1: 0
-        y1: 50
-        x2: 100
-        y2: 50
-        style: DOT1
-        color: 8
-        weight: 1
-
-    - Line:
-        id: line9
-        x1: 50
-        y1: 0
-        x2: 50
-        y2: 100
-        color: 9
-        weight: 1
-
-    - Line:
-        id: line10
-        x1: 0
-        y1: 50
-        x2: 100
-        y2: 50
-        color: 10
-        weight: 1
-
-    - Line:
-        id: line11
-        x1: 0
-        y1: 0
-        x2: 100
-        y2: 100
-        color: 10
-        weight: 1
-
-    - Line:
-        id: line12
-        x1: 100
-        y1: 0
-        x2: 0
-        y2: 100
-        color: 10
-        weight: 1
 
   Windows:
     - Window:
@@ -127,7 +12,7 @@ Scene:
         y: 10
         width: 600
         height: 400
-        blocks:
+        Blocks:
           - [b0, line1, 0, 0]
           - [b0, line2, 120, 0]
           - [b0, line3, 240, 0]
@@ -140,3 +25,118 @@ Scene:
           - [b0, line10, 240, 240]
           - [b0, line11, 240, 240]
           - [b0, line12, 240, 240]
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x0, 0x0000FF, 0xFF00FF, 0x00FFFF, 0x00FF00, 0x0000FF, 0xFF00FF, 0x0000FF, 0x00FF00, 0xFFFFFF, 0xFFFFFF]
+
+        Ingredients:
+          - Line:
+              id: line1
+              x1: 10
+              y1: 10
+              x2: 100
+              y2: 100
+              color: 1
+              weight: 1
+
+          - Line:
+              id: line2
+              x1: 100
+              y1: 10
+              x2: 10
+              y2: 100
+              color: 2
+              weight: 2
+
+          - Line:
+              id: line3
+              x1: 50
+              y1: 0
+              x2: 50
+              y2: 100
+              color: 3
+              weight: 3
+
+          - Line:
+              id: line4
+              x1: 0
+              y1: 50
+              x2: 100
+              y2: 50
+              color: 4
+              weight: 5
+
+          - Line:
+              id: line5
+              x1: 10
+              y1: 10
+              x2: 100
+              y2: 100
+              color: 5
+              weight: 10
+
+          - Line:
+              id: line6
+              x1: 100
+              y1: 10
+              x2: 10
+              y2: 100
+              color: 6
+              weight: 4
+
+          - Line:
+              id: line7
+              x1: 10
+              y1: 10
+              x2: 100
+              y2: 100
+              style: DASH
+              color: 7
+              weight: 2
+
+          - Line:
+              id: line8
+              x1: 0
+              y1: 50
+              x2: 100
+              y2: 50
+              style: DOT1
+              color: 8
+              weight: 1
+
+          - Line:
+              id: line9
+              x1: 50
+              y1: 0
+              x2: 50
+              y2: 100
+              color: 9
+              weight: 1
+
+          - Line:
+              id: line10
+              x1: 0
+              y1: 50
+              x2: 100
+              y2: 50
+              color: 10
+              weight: 1
+
+          - Line:
+              id: line11
+              x1: 0
+              y1: 0
+              x2: 100
+              y2: 100
+              color: 10
+              weight: 1
+
+          - Line:
+              id: line12
+              x1: 100
+              y1: 0
+              x2: 0
+              y2: 100
+              color: 10
+              weight: 1
