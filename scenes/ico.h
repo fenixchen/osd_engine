@@ -6,8 +6,8 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_ICO 
-
 #define OSD_WINDOW_WINDOW0          0
+
 
 #endif
 

@@ -8,11 +8,11 @@
 #include "../../../atv/system_settings.h"
 
 static u32 menu_item[] = {
-    OSD_INGREDIENT_LABEL_MENU_PICTURE,
-    OSD_INGREDIENT_LABEL_MENU_SOUND,
-    OSD_INGREDIENT_LABEL_MENU_CHANNEL,
-    OSD_INGREDIENT_LABEL_MENU_FEATURE,
-    OSD_INGREDIENT_LABEL_MENU_SETUP
+    OSD_INGREDIENT_LEFT_LABEL_MENU_PICTURE,
+    OSD_INGREDIENT_LEFT_LABEL_MENU_SOUND,
+    OSD_INGREDIENT_LEFT_LABEL_MENU_CHANNEL,
+    OSD_INGREDIENT_LEFT_LABEL_MENU_FEATURE,
+    OSD_INGREDIENT_LEFT_LABEL_MENU_SETUP
 };
 
 static u32 center_window_id[] = {
@@ -43,10 +43,10 @@ static int window_left_update_ui(osd_proc *self, osd_window *window_left, window
         } else {
             state = 0;
         }
-        label = priv->scene->label(priv->scene, menu_item[i]);
+        label = priv->window_left->label(priv->window_left, menu_item[i]);
         label->set_state(label, state);
     }
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_LABEL_TITLE);
+    label = priv->window_top->label(priv->window_top, OSD_INGREDIENT_TOP_LABEL_TITLE);
     label->set_text(label, left_data->focused_item);
     for (i = 0; i < CENTER_WINDOW_MAX; i ++) {
         osd_window *window = priv->window_center[i];
@@ -96,7 +96,7 @@ int osd_window_left_proc(osd_window_proc *proc,
     switch (type) {
     case OSD_EVENT_WINDOW_INIT:
         left_data->focused_item = 0;
-        left_data->bitmap_logo = priv->scene->bitmap(priv->scene, OSD_INGREDIENT_ICON_LOGO);
+        left_data->bitmap_logo = priv->window_left->bitmap(priv->window_left, OSD_INGREDIENT_LEFT_ICON_LOGO);
     case OSD_EVENT_WINDOW_ENTER:
     case OSD_EVENT_WINDOW_LEAVE:
         return window_left_update_ui(self, proc->window, left_data, type, data);

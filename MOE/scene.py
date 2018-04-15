@@ -244,7 +244,7 @@ class Scene(object):
             with open(filename, "rb") as f:
                 logger.debug('\n' + hexdump.hexdump(f.read(), result='return'))
 
-    def _generate_scene_bin(self, binary_size, ram_offset):
+    def _generate_scene_bin(self, ram_usage, ram_offset):
         bins = struct.pack('<HH', self._width, self._height)
 
         bins += struct.pack('<I', ram_offset)
@@ -258,63 +258,29 @@ class Scene(object):
         bins += struct.pack('<%dB' % len(self._title), *self._title.encode('utf-8'))
         bins += struct.pack('<%dx' % (OSD_SCENE_TITLE_MAX_LEN - len(self._title)))
 
-        binary_size[self] = len(bins)
+        ram_usage[self] = len(bins)
 
         return bins
 
-    def _generate_glyhs_bin(self, binary_size, ram_offset):
-        rams = b''
-        for glyph in self._glyphs:
-            ram = glyph.to_binary(ram_offset)
-            binary_size[glyph] = len(ram)
-            rams += ram
-            ram_offset += len(ram)
-        return rams
-
-    def _generate_palettes_bin(self, binary_size, ram_offset):
-        bins = b''
-        rams = b''
-        for palette in self._palettes:
-            bin, ram = palette.to_binary(ram_offset)
-            assert len(bin) == OSD_PALETTE_HEADER_SIZE
-            binary_size[palette] = len(ram)
-            bins += bin
-            rams += ram
-            ram_offset += len(ram)
-
-        return bins, rams
-
-    def _generate_ingredients_bin(self, binary_size, ram_offset):
-        bins = b''
-        rams = b''
-        for ingredient in self._ingredients:
-            bin, ram = ingredient.to_binary(ram_offset)
-            assert len(bin) == OSD_INGREDIENT_HEADER_SIZE
-            binary_size[ingredient] = len(ram)
-            bins += bin
-            rams += ram
-            ram_offset += len(ram)
-
-        return bins, rams
-
-    def _generate_windows_bin(self, binary_size, ram_offset):
-        bins = b''
+    def _generate_windows_bin(self, ram_usage, ram_offset):
+        headers = b''
         rams = b''
         for window in self._windows:
-            bin, ram = window.to_binary(ram_offset)
-            assert len(bin) == OSD_WINDOW_HEADER_SIZE
-            binary_size[window] = len(ram)
-            bins += bin
+            header, ram = window.to_binary(ram_offset, ram_usage)
+            assert len(header) == OSD_WINDOW_HEADER_SIZE, \
+                '%d != %d' % (len(header), OSD_WINDOW_HEADER_SIZE)
+            ram_usage[window] = len(header)
+            headers += header
             rams += ram
             ram_offset += len(ram)
 
-        return bins, rams
+        return headers, rams
 
     def generate_binary(self, target_binary, target_header, taget_address=0):
 
         assert self._yaml_file is not None
 
-        binary_size = {}
+        ram_usage = {}
 
         ram_offset = taget_address
 
@@ -324,12 +290,12 @@ class Scene(object):
 
         header_size = ram_offset
 
-        scene_bin = self._generate_scene_bin(binary_size, ram_offset)
+        scene_bin = self._generate_scene_bin(ram_usage, taget_address)
         assert len(scene_bin) == OSD_SCENE_HEADER_SIZE
-        binary_size['scene_bin'] = len(scene_bin)
+        ram_usage['scene_header'] = len(scene_bin)
 
-        window_bin, window_ram = self._generate_windows_bin(binary_size, ram_offset)
-        binary_size['window_bin'] = len(window_bin)
+        window_bin, window_ram = self._generate_windows_bin(ram_usage, ram_offset)
+
         assert len(window_bin) == OSD_WINDOW_HEADER_SIZE * len(self._windows)
 
         # create empty ram.bin
@@ -340,9 +306,9 @@ class Scene(object):
             assert size == header_size
             f.write(window_ram)
 
-        # self._log_binary_size(binary_size)
+        self._log_binary_size(ram_usage)
 
-        # self._generate_header_file(target_header, target_binary)
+        self._generate_header_file(target_header, target_binary)
 
     def _generate_header_file(self, target_header, target_binary):
         # create header files
@@ -361,45 +327,73 @@ class Scene(object):
 
             f.write("\n#ifdef OSD_ENABLE_MACROS_%s \n" % define)
 
-            for i, ingredient in enumerate(self._ingredients):
-                if ingredient.mutable and len(ingredient.id) > 0:
-                    f.write('#define OSD_INGREDIENT_%-16s %d\n' % (ingredient.id.upper(), i))
-            f.write('\n')
-
             for i, window in enumerate(self._windows):
                 f.write('#define OSD_WINDOW_%-16s %d\n' % (window.id.upper(), i))
+
+                for j, ingredient in enumerate(window._ingredients):
+                    if ingredient.mutable and len(ingredient.id) > 0:
+                        f.write(
+                            '#define OSD_INGREDIENT_%s_%-16s %d\n' % (
+                            window.id.upper(), ingredient.id.upper(), j))
+                f.write('\n')
+
                 for j, block in enumerate(window.blocks):
                     if block.mutable:
                         f.write(
-                            '#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), block.full_index))
+                            '#define OSD_BLOCK_%s_%s %d\n' % (window.id.upper(), block.id.upper(), block.index))
 
             f.write('\n#endif\n\n')
 
             f.write('\n#endif')
 
-    def _log_binary_size(self, binary_size):
+    def _log_binary_size(self, ram_usage):
         total_size = 0
 
-        glyph_size = 0
-        for i, glyph in enumerate(self._glyphs):
-            s = binary_size[glyph]
-            glyph_size += s
-            logger.info('[%04d] %-16s (%02d x %02d)=> %d, Total:%d',
-                        i, glyph.id, glyph.width, glyph.height, s, glyph_size)
-        logger.info('[****] <glyph> size:%d', glyph_size)
-        total_size += glyph_size
+        total_size = ram_usage['scene_header']
+        logger.info('** SCENE <%s> size:%d, Total:%d', self._title, ram_usage['scene_header'], total_size)
 
-        palette_size = 0
-        for i, palette in enumerate(self._palettes):
-            s = binary_size[palette]
-            palette_size += s
-            logger.info('[%04d] %-32s => %d, Total:%d', i, palette.id, s, palette_size + total_size)
-        logger.info('[****] <palette> size:%d', palette_size)
-        total_size += palette_size
+        for window_index, window in enumerate(self._windows):
+            logger.info("**** [%d] WINDOW <%s> block_count(%d)", window_index, window.id, len(window._blocks))
+            window_header_size = ram_usage[window]
+            total_size += window_header_size
+            logger.info('****** Header size:%d, Total:%d', window_header_size, total_size)
+
+            block_size = len(window._blocks) * OSD_BLOCK_HEADER_SIZE
+            total_size += block_size
+            logger.info('****** Block data size:%d, Total:%d', block_size, total_size)
+
+            ingredient_size = 0
+            for i, ingredient in enumerate(window._ingredients):
+                s = ram_usage[ingredient]
+                ingredient_size += s
+                logger.info('****** [%04d] %-32s => %5d, Total:%d', i, ingredient.id, s, total_size + ingredient_size)
+            logger.info('****** <INGREDIENT> size:%d', ingredient_size)
+            total_size += ingredient_size
+
+            glyph_size = 0
+            for i, glyph in enumerate(window._glyphs):
+                s = ram_usage[glyph]
+                glyph_size += s
+                logger.info('****** [%04d] %-16s (%02d x %02d) => %5d, Total:%d',
+                            i, glyph.id, glyph.width, glyph.height, s, total_size + glyph_size)
+
+            logger.info('******  <GLYPH> size:%d', glyph_size)
+            total_size += glyph_size
+
+            palette_size = 0
+            for i, palette in enumerate(window._palettes):
+                s = ram_usage[palette]
+                palette_size += s
+                logger.info('****** [%04d] %-32s => %5d, Total:%d', i, palette.id, s, palette_size + total_size)
+            logger.info('****** <palette> size:%d', palette_size)
+            total_size += palette_size
+
+        logger.info('** <TOTAL> size:%d' % total_size)
+        return
 
         ingredient_size = 0
         for i, ingredient in enumerate(self._ingredients):
-            s = binary_size[ingredient]
+            s = ram_usage[ingredient]
             ingredient_size += s
             logger.info('[%04d] %-32s => %d, Total:%d', i, ingredient.id, s, total_size + ingredient_size)
         logger.info('[****] <ingredient> size:%d', ingredient_size)
@@ -407,21 +401,21 @@ class Scene(object):
 
         window_size = 0
         for i, window in enumerate(self._windows):
-            s = binary_size[window]
+            s = ram_usage[window]
             window_size += s
             logger.info('[%04d] %-32s block(%04d) => %d, Total:%d',
                         i, window.id, len(window.blocks), s, window_size + total_size)
         logger.info('[****] <RAM window> size:%d', window_size)
         total_size += window_size
 
-        total_size += binary_size['scene_bin'] + binary_size['palette_bin'] + \
-                      binary_size['ingredient_bin'] + binary_size['window_bin']
+        total_size += ram_usage['scene_bin'] + ram_usage['palette_bin'] + \
+                      ram_usage['ingredient_bin'] + ram_usage['window_bin']
 
         logger.info('-' * 32)
-        logger.info('[****] <Scene> size:%d' % binary_size['scene_bin'])
-        logger.info('[****] <Palette> size:%d' % binary_size['palette_bin'])
-        logger.info('[****] <Ingredient> size:%d' % binary_size['ingredient_bin'])
-        logger.info('[****] <Window> size:%d' % binary_size['window_bin'])
+        logger.info('[****] <Scene> size:%d' % ram_usage['scene_header'])
+        logger.info('[****] <Palette> size:%d' % ram_usage['palette_bin'])
+        logger.info('[****] <Ingredient> size:%d' % ram_usage['ingredient_bin'])
+        logger.info('[****] <Window> size:%d' % ram_usage['window_bin'])
         logger.info('[****] <Glyph RAM> size:%d' % glyph_size)
         logger.info('[****] <Palette RAM > size:%d' % palette_size)
         logger.info('[****] <Ingredient RAM> size:%d' % ingredient_size)

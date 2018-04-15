@@ -14,6 +14,6 @@ struct _osd_palette {
     void (*dump)(osd_palette *self);
 };
 
-EXTERNC osd_palette *osd_palette_create(osd_scene *scene, osd_palette_hw *hw);
+EXTERNC osd_palette *osd_palette_create(osd_window *window, osd_palette_hw *hw);
 
 #endif

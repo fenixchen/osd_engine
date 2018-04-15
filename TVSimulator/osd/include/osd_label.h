@@ -17,6 +17,6 @@ struct _osd_label {
     int (*state)(osd_label *self);
 };
 
-EXTERNC osd_label *osd_label_create(osd_scene *scene, osd_ingredient_hw *hw);
+EXTERNC osd_label *osd_label_create(osd_window *window, osd_ingredient_hw *hw);
 
 #endif

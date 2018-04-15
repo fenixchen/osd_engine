@@ -10,14 +10,14 @@
 #include "hal.h"
 
 static u32 picture_menu_item[] = {
-    OSD_INGREDIENT_TEXT_PICTURE_MODE,
-    OSD_INGREDIENT_TEXT_BRIGHTNESS,
-    OSD_INGREDIENT_TEXT_CONTRAST,
-    OSD_INGREDIENT_TEXT_SHARPNESS,
-    OSD_INGREDIENT_TEXT_COLOR,
-    OSD_INGREDIENT_TEXT_TINT,
-    OSD_INGREDIENT_TEXT_COLOR_TEMP,
-    OSD_INGREDIENT_TEXT_ASPECT_RATIO,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_PICTURE_MODE,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_BRIGHTNESS,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_CONTRAST,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_SHARPNESS,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_COLOR,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_TINT,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_COLOR_TEMP,
+    OSD_INGREDIENT_PICTURE_MODE_TEXT_ASPECT_RATIO,
 };
 
 enum picture_param {
@@ -81,7 +81,7 @@ static int window_picture_mode_update_ui(osd_proc *self,
                 state = STATE_READONLY;
             }
         }
-        label = priv->scene->label(priv->scene, picture_menu_item[i]);
+        label = priv->window_picture_mode->label(priv->window_picture_mode, picture_menu_item[i]);
         label->set_state(label, state);
     }
     point_arrow = picture_mode_data->block_left->position(picture_mode_data->block_left);
@@ -123,14 +123,14 @@ static void window_picture_mode_load_ui(osd_proc_system_settings_priv *priv,
                                         window_picture_mode_data *picture_mode_data) {
     osd_label *label;
     struct picture_pre_defined *predefined = &picture_pre_defined_data[picture_mode_data->picture_mode];
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_TEXT_BRIGHTNESS);
+    label = priv->window_picture_mode->label(priv->window_picture_mode, OSD_INGREDIENT_PICTURE_MODE_TEXT_BRIGHTNESS);
     picure_hal_set(label,
                    &picture_mode_data->brightness,
                    predefined->brighness,
                    0,
                    99,
                    hal_brightness_set);
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_TEXT_CONTRAST);
+    label = priv->window_picture_mode->label(priv->window_picture_mode, OSD_INGREDIENT_PICTURE_MODE_TEXT_CONTRAST);
     picure_hal_set(label,
                    &picture_mode_data->contrast,
                    predefined->contrast,
@@ -138,7 +138,7 @@ static void window_picture_mode_load_ui(osd_proc_system_settings_priv *priv,
                    99,
                    hal_contrast_set);
 
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_TEXT_SHARPNESS);
+    label = priv->window_picture_mode->label(priv->window_picture_mode, OSD_INGREDIENT_PICTURE_MODE_TEXT_SHARPNESS);
     picure_hal_set(label,
                    &picture_mode_data->sharpness,
                    predefined->sharpness,
@@ -146,7 +146,7 @@ static void window_picture_mode_load_ui(osd_proc_system_settings_priv *priv,
                    99,
                    hal_sharpness_set);
 
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_TEXT_COLOR);
+    label = priv->window_picture_mode->label(priv->window_picture_mode, OSD_INGREDIENT_PICTURE_MODE_TEXT_COLOR);
     picure_hal_set(label,
                    &picture_mode_data->color,
                    predefined->color,
@@ -154,7 +154,7 @@ static void window_picture_mode_load_ui(osd_proc_system_settings_priv *priv,
                    99,
                    hal_color_set);
 
-    label = priv->scene->label(priv->scene, OSD_INGREDIENT_TEXT_TINT);
+    label = priv->window_picture_mode->label(priv->window_picture_mode, OSD_INGREDIENT_PICTURE_MODE_TEXT_TINT);
     picure_hal_set(label,
                    &picture_mode_data->tint,
                    predefined->tint,
@@ -170,7 +170,7 @@ static int window_picture_mode_change_ui(osd_proc *self,
     int focused_item = picture_mode_data->focused_item;
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
     TV_ASSERT(direction != 0);
-    label = priv->scene->label(priv->scene, picture_menu_item[focused_item]);
+    label = priv->window_picture_mode->label(priv->window_picture_mode, picture_menu_item[focused_item]);
     switch (focused_item) {
     case ITEM_PICTURE_MODE:
         picture_mode_data->picture_mode = TV_CLIP(picture_mode_data->picture_mode + direction, 0, 3);
@@ -289,8 +289,8 @@ int osd_window_picture_mode_proc(osd_window_proc *proc,
     TV_TYPE_GET_PRIV(osd_proc_system_settings_priv, self, priv);
     switch (type) {
     case OSD_EVENT_WINDOW_INIT:
-        picture_mode_data->block_left = priv->scene->block(priv->scene, OSD_BLOCK_PICTURE_MODE_LEFT_ARROW);
-        picture_mode_data->block_right = priv->scene->block(priv->scene, OSD_BLOCK_PICTURE_MODE_RIGHT_ARROW);
+        picture_mode_data->block_left = priv->window_picture_mode->block(priv->window_picture_mode, OSD_BLOCK_PICTURE_MODE_LEFT_ARROW);
+        picture_mode_data->block_right = priv->window_picture_mode->block(priv->window_picture_mode, OSD_BLOCK_PICTURE_MODE_RIGHT_ARROW);
         picture_mode_data->picture_mode = 0;
         picture_mode_data->brightness = 50;
         picture_mode_data->contrast = 50;

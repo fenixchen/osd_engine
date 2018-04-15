@@ -7,7 +7,7 @@ import functools
 @functools.total_ordering
 class Block(object):
     def __init__(self, window, id, ingredient, x, y,
-                 visible=True, mutable=False):
+                 visible=True, mutable=None):
         self._window = window
         self._id = id
         self._x = window.get_x(self, x)
@@ -41,10 +41,6 @@ class Block(object):
     @index.setter
     def index(self, i):
         self._index = i
-
-    @property
-    def full_index(self):
-        return (self._window.object_index << 16) | self.index
 
     @property
     def mutable(self):
@@ -95,11 +91,17 @@ class Block(object):
 
     @property
     def height(self):
-        return self._ingredient.height
+        if self._ingredient.height == 0:
+            return self._window.height
+        else:
+            return self._ingredient.height
 
     @property
     def width(self):
-        return self._ingredient.width
+        if self._ingredient.width == 0:
+            return self._window.width
+        else:
+            return self._ingredient.width
 
     @property
     def ingredient(self):
@@ -109,7 +111,7 @@ class Block(object):
         header = b''
         ram = b''
         block_flags = (1 if self.visible else 0) | (self.index << 1)
-        ram += struct.pack('<HH', block_flags, self.ingredient.object_index)
-        ram += struct.pack('<hh', self._x, self._y)
-        ram += struct.pack('<HH', self.width, self.height)
+        header += struct.pack('<HH', block_flags, self.ingredient.object_index)
+        header += struct.pack('<hh', self._x, self._y)
+        header += struct.pack('<HH',self.width, self.height)
         return header, ram

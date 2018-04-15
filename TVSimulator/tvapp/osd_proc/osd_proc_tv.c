@@ -75,14 +75,15 @@ static int osd_proc_tv_keydown(osd_proc *self, osd_key key) {
     }
     window_hl = scene->window(scene, OSD_WINDOW_ITEM_HIGHLIGHT);
     if (old_col != col || old_row != row) {
+        osd_window *window_bottom;
         osd_rect rect;
         rect.width = rect.height = 152;
         rect.x = x_offset + col * 152;
         rect.y = y_offset + row * 152;
         window_hl->set_rect(window_hl, &rect);
-
-        label_big = scene->label(scene, OSD_INGREDIENT_LABEL_BOTTOM_BIG);
-        label_small = scene->label(scene, OSD_INGREDIENT_LABEL_BOTTOM_SMALL);
+        window_bottom = scene->window(scene, OSD_WINDOW_BOTTOM);
+        label_big = window_bottom->label(window_bottom, OSD_INGREDIENT_BOTTOM_LABEL_BOTTOM_BIG);
+        label_small = window_bottom->label(window_bottom, OSD_INGREDIENT_BOTTOM_LABEL_BOTTOM_SMALL);
 
         label_big->set_string(label_big, string_big[row * 5 + col]);
 

@@ -26,12 +26,12 @@ static void osd_bitmap_paint(osd_ingredient *self,
     TV_TYPE_GET_PRIV(osd_bitmap_priv, bitmap_self, priv);
 
     bitmap = priv->bitmap;
-    if (y >= bitmap->height) return;
+    if (y >= block->height) return;
     bitmap_data = (u8*)priv->data + sizeof(osd_bitmap_data);
     bitmap_width = priv->data->bitmap_width;
     bitmap_height = priv->data->bitmap_height;
 
-    width = TV_MIN(bitmap->width, window->rect(window).width - block->x);
+    width = TV_MIN(block->width, window->rect(window).width - block->x);
     if (!bitmap->tiled) {
         width = TV_MIN(width, bitmap_width);
     }
@@ -72,21 +72,16 @@ static u32 osd_bitmap_start_y(osd_ingredient *self) {
     return 0;
 }
 
-static u32 osd_bitmap_height(osd_ingredient *self, osd_window *window) {
-    osd_bitmap *bitmap_self = (osd_bitmap *)self;
-    return bitmap_self->priv->bitmap->height;
-}
-
 static void osd_bitmap_dump(osd_ingredient *ingredient) {
     osd_bitmap_hw *bitmap;
     osd_bitmap *self = (osd_bitmap *)ingredient;
     TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
 
     bitmap = priv->bitmap;
-    TV_LOG("Bitmap\n\tpalette:%d, width:%d, height:%d, count:%d, addr:%#x, size:%d\n\t"
+    TV_LOG("Bitmap\n\tpalette:%d, count:%d, addr:%#x, size:%d\n\t"
            "bitmap_width:%d, bitmap_height:%d, tiled:%d, mask_color:%d\n",
            ingredient->palette_index(ingredient),
-           bitmap->width, bitmap->height, bitmap->bitmap_count,
+           bitmap->bitmap_count,
            bitmap->data_addr, priv->data->data_size,
            priv->data->bitmap_width, priv->data->bitmap_height,
            bitmap->tiled, bitmap->mask_color);
@@ -115,19 +110,18 @@ static void osd_bitmap_destroy(osd_ingredient *self) {
     FREE_OBJECT(self);
 }
 
-osd_bitmap *osd_bitmap_create(osd_scene *scene, osd_ingredient_hw *hw) {
+osd_bitmap *osd_bitmap_create(osd_window *window, osd_ingredient_hw *hw) {
     osd_bitmap *self = MALLOC_OBJECT(osd_bitmap);
 
     self->priv = MALLOC_OBJECT(osd_bitmap_priv);
 
     self->priv->bitmap = &hw->data.bitmap;
-    self->priv->data = (osd_bitmap_data*)(scene->ram(scene) + self->priv->bitmap->data_addr);
+    self->priv->data = (osd_bitmap_data*)(window->ram(window) + self->priv->bitmap->data_addr);
 
     self->parent.destroy = osd_bitmap_destroy;
     self->parent.paint = osd_bitmap_paint;
     self->parent.destroy = osd_bitmap_destroy;
     self->parent.start_y = osd_bitmap_start_y;
-    self->parent.height = osd_bitmap_height;
     self->parent.dump = osd_bitmap_dump;
 
     self->set_current = osd_bitmap_set_current;

@@ -90,7 +90,7 @@ class Window(OSDObject):
                     self._blocks.append(block)
             else:
                 raise Exception('cannot find ingredient <%s>' % id)
-        self._blocks.sort()
+        # self._blocks.sort()
 
     def _create_object(self, item):
         assert (len(item.keys()) > 0)
@@ -195,6 +195,7 @@ class Window(OSDObject):
         glyph = Glyph(char_code, font, font_size)
         logger.debug(glyph)
         self._glyphs.append(glyph)
+        glyph.object_index = len(self._glyphs) - 1
         return glyph
 
     def _get_coord(self, base, value):
@@ -332,7 +333,7 @@ class Window(OSDObject):
                 other_count += 1
         return bitmap_count, text_count, rectangle_count, line_count, other_count
 
-    def to_binary(self, ram_offset):
+    def to_binary(self, ram_offset, ram_usage):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
 
         rams = b''
@@ -355,50 +356,81 @@ class Window(OSDObject):
 
         bins += struct.pack('<BBH', other_count, len(self._blocks), len(self._glyphs))
 
-        ram_offset += OSD_PALETTE_HEADER_SIZE * len(self._palettes) + \
-                      OSD_INGREDIENT_HEADER_SIZE * len(self._ingredients) + \
-                      OSD_BLOCK_HEADER_SIZE * len(self._blocks) + \
-                      OSD_GLYPH_HEADER_SIZE * len(self._glyphs)
+        # block offset
+        if len(self._blocks) == 0:
+            bins += struct.pack('<I', 0)
+        else:
+            bins += struct.pack('<I', ram_offset)
+            block_header_rams = b''
+            for block in self._blocks:
+                header, ram = block.to_binary()
+                assert len(header) == OSD_BLOCK_HEADER_SIZE
+                assert len(ram) == 0
+                block_header_rams += header
+
+            rams += block_header_rams
+            ram_offset += len(block_header_rams)
 
         # ingredient offset
         if len(self._ingredients) == 0:
             bins += struct.pack('<I', 0)
         else:
             bins += struct.pack('<I', ram_offset)
+            ingredient_header_rams = b''
+            ingredient_data_rams = b''
 
-        # ingredient_offset
+            ram_offset += OSD_INGREDIENT_HEADER_SIZE * len(self._ingredients)
+
+            for i, ingredient in enumerate(self._ingredients):
+                header_ram, data_ram = ingredient.to_binary(ram_offset)
+                assert len(header_ram) == OSD_INGREDIENT_HEADER_SIZE
+                ingredient_header_rams += header_ram
+                ingredient_data_rams += data_ram
+                ram_offset += len(data_ram)
+                ram_usage[ingredient] = len(header_ram) + len(data_ram)
+
+            rams += ingredient_header_rams
+            rams += ingredient_data_rams
+
+        # palette_offset
         if len(self._palettes) == 0:
             bins += struct.pack('<I', 0)
         else:
             bins += struct.pack('<I', ram_offset)
             palette_header_rams = b''
             palette_data_rams = b''
+
+            ram_offset += OSD_PALETTE_HEADER_SIZE * len(self._palettes)
+
             for i, palette in enumerate(self._palettes):
                 header_ram, data_ram = palette.to_binary(ram_offset)
                 assert len(header_ram) == OSD_PALETTE_HEADER_SIZE
                 palette_header_rams += header_ram
                 palette_data_rams += data_ram
                 ram_offset += len(data_ram)
+                ram_usage[palette] = len(header_ram) + len(data_ram)
 
             rams += palette_header_rams
             rams += palette_data_rams
 
-        if len(self._blocks) == 0:
-            bins += struct.pack('<I', 0)
-        else:
-            bins += struct.pack('<I', ram_offset)
-            for block in self._blocks:
-                header, ram = block.to_binary()
-                rams += ram
-                ram_offset += len(ram)
-
+        # glyph_offset
         if len(self._glyphs) == 0:
             bins += struct.pack('<I', 0)
         else:
             bins += struct.pack('<I', ram_offset)
+            glyph_header_rams = b''
+            glyph_data_rams = b''
+
+            ram_offset += OSD_GLYPH_HEADER_SIZE * len(self._glyphs)
+
             for glyph in self._glyphs:
-                ram = glyph.to_binary(ram_offset)
-                rams += ram
-                ram_offset += len(ram)
+                header_ram, data_ram = glyph.to_binary(ram_offset)
+                glyph_header_rams += header_ram
+                glyph_data_rams += data_ram
+                ram_offset += len(data_ram)
+                ram_usage[glyph] = len(header_ram) + len(data_ram)
+
+            rams += glyph_header_rams
+            rams += glyph_data_rams
 
         return bins, rams

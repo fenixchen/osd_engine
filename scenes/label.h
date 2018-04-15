@@ -6,14 +6,9 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_LABEL 
-
 #define OSD_WINDOW_WINDOW_RECT      0
-#define OSD_BLOCK_WINDOW_RECT_R 0
-#define OSD_BLOCK_WINDOW_RECT_L 1
-#define OSD_BLOCK_WINDOW_RECT_L 2
-#define OSD_BLOCK_WINDOW_RECT_L 3
-#define OSD_BLOCK_WINDOW_RECT_L 4
-#define OSD_BLOCK_WINDOW_RECT_L 5
+#define OSD_INGREDIENT_WINDOW_RECT_LABEL0           2
+
 
 #endif
 

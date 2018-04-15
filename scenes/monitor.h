@@ -6,11 +6,14 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_MONITOR 
-
 #define OSD_WINDOW_TOP              0
+
 #define OSD_WINDOW_LEFT             1
+
 #define OSD_WINDOW_RIGHT            2
+
 #define OSD_WINDOW_BOTTOM           3
+
 
 #endif
 

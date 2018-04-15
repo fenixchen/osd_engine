@@ -21,7 +21,7 @@ class Bitmap(Ingredient):
 
     def __init__(self, window, id, bitmaps, palette=None,
                  mask_color=None, width=None, height=None, tiled=False,
-                 transparent_color=None, mutable=False):
+                 transparent_color=None, mutable=False, current_bitmap = 0):
 
         super().__init__(window, id, palette, mutable)
 
@@ -37,6 +37,7 @@ class Bitmap(Ingredient):
         self._bitmap_width = 0
         self._bitmap_height = 0
         self._transparent_color = transparent_color
+        self._current_bitmap = current_bitmap
         color_data = []
         for bitmap in bitmaps:
             self._bitmap_width, self._bitmap_height, data = ImageUtil.load(bitmap)
@@ -86,11 +87,11 @@ class Bitmap(Ingredient):
             index = self._data[cx]
             col = block_x + x - start
             if self._mask_color is None:
-                color = self.get_color( index)
+                color = self.get_color(index)
                 if 0 <= col < window.width and color != self._transparent_color:
                     window_line_buf[col] = color
             else:
-                color = self.get_color( self._mask_color)
+                color = self.get_color(self._mask_color)
                 intensity = index
                 if 0 <= col < window.width and intensity > 0:
                     window_line_buf[col] = ImageUtil.blend_pixel(window_line_buf[col], color, intensity)
@@ -114,17 +115,18 @@ class Bitmap(Ingredient):
         pixel_bits = self._palette.pixel_bits
         headers = struct.pack('<BBxx', self.ingredient_type, self._palette.object_index)
 
-        headers += struct.pack('<HH', self._width, self._height)
-
         flag = (1 if self._tiled else 0) | \
                (0 if self._transparent_color is None else 1) << 1
 
-        headers += struct.pack('<BBBx',
-                            flag,
-                            0 if self._mask_color is None else self._mask_color,
-                            self._bitmap_count)
+        headers += struct.pack('<BBBB',
+                               flag,
+                               0 if self._mask_color is None else self._mask_color,
+                               self._bitmap_count,
+                               self._current_bitmap)
 
         headers += struct.pack('<I', ram_offset)
+
+        headers += struct.pack('<xxxx')
 
         data_size = len(self._data)
 

@@ -56,7 +56,7 @@ typedef int t_bool;
     }\
 }
 
-#define TV_TYPE_FREE(p) do { if (p) { p->destroy(p); p = NULL; } } while (0)
+#define TV_TYPE_DESTROY(p) do { if (p) { p->destroy(p); p = NULL; } } while (0)
 
 #ifndef TV_MAX_PATH
 #define TV_MAX_PATH 256

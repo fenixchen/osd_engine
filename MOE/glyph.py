@@ -33,6 +33,16 @@ class Glyph(object):
             self._pitch = new_pitch
         else:
             self._data = bitmap.buffer[:]
+        self._object_index = None
+
+    @property
+    def object_index(self):
+        assert self._object_index is not None
+        return self._object_index
+
+    @object_index.setter
+    def object_index(self, object_index):
+        self._object_index = object_index
 
     @property
     def monochrome(self):
@@ -112,20 +122,24 @@ class Glyph(object):
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s-%s-%d> \'%c\'' % (
             type(self), self._font.id, self.code, self._font_size, self._char_code))
+        header = b''
+        data = b''
 
         self._ram_offset = ram_offset
 
-        ram = struct.pack('<BBBB', self._left, self._top, self._width, self._height)
+        header = struct.pack('<BBBB', self._left, self._top, self._width, self._height)
 
-        ram += struct.pack('<HBB', self.code, self._font.object_index, self._font_size)
+        header += struct.pack('<HBB', self.code, self._font.object_index, self._font_size)
 
         data_size = len(self._data)
         assert (data_size <= 0xFFFF)
 
         monochrome = 1 if self._monochrome else 0
 
-        ram += struct.pack('<BBH', self._pitch, self.advance_x,
-                           (monochrome << 15) | data_size)
+        header += struct.pack('<BBH', self._pitch, self.advance_x,
+                              (monochrome << 15) | data_size)
 
-        ram += struct.pack('<%sB' % data_size, *self._data)
-        return ram
+        header += struct.pack('<I', ram_offset)
+
+        data += struct.pack('<%sB' % data_size, *self._data)
+        return header, data

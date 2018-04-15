@@ -107,10 +107,11 @@ class Label(Ingredient):
                 elif self._align == Align.RIGHT:
                     x_delta = int(self._width - text_width)
 
-            char_blocks = text.get_blocks(window, block_id,
+            text_blocks = text.get_blocks(window, block_id,
                                           left + x_delta, top + y_delta, i == 0)
-            blocks.extend(char_blocks)
-            self._text_blocks.append(char_blocks)
+            assert(len(text_blocks) == 1)
+            blocks.extend(text_blocks)
+            self._text_blocks.append(text_blocks[0])
 
         return blocks
 
@@ -122,29 +123,22 @@ class Label(Ingredient):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
         header = struct.pack('<Bxxx', self.ingredient_type)
-        if self._mutable:
-            header += struct.pack('<HH', self._state_count, self._current_state)
-            header += struct.pack('<HH', len(self._text_blocks), self._current_text)
-            header += struct.pack('<I', ram_offset)
+        header += struct.pack('<HH', self._state_count, self._current_state)
+        header += struct.pack('<HH', len(self._text_blocks), self._current_text)
+        header += struct.pack('<I', ram_offset)
 
-            for state_block in self._state_blocks:
-                color = state_block[0]
-                ram += struct.pack('<I', color)
-                bg_block = state_block[1]
+        for state_block in self._state_blocks:
+            color = state_block[0]
+            ram += struct.pack('<I', color)
+            bg_block = state_block[1]
 
-                if bg_block is not None:
-                    ram += struct.pack('<I', bg_block.full_index)
-                else:
-                    ram += struct.pack('<I', INVALID_BLOCK_INDEX)
+            if bg_block is not None:
+                ram += struct.pack('<I', bg_block.index)
+            else:
+                ram += struct.pack('<I', INVALID_BLOCK_INDEX)
 
-            for char_blocks in self._text_blocks:
-                ram += struct.pack('<I', len(char_blocks))
-                for char in char_blocks:
-                    ram += struct.pack('<I', char.full_index)
-        else:
-            header += struct.pack('<xxxx')
-            header += struct.pack('<xxxx')
-            header += struct.pack('<xxxx')
+        for text_block in self._text_blocks:
+            ram += struct.pack('<H', text_block.index)
         return header, ram
 
     def __str__(self):

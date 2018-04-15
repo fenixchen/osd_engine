@@ -2,19 +2,19 @@
 #include "osd_rectangle.h"
 #include "osd_line.h"
 #include "osd_bitmap.h"
-#include "osd_character.h"
+#include "osd_text.h"
 #include "osd_window.h"
 #include "osd_scene.h"
 #include "osd_palette.h"
 #include "osd_bitmap.h"
 #include "osd_rectangle.h"
 #include "osd_line.h"
-#include "osd_character.h"
+#include "osd_text.h"
 #include "osd_label.h"
 
 struct _osd_ingredient_priv {
     osd_ingredient_hw *hw;
-    osd_scene *scene;
+    osd_window *window;
     void (*child_destroy)(osd_ingredient *self);
 };
 
@@ -28,8 +28,7 @@ u32 osd_ingredient_color(osd_ingredient *self, u32 index) {
     u8 palette_index;
     TV_TYPE_GET_PRIV(osd_ingredient_priv, self, priv);
     palette_index = priv->hw->palette_index;
-    TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
-    palette = priv->scene->palette(priv->scene, palette_index);
+    palette = priv->window->palette(priv->window, palette_index);
     return palette->color(palette, index);
 }
 
@@ -43,8 +42,7 @@ u32 osd_ingredient_color2(osd_ingredient *self, u8 *color_ram, u32 index) {
     TV_TYPE_GET_PRIV(osd_ingredient_priv, self, priv);
 
     palette_index = priv->hw->palette_index;
-    TV_ASSERT(palette_index != OSD_PALETTE_INDEX_INVALID);
-    palette = priv->scene->palette(priv->scene, palette_index);
+    palette = priv->window->palette(priv->window, palette_index);
     pixel_bits = palette->pixel_bits(palette);
     if (pixel_bits == 8) {
         color_index = color_ram[index];
@@ -69,28 +67,25 @@ static void osd_ingredient_destroy(osd_ingredient *self) {
     child_destroy(self);
 }
 
-osd_ingredient *osd_ingredient_create(osd_scene *scene, osd_ingredient_hw *hw) {
+osd_ingredient *osd_ingredient_create(osd_window *window, osd_ingredient_hw *hw) {
     osd_ingredient *self;
     osd_ingredient_priv *priv;
 
     switch (hw->type) {
     case OSD_INGREDIENT_BITMAP:
-        self = &osd_bitmap_create(scene, hw)->parent;
+        self = &osd_bitmap_create(window, hw)->parent;
         break;
     case OSD_INGREDIENT_LINE:
-        self = &osd_line_create(scene, hw)->parent;
+        self = &osd_line_create(window, hw)->parent;
         break;
     case OSD_INGREDIENT_RECTANGLE:
-        self = &osd_rectangle_create(scene, hw)->parent;
+        self = &osd_rectangle_create(window, hw)->parent;
         break;
-    case OSD_INGREDIENT_CHARACTER:
-        self = &osd_character_create(scene, hw)->parent;
+    case OSD_INGREDIENT_TEXT:
+        self = &osd_text_create(window, hw)->parent;
         break;
     case OSD_INGREDIENT_LABEL:
-    case OSD_INGREDIENT_FORM:
-    case OSD_INGREDIENT_BUTTON:
-    case OSD_INGREDIENT_EDIT:
-        self = &osd_label_create(scene, hw)->parent;
+        self = &osd_label_create(window, hw)->parent;
         break;
     default:
         TV_ASSERT(0);
@@ -99,7 +94,7 @@ osd_ingredient *osd_ingredient_create(osd_scene *scene, osd_ingredient_hw *hw) {
 
     self->priv = priv;
     priv->hw = hw;
-    priv->scene = scene;
+    priv->window = window;
     priv->child_destroy = self->destroy;
     self->destroy = osd_ingredient_destroy;
     self->color = osd_ingredient_color;

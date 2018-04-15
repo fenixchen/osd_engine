@@ -17,6 +17,6 @@ struct _osd_block {
     void		  (*dump)(osd_block *self);
 };
 
-osd_block *osd_block_create(osd_scene *scene, osd_block_hw *hw);
+osd_block *osd_block_create(osd_window *window, osd_block_hw *hw);
 
 #endif

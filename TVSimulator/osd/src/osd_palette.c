@@ -1,10 +1,10 @@
 #include "osd_types.h"
 #include "osd_palette.h"
-#include "osd_scene.h"
+#include "osd_window.h"
 
 struct _osd_palette_priv {
     osd_palette_hw *hw;
-    osd_scene *scene;
+    osd_window *window;
     u32 *luts;
 };
 
@@ -31,20 +31,20 @@ static u32 osd_palette_entry_count(osd_palette *self) {
 
 static void osd_palette_dump(osd_palette *self) {
     TV_TYPE_GET_PRIV(osd_palette_priv, self, palette);
-    TV_LOG("palette\n\tpixel_format:%d, pixel_bits:%d, "
+    TV_LOG("palette\n\tpixel_bits:%d, "
            "entry_count:%d, luts_addr:%#x\n",
-           palette->hw->pixel_format, palette->hw->pixel_bits,
+           palette->hw->pixel_bits,
            palette->hw->entry_count,
            palette->hw->luts_addr);
 }
 
-osd_palette *osd_palette_create(osd_scene *scene, osd_palette_hw *hw) {
+osd_palette *osd_palette_create(osd_window *window, osd_palette_hw *hw) {
     osd_palette_priv *priv;
 
     osd_palette *self = MALLOC_OBJECT(osd_palette);
     priv = MALLOC_OBJECT(osd_palette_priv);
     self->priv = priv;
-    priv->scene = scene;
+    priv->window = window;
     priv->hw = hw;
 
     self->destroy = osd_palette_destroy;
@@ -54,6 +54,6 @@ osd_palette *osd_palette_create(osd_scene *scene, osd_palette_hw *hw) {
     self->dump = osd_palette_dump;
     TV_TYPE_FP_CHECK(self->destroy, self->dump);
 
-    priv->luts = (u32*)(scene->ram(scene) + priv->hw->luts_addr);
+    priv->luts = (u32*)(window->ram(window) + priv->hw->luts_addr);
     return self;
 }

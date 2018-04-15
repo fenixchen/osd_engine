@@ -6,8 +6,8 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_NO_SIGNAL 
-
 #define OSD_WINDOW_NO_SIGNAL        0
+
 
 #endif
 

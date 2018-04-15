@@ -6,9 +6,9 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_ANIMATION 
-#define OSD_INGREDIENT_BITMAP_ANI       0
-
 #define OSD_WINDOW_WINDOW0          0
+#define OSD_INGREDIENT_WINDOW0_BITMAP_ANI       0
+
 #define OSD_BLOCK_WINDOW0_ANI 0
 
 #endif

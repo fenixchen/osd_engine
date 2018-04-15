@@ -14,6 +14,6 @@ struct _osd_bitmap {
     u8 (*count)(osd_bitmap *self);
 };
 
-EXTERNC osd_bitmap *osd_bitmap_create(osd_scene *scene, osd_ingredient_hw *hw);
+EXTERNC osd_bitmap *osd_bitmap_create(osd_window *window, osd_ingredient_hw *hw);
 
 #endif

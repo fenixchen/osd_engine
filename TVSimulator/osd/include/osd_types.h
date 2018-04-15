@@ -3,16 +3,12 @@
 
 #include "tv_api.h"
 
-#define OSD_SCENE_MAX_PALETE_COUNT 8
-#define OSD_SCENE_MAX_INGREDIENT_COUNT 4096
-#define OSD_SCENE_MAX_WINDOW_COUNT 32
-#define OSD_SCENE_MAX_GLYPH_COUNT 4096
-
 typedef struct _osd_block osd_block;
 typedef struct _osd_window osd_window;
 typedef struct _osd_scene osd_scene;
 typedef struct _osd_palette osd_palette;
 typedef struct _osd_ingredient osd_ingredient;
+typedef struct _osd_glyph osd_glyph;
 
 typedef struct _osd_rectangle osd_rectangle;
 typedef struct _osd_line osd_line;
@@ -21,7 +17,7 @@ typedef struct _osd_label osd_label;
 
 typedef struct _osd_proc osd_proc;
 
-typedef struct _osd_character osd_character;
+typedef struct _osd_text osd_text;
 typedef struct _osd_glyph osd_glyph;
 typedef struct _osd_bitmap osd_bitmap;
 
@@ -29,14 +25,14 @@ typedef struct _osd_binary osd_binary;
 
 typedef struct _tv_app tv_app;
 
-#define OSD_SCENE_HW_DATA_SIZE sizeof(osd_scene_hw)
+#define OSD_SCENE_HEADER_SIZE sizeof(osd_scene_hw)
 
 typedef struct _osd_scene_hw osd_scene_hw;
 
 struct _osd_scene_hw {
     u16 width, height;
 
-    u32 ram_offset;
+    u32 target_address;
 
     u8 palette_header_size;
     u8 ingredient_header_size;
@@ -50,7 +46,7 @@ struct _osd_scene_hw {
     char title[16]; //4 words
 };
 
-#define OSD_PALETTE_DATA_SIZE sizeof(osd_palette_hw)
+#define OSD_PALETTE_HEADER_SIZE sizeof(osd_palette_hw)
 
 typedef struct _osd_palette_hw osd_palette_hw;
 struct _osd_palette_hw {
@@ -104,11 +100,11 @@ struct _osd_line_hw {
     u8 reserved;
 };
 
-#define OSD_SCENE_INVALID_GLYPH_INDEX 0xFFFF
 
-#define OSD_GLYPH_HEADER_SIZE sizeof(osd_glyph)
+#define OSD_GLYPH_HEADER_SIZE sizeof(osd_glyph_hw)
 
-struct _osd_glyph {
+typedef struct _osd_glyph_hw osd_glyph_hw;
+struct _osd_glyph_hw {
     u8 left, top;
     u8 width, height;
 
@@ -120,17 +116,26 @@ struct _osd_glyph {
     u8 advance_x;
     u16 data_size:15;
     u16 monochrome:1;
+
+    u32 glyph_data;
+};
+
+typedef struct _osd_text_data osd_text_data;
+struct _osd_text_data {
+    u16 glyph_index;
 };
 
 typedef struct _osd_text_hw osd_text_hw;
 struct _osd_text_hw {
     u8 color;
-    u8 reserved;
-    u16 glphy_count;
+    u8 top_line;
+    u16 length;
 
-    u32 glyph_index_array;
+    u8 font_id;
+    u8 font_size;
+    u16 reserved;
 
-    u32 reserved2;
+    u32 text_data_addr; // ==> osd_text_data
 };
 
 typedef struct _osd_bitmap_data osd_bitmap_data;
@@ -152,25 +157,26 @@ struct _osd_bitmap_hw {
 
     u32 data_addr; //pointer to osd_bitmap_data
 
-    u32 reserved;
+    u32 reserved2;
 };
 
 
 typedef struct _osd_label_state osd_label_state;
 struct _osd_label_state {
-    u32  color_index;
-    u32 bg_block_index;
+    u32 color_index;
+    u32	bg_block_index;
 };
+
 typedef struct _osd_label_text osd_label_text;
 struct _osd_label_text {
-    u32 char_block_count;
-    u32 char_block_index[];
+    u16 text_block_index;
 };
+
 typedef struct _osd_label_data osd_label_data;
 struct _osd_label_data {
     osd_label_state state[1]; //state_count
     /*
-    osd_label_text label_text[text_count]
+    osd_label_text block_index[text_count];
     */
 };
 
@@ -183,13 +189,14 @@ struct _osd_label_hw {
     u32 osd_label_data_addr; //pointer to osd_label_data
 };
 
-#define OSD_INGREDIENT_RECTANGLE 1
-#define OSD_INGREDIENT_LINE		 2
-#define OSD_INGREDIENT_TEXT 3
-#define OSD_INGREDIENT_BITMAP	 4
+#define OSD_INGREDIENT_BITMAP	 1
+#define OSD_INGREDIENT_TEXT		 2
+#define OSD_INGREDIENT_RECTANGLE 3
+#define OSD_INGREDIENT_LINE		 4
 #define OSD_INGREDIENT_LABEL	 5
+#define OSD_INGREDIENT_GROUP	 6
 
-#define OSD_INGREDIENT_DATA_SIZE sizeof(osd_ingredient_hw)
+#define OSD_INGREDIENT_HEADER_SIZE sizeof(osd_ingredient_hw)
 
 typedef struct _osd_ingredient_hw osd_ingredient_hw;
 struct _osd_ingredient_hw {
@@ -219,7 +226,7 @@ struct _osd_block_hw {
 };
 
 
-#define OSD_WINDOW_DATA_SIZE sizeof(osd_window_hw)
+#define OSD_WINDOW_HEADER_SIZE sizeof(osd_window_hw)
 typedef struct _osd_window_hw osd_window_hw;
 
 struct _osd_window_hw {
@@ -241,14 +248,14 @@ struct _osd_window_hw {
     u8 block_count;
     u16 glyph_count;
 
+    u32 blocks_addr;		//==> osd_block[block_count]
 
-    u32 ingredient_addr; //==> osd_ingredient[bitmap_count + text_count + rectangle_count + line_count]
+    u32 ingredients_addr;	//==> osd_ingredient[bitmap_count + text_count + rectangle_count + line_count]
 
-    u32 block_addr;		//==> osd_block[block_count]
+    u32 palettes_addr;		//==> osd_palette_hw[palette_count]
 
-    u32 glyph_addr;		//==> glyph_data[glyph_count]
+    u32 glyphs_addr;		//==> glyph_data[glyph_count]
 
-    u32 palette_addr;	//==> osd_palette_hw[palette_count]
 };
 
 #define OSD_RGB(r, g, b) ((u32)(((u8)(r)|((u16)((u8)(g))<<8))|(((u32)(u8)(b))<<16)))
@@ -265,6 +272,8 @@ struct _osd_window_hw {
 
 #define OSD_INVALID_BLOCK_INDEX 0xFFFFFFFF
 
+#define OSD_INVALID_GLYPH_INDEX 0xFFFF
+
 typedef struct _osd_rect osd_rect;
 
 struct _osd_rect {
@@ -276,6 +285,15 @@ typedef struct _osd_point osd_point;
 struct _osd_point {
     s32 x, y;
 };
+
+#define SHOW_OSD_OBJECT_DUMP 0
+
+#if SHOW_OSD_OBJECT_DUMP
+#define OSD_OBJECT_DUMP(object) object->dump(object)
+#else
+#define OSD_OBJECT_DUMP(object)
+#endif
+
 
 #endif
 

@@ -17,9 +17,6 @@
     <ClCompile Include="src\osd_bitmap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\osd_character.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\osd_common.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,15 +44,18 @@
     <ClCompile Include="src\osd_block.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\osd_text.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osd_glyph.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\osd_binary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\osd_bitmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\osd_character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\osd_common.h">
@@ -92,6 +92,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\osd_block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\osd_text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\osd_glyph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

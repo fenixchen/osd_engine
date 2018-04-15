@@ -96,8 +96,8 @@ static int tv_app_load(tv_app *self, const char *osd_file) {
     const char *title;
     struct tv_scene_proc *scene_proc;
     TV_TYPE_GET_PRIV(tv_app_priv, self, priv);
-    TV_TYPE_FREE(priv->scene);
-    TV_TYPE_FREE(priv->proc);
+    TV_TYPE_DESTROY(priv->scene);
+    TV_TYPE_DESTROY(priv->proc);
     TV_ASSERT(osd_file);
 
     priv->scene = osd_scene_create(osd_file, NULL);

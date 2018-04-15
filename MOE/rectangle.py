@@ -93,20 +93,20 @@ class Rectangle(Ingredient):
 
         if y < self._border_weight:
             # draw top border
-            color = self.get_color( self._border_color_top)
+            color = self.get_color(self._border_color_top)
             margin = self._border_weight - (self._border_weight - y)
             for x in range(block_x + margin, block_x + width - margin):
                 if 0 <= x < window.width and self._check_border_style(x):
                     window_line_buf[x] = color
 
             # draw left border  + top border
-            color = self.get_color( self._border_color_left)
+            color = self.get_color(self._border_color_left)
             for x in range(block_x, block_x + y):
                 if 0 <= x < window.width and self._check_border_style(y):
                     window_line_buf[x] = color
 
             # draw right border  + top border
-            color = self.get_color( self._border_color_right)
+            color = self.get_color(self._border_color_right)
             for x in range(block_x + width - y, block_x + width):
                 if 0 <= x < window.width and self._check_border_style(y):
                     window_line_buf[x] = color
@@ -114,20 +114,20 @@ class Rectangle(Ingredient):
 
         elif y >= height - self._border_weight:
             # draw bottom border
-            color = self.get_color( self._border_color_bottom)
+            color = self.get_color(self._border_color_bottom)
             margin = (height - y)
             for x in range(block_x + margin, block_x + width - margin):
                 if 0 <= x < window.width and self._check_border_style(x):
                     window_line_buf[x] = color
 
             # draw left border  + bottom border
-            color = self.get_color( self._border_color_left)
+            color = self.get_color(self._border_color_left)
             for x in range(block_x, block_x + height - y):
                 if 0 <= x < window.width and self._check_border_style(y):
                     window_line_buf[x] = color
 
             # draw right border  + bottom border
-            color = self.get_color( self._border_color_right)
+            color = self.get_color(self._border_color_right)
             for x in range(block_x + width - (height - y), block_x + width):
                 if 0 <= x < window.width and self._check_border_style(y):
                     window_line_buf[x] = color
@@ -135,12 +135,12 @@ class Rectangle(Ingredient):
             return True
 
         else:
-            color = self.get_color( self._border_color_left)
+            color = self.get_color(self._border_color_left)
             for x in range(block_x, block_x + self._border_weight):
                 if 0 <= x < window.width and self._check_border_style(y):
                     window_line_buf[x] = color
 
-            color = self.get_color( self._border_color_right)
+            color = self.get_color(self._border_color_right)
             for x in range(block_x + width - self._border_weight, block_x + width):
                 if 0 <= x < window.width and self._check_border_style(y):
                     window_line_buf[x] = color
@@ -154,8 +154,8 @@ class Rectangle(Ingredient):
         width = window.width if self._width == 0 else self._width
         height = window.height if self._height == 0 else self._height
 
-        bg_color_start = self.get_color( self._bgcolor_start)
-        bg_color_end = self.get_color( self._bgcolor_end)
+        bg_color_start = self.get_color(self._bgcolor_start)
+        bg_color_end = self.get_color(self._bgcolor_end)
 
         color_steps = 1
         fill_width = width - self._border_weight * 2
@@ -258,14 +258,17 @@ class Rectangle(Ingredient):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
         headers = struct.pack('<BBxx', self.ingredient_type, self.palette_index())
-        headers += struct.pack('<HH',
-                            self._width if self._width != 0 else 0xFFFF,
-                            self._height if self._height != 0 else 0xFFFF)
-        headers += struct.pack('<BBBB', self._border_color_top, self._border_color_bottom, self._border_color_left,
-                            self._border_color_right)
+
+        headers += struct.pack('<BBBB', self._border_color_top,
+                               self._border_color_bottom,
+                               self._border_color_left,
+                               self._border_color_right)
+
         headers += struct.pack('<BBBB', self._border_weight,
-                            (self._gradient_mode.value << 4) | self._border_style.value,
-                            0 if self._bgcolor_start is None else self._bgcolor_start,
-                            0 if self._bgcolor_end is None else self._bgcolor_end)
+                               (self._gradient_mode.value << 4) | self._border_style.value,
+                               0 if self._bgcolor_start is None else self._bgcolor_start,
+                               0 if self._bgcolor_end is None else self._bgcolor_end)
+
+        headers += struct.pack('<xxxx')
 
         return headers, ram

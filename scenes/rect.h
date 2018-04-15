@@ -6,8 +6,8 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_RECT 
-
 #define OSD_WINDOW_WINDOW_RECT      0
+
 
 #endif
 

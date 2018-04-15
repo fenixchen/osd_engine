@@ -17,6 +17,7 @@ enum center_window {
 typedef struct _osd_proc_system_settings_priv osd_proc_system_settings_priv;
 struct _osd_proc_system_settings_priv {
     osd_scene *scene;
+    osd_window *window_top;
     osd_window *window_left;
     osd_window *window_picture_mode;
     osd_window *window_sound_mode;

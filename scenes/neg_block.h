@@ -6,8 +6,8 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_NEG_BLOCK 
-
 #define OSD_WINDOW_WINDOW7          0
+
 
 #endif
 

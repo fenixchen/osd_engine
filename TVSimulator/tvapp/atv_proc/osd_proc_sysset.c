@@ -73,6 +73,7 @@ osd_proc *osd_proc_system_settings_create(tv_app *app, osd_scene *scene) {
     self->event = osd_proc_system_settings_event;
     TV_TYPE_FP_CHECK(self->destroy, self->event);
 
+    priv->window_top = scene->window(scene, OSD_WINDOW_TOP);
     priv->window_left = scene->window(scene, OSD_WINDOW_LEFT);
     priv->window_picture_mode = scene->window(scene, OSD_WINDOW_PICTURE_MODE);
     priv->window_sound_mode = scene->window(scene, OSD_WINDOW_SOUND_MODE);

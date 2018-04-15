@@ -62,6 +62,12 @@ Scene:
 
           - ['', page_up, 300, 0]
           - ['', page_down, 300, 456]
+        Preloads:
+          - Preload:
+              id: preload0
+              font: mono_16
+              size: 24
+              text: '0123456789 '
         Palettes:
           - Palette:
               id: palette0

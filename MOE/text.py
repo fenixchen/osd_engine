@@ -45,7 +45,7 @@ class Text(Ingredient):
         return w
 
     def top_line(self):
-        top = 0xFFFFFFFF
+        top = 0xFF
         for glyph in self._glyphs:
             top = min(top, glyph.top)
         return top
@@ -55,8 +55,7 @@ class Text(Ingredient):
         color = self.get_color(self._color)
         left = block_x
         for glyph in self._glyphs:
-            left += glyph.left
-            col = left
+            col = left + glyph.left
             left += glyph.advance_x
             if not 0 <= y - glyph.top + top < glyph.height:
                 continue
@@ -86,12 +85,24 @@ class Text(Ingredient):
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         ram = b''
-        bins = struct.pack('<BBxx', self.ingredient_type, self._palette.object_index)
+        header = struct.pack('<BBxx', self.ingredient_type, self._palette.object_index)
 
-        bins += struct.pack('<Bxxx', self._color)
+        header += struct.pack('<BBH', self._color, self.top_line(), len(self._glyphs))
 
-        bins += struct.pack('<xxxx')
+        font_id = 0
+        font_size = 0
+        if len(self._glyphs) > 0:
+            font_id = self._glyphs[0].font.object_index
+            font_size = self._glyphs[0].font_size
 
-        bins += struct.pack('<xxxx')
+        header += struct.pack('<BBxx', font_id, font_size)
 
-        return bins, ram
+        header += struct.pack('<I', ram_offset)
+
+        for glyph in self._glyphs:
+            ram += struct.pack('<H', glyph.object_index)
+
+        if len(self._glyphs) % 2 == 1:
+            ram += struct.pack('<xx')
+
+        return header, ram

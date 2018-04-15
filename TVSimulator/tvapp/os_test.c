@@ -14,7 +14,7 @@ void os_thread_test() {
     os_thread *thread = os_thread_create(thread_func, NULL);
     os_thread_run(thread);
     os_thread_wait(thread);
-    TV_TYPE_FREE(thread);
+    TV_TYPE_DESTROY(thread);
 }
 
 
@@ -32,7 +32,7 @@ void os_mq_test() {
 
     mq->put(mq, &i);
 
-    TV_TYPE_FREE(mq);
+    TV_TYPE_DESTROY(mq);
 }
 
 void os_test() {

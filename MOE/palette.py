@@ -52,7 +52,7 @@ class Palette(OSDObject):
         assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
         return self._lut[index]
 
-    def can_extend(self, color_set, max_color_count = 256):
+    def can_extend(self, color_set, max_color_count=256):
         old_count = self.count
         new_add = 0
         for color in color_set:
@@ -79,9 +79,9 @@ class Palette(OSDObject):
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
         lut_len = len(self._lut)
-        header = struct.pack('<xBH',
-                           self.pixel_bits,
-                           len(self._lut))
+        header = struct.pack('<BxH',
+                             self.pixel_bits,
+                             len(self._lut))
         if len(self._lut) > 0:
             ram = struct.pack('<%dI' % len(self._lut), *self._lut)
             header += struct.pack('<I', ram_offset)

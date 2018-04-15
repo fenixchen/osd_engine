@@ -8,10 +8,16 @@
 
 struct _osd_block_priv {
     osd_block_hw *hw;
-    osd_scene *scene;
+    osd_window *window;
 };
 
 static void osd_block_dump(osd_block *self) {
+    osd_block_hw *block;
+    TV_TYPE_GET_PRIV(osd_block_priv, self, priv);
+    block = priv->hw;
+    TV_LOG("Block\n"
+           "\tblock visible:%d, ingredient:%d, x:%d, y:%d, (%d x %d)\n",
+           block->visible, block->ingredient_index, block->x, block->y, block->width, block->height);
 }
 
 static u16 osd_block_ingredient_index(osd_block *self) {
@@ -62,11 +68,11 @@ static void osd_block_move_to(osd_block *self, int x, int y) {
     priv->hw->y = y;
 }
 
-osd_block *osd_block_create(osd_scene *scene, osd_block_hw *hw) {
+osd_block *osd_block_create(osd_window *window, osd_block_hw *hw) {
     osd_block_priv *priv;
     osd_block *self = MALLOC_OBJECT(osd_block);
     priv = MALLOC_OBJECT(osd_block_priv);
-    priv->scene = scene;
+    priv->window = window;
     self->priv = priv;
     self->destroy = osd_block_destroy;
     self->ingredient_index = osd_block_ingredient_index;

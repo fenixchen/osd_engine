@@ -12,6 +12,7 @@
 typedef struct _osd_proc_screensaver_priv osd_proc_screensaver_priv;
 struct _osd_proc_screensaver_priv {
     osd_scene *scene;
+    osd_window *window_main;
 };
 
 static int x_dir, y_dir;
@@ -30,7 +31,7 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
     TV_TYPE_GET_PRIV(osd_proc_screensaver_priv, self, priv);
 
     scene = priv->scene;
-    window = scene->window(scene, OSD_WINDOW_MAIN);
+    window = priv->window_main;
     if (!window->visible(window)) {
         return 0;
     }
@@ -57,7 +58,7 @@ static int osd_proc_screesaver_timer(osd_proc *self) {
         y_dir = -y_dir;
     }
     if (--counter <= 0) {
-        label = scene->label(scene, OSD_INGREDIENT_LABEL_CENTER_2);
+        label = priv->window_main->label(priv->window_main, OSD_INGREDIENT_MAIN_LABEL_CENTER_2);
         label->set_int(label, init--);
         if (init < 0) {
             window->set_visible(window, 0);
@@ -97,5 +98,7 @@ osd_proc *osd_proc_screensaver_create(tv_app *app, osd_scene *scene) {
     self->init_ui = osd_proc_screensaver_init_ui;
     self->event = osd_proc_screensaver_event;
     TV_TYPE_FP_CHECK(self->destroy, self->event);
+
+    priv->window_main = scene->window(scene, OSD_WINDOW_MAIN);
     return self;
 }

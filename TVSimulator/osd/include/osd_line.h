@@ -11,6 +11,6 @@ struct _osd_line {
     osd_line_priv *priv;
 };
 
-EXTERNC osd_line *osd_line_create(osd_scene *scene, osd_ingredient_hw *hw);
+EXTERNC osd_line *osd_line_create(osd_window *window, osd_ingredient_hw *hw);
 
 #endif

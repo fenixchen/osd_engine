@@ -48,9 +48,9 @@ void osd_line_paint(osd_ingredient *self,
     } else {
         double slope = (double)((int)x2 - (int)x1) / (double)((int)y2 - (int)y1);
         s32 px = x1 + (s32)(slope * ((s32)y - y1));
-         if (osd_line_style_check(line->style, y)) {
+        if (osd_line_style_check(line->style, y)) {
             for (x = 0; x < line->weight; x++) {
-                 s32 pos = block->x + px + x;
+                s32 pos = block->x + px + x;
                 if (TV_BETWEEN(pos, 0, window_width)) {
                     window_line_buffer[pos] = color;
                 }
@@ -64,17 +64,6 @@ static u32 osd_line_start_y(osd_ingredient *self) {
     osd_line *line_self = (osd_line *)self;
     osd_line_hw *line = line_self->priv->line;
     return TV_MIN(line->y1, line->y2);
-}
-
-static u32 osd_line_height(osd_ingredient *self, osd_window *window) {
-    osd_line *line_self = (osd_line *)self;
-    osd_line_hw *line = line_self->priv->line;
-    if (line->y2 == line->y1)
-        return line->y2 - line->y1 + 1 + line->weight;
-    else if (line->y2 > line->y1)
-        return line->y2 - line->y1 + 1;
-    else
-        return line->y1 - line->y2 + 1;
 }
 
 static void osd_line_dump(osd_ingredient *ingredient) {
@@ -93,7 +82,7 @@ static void osd_line_destroy(osd_ingredient *self) {
     FREE_OBJECT(self);
 }
 
-osd_line *osd_line_create(osd_scene *scene, osd_ingredient_hw *hw) {
+osd_line *osd_line_create(osd_window *window, osd_ingredient_hw *hw) {
     osd_line *self = MALLOC_OBJECT(osd_line);
     self->priv = MALLOC_OBJECT(osd_line_priv);
     self->priv->line = &hw->data.line;
@@ -102,7 +91,6 @@ osd_line *osd_line_create(osd_scene *scene, osd_ingredient_hw *hw) {
     self->parent.paint = osd_line_paint;
     self->parent.destroy = osd_line_destroy;
     self->parent.start_y = osd_line_start_y;
-    self->parent.height = osd_line_height;
     self->parent.dump = osd_line_dump;
     return self;
 }

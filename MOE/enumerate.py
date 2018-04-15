@@ -17,6 +17,8 @@ class IngredientType(Enum):
     RECTANGLE = 3
     LINE = 4
     LABEL = 5
+    GROUP = 6
+
 
 class GradientMode(Enum):
     NONE = 0
@@ -55,13 +57,13 @@ OSD_PALETTE_HEADER_SIZE = 2 * 4  # struct _osd_palette_hw
 
 OSD_INGREDIENT_HEADER_SIZE = 4 * 4  # struct _osd_ingredient_hw
 
-OSD_WINDOW_HEADER_SIZE = 8 * 4  # struct _osd_window_hw
+OSD_WINDOW_HEADER_SIZE = 9 * 4  # struct _osd_window_hw
 
-OSD_GLYPH_HEADER_SIZE = 3 * 4  # struct _osd_glyph
+OSD_GLYPH_HEADER_SIZE = 4 * 4  # struct _osd_glyph
 
-OSD_SCENE_HEADER_SIZE = 8 * 4 # struct _osd_scene_hw
+OSD_SCENE_HEADER_SIZE = 8 * 4  # struct _osd_scene_hw
 
-OSD_BLOCK_HEADER_SIZE = 3 * 4 # struct _osd_block_hw
+OSD_BLOCK_HEADER_SIZE = 3 * 4  # struct _osd_block_hw
 
 OSD_SCENE_TITLE_MAX_LEN = 16
 

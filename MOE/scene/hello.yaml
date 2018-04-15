@@ -15,7 +15,7 @@ Scene:
         height: 300
 
         Blocks:
-          - ['', rect1, 250, 150]
+          - ['ABC', rect1, 250, 150]
           - ['', line1, 0, 180]
           - ['', text0, 100, 180]
           - ['', bitmap1, 0, 0]

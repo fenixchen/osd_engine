@@ -28,9 +28,9 @@ if TEST_ALL:
         'atv/no_signal.yaml',
         'atv/system_settings.yaml']
 else:
-    yamls = ['scene/hello.yaml']
+    #yamls = ['scene/hello.yaml']
     #yamls = ['atv/no_signal.yaml']
-    #yamls = ['atv/system_settings.yaml']
+    yamls = ['atv/system_settings.yaml']
 
 if __name__ == '__main__':
     scenes = []

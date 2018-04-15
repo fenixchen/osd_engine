@@ -6,8 +6,8 @@
 
 /* define the macro to open the macros */
 #ifdef OSD_ENABLE_MACROS_LINE 
-
 #define OSD_WINDOW_WINDOW_RECT      0
+
 #define OSD_BLOCK_WINDOW_RECT_B0 0
 #define OSD_BLOCK_WINDOW_RECT_B0 1
 #define OSD_BLOCK_WINDOW_RECT_B0 2
