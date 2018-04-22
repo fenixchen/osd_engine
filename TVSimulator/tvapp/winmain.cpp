@@ -18,9 +18,10 @@ extern "C"
 #define OS_TEST 0
 
 //#define STARTUP_OSD_FILE "..\\scenes\\label.osd"
-//#define STARTUP_OSD_FILE "..\\atv\\no_signal.osd"
-#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
+#define STARTUP_OSD_FILE "..\\atv\\no_signal.osd"
+//#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\tv.osd"
+//#define STARTUP_OSD_FILE "..\\scenes\\monitor.osd"
 
 
 #define SIMULATOR_VERSION "0.5"

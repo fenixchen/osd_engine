@@ -30,7 +30,8 @@ if TEST_ALL:
 else:
     #yamls = ['scene/hello.yaml']
     #yamls = ['atv/no_signal.yaml']
-    yamls = ['atv/system_settings.yaml']
+    #yamls = ['atv/system_settings.yaml']
+    yamls = ['scene/monitor.yaml']
 
 if __name__ == '__main__':
     scenes = []
