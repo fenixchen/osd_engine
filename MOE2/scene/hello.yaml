@@ -1,0 +1,62 @@
+Scene:
+  width: 960
+  height: 540
+  Includes:
+    - Include:
+        file: common.yaml
+
+  Windows:
+    - Window:
+        id: window0
+        x: 100
+        y: 100
+        width: 400
+        height: 300
+
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0x0000FF, 0xFF0000, 0x00FF00, 0xFF00FF,
+              0x505050, 0xF0F0F0, 0xFFFFFF, 0xFFFF00]
+          - Palette:
+              id: palette1
+              colors: []
+
+        Rectangles:
+          - Rectangle:
+              id: rect0
+              x: 100
+              y: 100
+              width: 200
+              height: 100
+              border_color: [1, 2, 3, 4]
+              border_weight: 20
+              bgcolor: [5, 6]
+              gradient_mode: TOP_TO_BOTTOM
+
+        Rows:
+          - Row:
+              y: 0
+              size: [16,16]
+              Columns:
+                - Text:
+                    column: 0
+                    id: text0
+                    color: 2
+                    text: 'Hello'
+
+                - Text:
+                    column: 10
+                    id: text1
+                    color: 3
+                    text: 'World'
+  ABC:
+          - Row:
+              y: 100
+              size: [50,50]
+              Columns:
+                - Bitmap:
+                    column: 1
+                    id: bitmap0
+                    bitmaps: 'images/menu.bmp'
+                    width_dec: 0
