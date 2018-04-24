@@ -5,10 +5,11 @@ import os
 import yaml
 import hexdump
 from app import *
-from engine import *
 from font import Font
-from glyph import Glyph
+from imageutil import ImageUtil
 from window import Window
+from enumerate import *
+from log import Log
 
 logger = Log.get_logger("engine")
 
@@ -334,7 +335,7 @@ class Scene(object):
                     if ingredient.mutable and len(ingredient.id) > 0:
                         f.write(
                             '#define OSD_INGREDIENT_%s_%-16s %d\n' % (
-                            window.id.upper(), ingredient.id.upper(), j))
+                                window.id.upper(), ingredient.id.upper(), j))
                 f.write('\n')
 
                 for j, block in enumerate(window.blocks):

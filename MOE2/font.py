@@ -4,19 +4,19 @@
 # copy freetype.dll to current folder
 
 import freetype
-from osdobject import OSDObject
 from log import Log
 from enumerate import OSD_DEFAULT_FONT_SIZE
 
 logger = Log.get_logger("engine")
 
-
-class Font(OSDObject):
+class Font(object):
     BASE_DIR = ''
 
-    def __init__(self, scene, id, file, font_width=None, font_height=None,
+    def __init__(self, scene, id, file,
+                 font_width=None, font_height=None,
                  charmap=None, monochrome=True):
-        super().__init__(scene, id)
+        self._scene = scene
+        self._id = id
         self._file = file
         self._monochrome = monochrome
         self._font_width = font_width
@@ -37,6 +37,11 @@ class Font(OSDObject):
                 face.set_charmap(charmap)
             for i in range(3):
                 self._faces.append(face)
+
+    @property
+    def id(self):
+        return self._id
+
 
     def get_kerning(self, char1, char2, font_width, font_height):
         face = self._faces[0]

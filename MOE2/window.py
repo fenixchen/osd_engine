@@ -1,9 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import struct
-from enumerate import *
 from log import Log
-from osdobject import *
 from font import Font
 from palette import Palette
 from rectangle import Rectangle
@@ -14,7 +12,7 @@ from glyph import Glyph
 logger = Log.get_logger("engine")
 
 
-class Window(OSDObject):
+class Window(object):
     def __init__(self, scene, id, x, y, width, height,
                  zorder=0, alpha=255, visible=True,
                  Rows=[],
@@ -23,7 +21,8 @@ class Window(OSDObject):
                  Preloads=[],
                  default_font=None,
                  default_font_size=16):
-        super().__init__(scene, id)
+        self._scene = scene
+        self._id = id
         self._scene = scene
         self._x = scene.get_x(x)
         self._y = scene.get_y(y)
@@ -45,19 +44,17 @@ class Window(OSDObject):
             self._default_font = scene.find_font(default_font)
 
         for preload_info in Preloads:
-            preload = self._create_object(preload_info)
+            self._create_object(preload_info)
 
         for palette_info in Palettes:
             palette = self._create_object(palette_info)
-            self.add_palette(palette)
+            self._palettes.append(palette)
 
-        assert len(self._palettes) > 0
-
-        self._default_palette = self._palettes[0]
+        assert len(self._palettes) == 2
 
         for rectangle_info in Rectangles:
             rectangle = self._create_object(rectangle_info)
-            self.add_rectangle(rectangle)
+            self._rectangles.append(rectangle)
 
         for row_info in Rows:
             row = self._create_object(row_info)
@@ -85,58 +82,12 @@ class Window(OSDObject):
         return self._default_font_size
 
     @property
-    def default_palette(self):
-        return self._default_palette
-
-    @property
     def scene(self):
         return self._scene
 
-    def extend_color(self, color_data, palette):
-        """
-        :param color_data:
-        :param palette:
-        :return: palette, data_index
-        """
-
-        color_set = set()
-        for color in color_data:
-            color_set.add(color)
-
-        if palette.can_extend(color_set):
-            return palette, palette.extend(color_data)
-
-        for pal in self._palettes:
-            if pal is palette:
-                continue
-            if pal.can_extend(color_set):
-                return pal, pal.extend(color_data)
-
-        palette = Palette(self,
-                          'palette_%d' % (len(self._palettes) + 1),
-                          [])
-        self.add_palette(palette)
-        if palette.can_extend(color_set, 65536):
-            return palette, palette.extend(color_data)
-
-        assert False
-
-    def find_palette(self, id):
-        for palette in self._palettes:
-            if palette.id == id:
-                return palette
-        raise Exception('Cannot find palette <%s>' % id)
-
-    def add_palette(self, new_palette):
-        for palette in self._palettes:
-            if palette.id == new_palette.id:
-                raise Exception('Duplicated palette <%s>' % new_palette.id)
-        self._palettes.append(new_palette)
-        new_palette.object_index = len(self._palettes) - 1
-
-    def add_rectangle(self, rectangle):
-        self._rectangles.append(rectangle)
-        rectangle.object_index = len(self._rectangles) - 1
+    @property
+    def palettes(self):
+        return self._palettes
 
     def get_kerning(self, font, char1, char2, font_width, font_height):
         if font is None:
@@ -236,19 +187,24 @@ class Window(OSDObject):
         raise Exception('Un-supported y <%s>' % y)
 
     def draw_line(self, y):
-        """
-        计算window的像素行
-        :param y: 行数
-        :return: Window 行数据对象
-        """
-        window_y = y - self._y
         painted = False
+        window_y = y - self._y
         window_line_buf = [0] * self._width
+
+        for rectangle in self._rectangles:
+            if rectangle.y <= window_y < rectangle.y + rectangle.height:
+                rectangle.draw_line(window_line_buf, window_y - rectangle.y)
+                painted = True
+
         for row in self._rows:
             if row.y <= window_y < row.y + row.cell_height:
                 row.draw_line(window_line_buf, window_y - row.y)
-                return window_line_buf
-        return None
+                painted = True
+
+        if painted:
+            return window_line_buf
+        else:
+            return None
 
     def __str__(self):
         ret = "%s(%s, (%d, %d), %d x %d, zorder:%d)\n" % \

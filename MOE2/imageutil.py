@@ -5,7 +5,7 @@ class ImageUtil(object):
     BASE_DIR = ''
 
     @classmethod
-    def load(cls, image_file):
+    def load(cls, image_file, image_width, image_height, transparent_color):
         image_file = ImageUtil.BASE_DIR + image_file
         im = Image.open(image_file)
         width, height = im.size
@@ -20,10 +20,16 @@ class ImageUtil(object):
             pixels = list(im.getdata())
             for y in range(height):
                 for x in range(width):
-                    cpixel = pixels[y * width + x]
-                    data.append(ImageUtil.make_color(cpixel[1], cpixel[2], cpixel[3]))
+                    color_pixel = pixels[y * width + x]
+                    data.append(ImageUtil.make_color(color_pixel[1], color_pixel[2], color_pixel[3]))
 
-        return width, height, data
+        image_data = [transparent_color] * image_width * image_height
+        h = min(height, image_height)
+        w = min(width, image_width)
+        for y in range(h):
+            image_data[y * image_width:y * image_width + w] = \
+                data[y * width: y * width + w]
+        return image_data
 
     @staticmethod
     def blend_pixel(dst, src, src_alpha):

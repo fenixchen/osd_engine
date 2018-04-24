@@ -1,11 +1,10 @@
 # -*- coding:utf-8 -*-
 
-
 class Cell(object):
-    def __init__(self, row, glyph, color, width_dec):
+    def __init__(self, row, drawing, color=None, width_dec=0):
         self._row = row
-        self._glyph = glyph
         self._color = color
+        self._drawing = drawing
         self._width_dec = width_dec
 
     @property
@@ -13,8 +12,10 @@ class Cell(object):
         return self._width_dec
 
     def draw_line(self, window_line_buffer, row_y, start, width):
-        bit_offset = row_y * self._row.cell_width
+        offset = row_y * self._row.cell_width
         for x in range(width):
-            if self._glyph.bit(bit_offset) > 0:
-                window_line_buffer[x + start] = self._color
-            bit_offset += 1
+            color = self._drawing.pixel(offset, self._color)
+            if color is not None:
+                window_line_buffer[x + start] = color
+            offset += 1
+

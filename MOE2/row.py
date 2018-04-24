@@ -3,7 +3,6 @@
 from log import Log
 from bitmap import Bitmap
 from text import Text
-from label import Label
 from glyph import Glyph
 
 logger = Log.get_logger("engine")

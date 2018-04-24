@@ -30,7 +30,7 @@ Scene:
               width: 200
               height: 100
               border_color: [1, 2, 3, 4]
-              border_weight: 20
+              border_weight: 2
               bgcolor: [5, 6]
               gradient_mode: TOP_TO_BOTTOM
 
@@ -50,13 +50,13 @@ Scene:
                     id: text1
                     color: 3
                     text: 'World'
-  ABC:
           - Row:
               y: 100
-              size: [50,50]
+              size: [54,19]
               Columns:
                 - Bitmap:
                     column: 1
                     id: bitmap0
                     bitmaps: 'images/menu.bmp'
+                    transparent_color: 0xFF00FF
                     width_dec: 0

@@ -2,14 +2,12 @@
 
 import struct
 
-from enumerate import *
 from log import Log
-from osdobject import OSDObject
 
 logger = Log.get_logger("engine")
 
 
-class Palette(OSDObject):
+class Palette(object):
     def __init__(self, window, id, colors):
         self._id = id
         self._window = window
@@ -52,19 +50,11 @@ class Palette(OSDObject):
         assert index < len(self._lut), "{} should < {}".format(index, len(self._lut))
         return self._lut[index]
 
-    def can_extend(self, color_set, max_color_count=256):
-        old_count = self.count
-        new_add = 0
-        for color in color_set:
-            if not self.find_color(color):
-                new_add += 1
-                if new_add + old_count > max_color_count:
-                    return False
-        return True
-
-    def extend(self, color_data):
+    def extend(self, color_data, transparent_color):
         data = []
         for color in color_data:
+            if color == transparent_color:
+                color |= 0xFF000000
             index = self.find_color(color)
             if index is None:
                 data.append(self.add_color(color))

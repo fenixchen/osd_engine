@@ -3,10 +3,6 @@
 
 import struct
 
-from enumerate import *
-from font import Font
-from imageutil import ImageUtil
-from ingredient import Ingredient
 from log import Log
 
 logger = Log.get_logger("engine")
@@ -70,9 +66,12 @@ class Glyph(object):
     def data(self):
         return self._data
 
-    def bit(self, bit_offset):
-        bit = self._data[bit_offset >> 3] & (128 >> (bit_offset & 7))
-        return bit
+    def pixel(self, offset, color):
+        bit = self._data[offset >> 3] & (128 >> (offset & 7))
+        if bit > 0:
+            return color
+        else:
+            return None
 
     def __str__(self):
         ret = "%s(font:%s, font_width:%d, font_height:%d, char:%d, width:%d)" % (
@@ -81,26 +80,4 @@ class Glyph(object):
         return ret
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s <%s-%s-%d> \'%c\'' % (
-            type(self), self._font.id, self.code, self._font_size, self._char_code))
-        header = b''
-        data = b''
-
-        self._ram_offset = ram_offset
-
-        header = struct.pack('<BBBB', self._left, self._top, self._width, self._height)
-
-        header += struct.pack('<HBB', self.code, self._font.object_index, self._font_size)
-
-        data_size = len(self._data)
-        assert (data_size <= 0xFFFF)
-
-        monochrome = 1 if self._monochrome else 0
-
-        header += struct.pack('<BBH', self._pitch, self.advance_x,
-                              (monochrome << 15) | data_size)
-
-        header += struct.pack('<I', ram_offset)
-
-        data += struct.pack('<%sB' % data_size, *self._data)
-        return header, data
+        pass

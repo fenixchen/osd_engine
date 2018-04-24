@@ -5,13 +5,13 @@ import struct
 
 from enumerate import *
 from imageutil import ImageUtil
-from ingredient import Ingredient
 from log import Log
+from cell import Cell
 
 logger = Log.get_logger("engine")
 
 
-class Bitmap(Ingredient):
+class Bitmap(object):
     """
     位图对象
     """
@@ -19,91 +19,57 @@ class Bitmap(Ingredient):
     def width(self):
         return self._width
 
-    def __init__(self, row, column, id, bitmaps, palette=None,
-                 mask_color=None, width=None, height=None, tiled=False,
+    def __init__(self, row, column, id, bitmaps,
+                 width=None, height=None, tiled=False,
                  transparent_color=None, mutable=False, current_bitmap=0,
                  width_dec=0):
 
-        super().__init__(row, column, id, palette, mutable)
+        self._palette = row.window.palettes[1]
+        self._row = row
+        self._column = column
+        self._id = id
+        self._multable = False
 
         self._data = []
         if isinstance(bitmaps, str):
             bitmaps = [bitmaps]
         assert (isinstance(bitmaps, list))
         self._bitmap_count = len(bitmaps)
-        self._width = width
-        self._height = height
-        self._tiled = tiled
-        self._mask_color = mask_color
-        self._bitmap_width = 0
-        self._bitmap_height = 0
+        self._width = row.cell_width
+        self._height = row.cell_height
         self._width_dec = width_dec
         self._transparent_color = transparent_color
         self._current_bitmap = current_bitmap
         color_data = []
         for bitmap in bitmaps:
-            self._bitmap_width, self._bitmap_height, data = ImageUtil.load(bitmap)
+            data = ImageUtil.load(bitmap, self._width, self._height, transparent_color)
             color_data.extend(data)
 
-        assert self._bitmap_width > 0 and self._bitmap_height > 0
-
-        window = row.window
-        self._palette, self._data = window.extend_color(color_data,
-                                                        self._palette)
+        self._data = self._palette.extend(color_data, transparent_color)
 
         self._current = 0
 
-        assert (len(self._data) == self._bitmap_width * self._bitmap_height * self._bitmap_count)
-
-        if self._width is None:
-            self._width = self._bitmap_width
-
-        if self._height is None:
-            self._height = self._bitmap_height
-
     @property
     def height(self):
-        if self._tiled:
-            return self._height
-        else:
-            return min(self._height, self._bitmap_height)
+        return self._height
 
     @property
     def width(self):
-        if self._tiled:
-            return self._width
+        return self._width
+
+    def fill_cells(self, cells):
+        column = self._column
+        cells[column] = Cell(self._row, self, None, self._width_dec)
+
+    def pixel(self, pixel_offset, color):
+        start = self._width * self._height * self._current_bitmap
+        start += pixel_offset
+        color_index = self._data[pixel_offset]
+        color = self._palette.color(color_index)
+        if (color & 0xFF000000) == 0xFF000000:
+            return None
         else:
-            return min(self._width, self._bitmap_width)
-
-    def draw_line(self, window_line_buf, y):
-        return
-        if y >= self.height:
-            return
-        if self._tiled:
-            width = min(self._width, window.width - block_x)
-        else:
-            width = min(self._bitmap_width, self._width, window.width - block_x)
-
-        start = self._current * self._bitmap_width * self._bitmap_height \
-                + self._bitmap_width * (y % self._bitmap_height)
-
-        cx = start
-        for x in range(start, start + width):
-            index = self._data[cx]
-            col = block_x + x - start
-            if self._mask_color is None:
-                color = self.get_color(index)
-                if 0 <= col < window.width and color != self._transparent_color:
-                    window_line_buf[col] = color
-            else:
-                color = self.get_color(self._mask_color)
-                intensity = index
-                if 0 <= col < window.width and intensity > 0:
-                    window_line_buf[col] = ImageUtil.blend_pixel(window_line_buf[col], color, intensity)
-
-            cx = cx + 1
-            if cx - start >= self._bitmap_width:
-                cx = start
+            return color
 
     def __str__(self):
         return "%s(id: %s, palette: %s, %d x %d, count: %d, len: %d)" % \

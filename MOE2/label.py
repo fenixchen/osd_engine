@@ -4,7 +4,6 @@
 import struct
 
 from enumerate import *
-from ingredient import Ingredient
 from log import Log
 from text import Text
 from block import Block
