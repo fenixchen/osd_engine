@@ -4,12 +4,14 @@ from log import Log
 from bitmap import Bitmap
 from text import Text
 from glyph import Glyph
+from image import Image
 
 logger = Log.get_logger("engine")
 
 
 class Row(object):
     def __init__(self, window, y, size, Columns=[]):
+        self._object_index = None
         self._window = window
         self._y = y
         self._cell_width, self._cell_height = size
@@ -35,6 +37,15 @@ class Row(object):
         obj = cls(row=self, **values)
         logger.debug(obj)
         return obj
+
+    @property
+    def object_index(self):
+        assert self._object_index is not None
+        return self._object_index
+
+    @object_index.setter
+    def object_index(self, i):
+        self._object_index = i
 
     def draw_line(self, window_line_buffer, row_y):
         x = 0

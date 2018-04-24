@@ -17,7 +17,6 @@ class Text(object):
         self._window = row.window
         self._palette = row.window.palettes[0]
         self._id = id
-        self._mutable = False
         self._row = row
         self._column = column
         self._mutable = mutable

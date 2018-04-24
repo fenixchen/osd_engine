@@ -5,9 +5,11 @@ from log import Log
 from font import Font
 from palette import Palette
 from rectangle import Rectangle
+from bitmap import Bitmap
 from preload import Preload
 from row import Row
 from glyph import Glyph
+from enumerate import *
 
 logger = Log.get_logger("engine")
 
@@ -15,10 +17,11 @@ logger = Log.get_logger("engine")
 class Window(object):
     def __init__(self, scene, id, x, y, width, height,
                  zorder=0, alpha=255, visible=True,
-                 Rows=[],
                  Palettes=[],
                  Rectangles=[],
+                 Bitmaps=[],
                  Preloads=[],
+                 Rows=[],
                  default_font=None,
                  default_font_size=16):
         self._scene = scene
@@ -34,6 +37,7 @@ class Window(object):
         self._rectangles = []
         self._palettes = []
         self._glyphs = []
+        self._bitmaps = []
         self._texts = []
         self._rows = []
         self._default_font_size = default_font_size
@@ -56,8 +60,13 @@ class Window(object):
             rectangle = self._create_object(rectangle_info)
             self._rectangles.append(rectangle)
 
+        for bitmap_info in Bitmaps:
+            bitmap = self._create_object(bitmap_info)
+            self._bitmaps.append(bitmap)
+
         for row_info in Rows:
             row = self._create_object(row_info)
+            row.object_index = len(self._rows) - 1
             self._rows.append(row)
 
     def _create_object(self, item):
@@ -98,6 +107,13 @@ class Window(object):
         else:
             font = self._scene.find_font(font)
         return font.get_kerning(char1, char2, font_width, font_height)
+
+    def get_bitmap(self, bitmap_id):
+        for bitmap in self._bitmaps:
+            if bitmap.id == bitmap_id:
+                return bitmap
+
+        assert False, 'Cannot find bitmap <%s>' % bitmap_id
 
     def get_glyph(self, font, char_code, font_width, font_height):
         """
@@ -212,4 +228,64 @@ class Window(object):
         return ret.rstrip('\n')
 
     def to_binary(self, ram_offset, ram_usage):
-        pass
+        logger.debug('Generate %s <%s>' % (type(self), self._id))
+        header = b''
+        ram = b''
+        header += struct.pack('<BBBx',
+                              1 if self._visible else 0,
+                              self._alpha,
+                              self._zorder)
+        header += struct.pack('<HH', self._x, self._y)
+
+        header += struct.pack('<HH', self._width, self._height)
+
+        header += struct.pack('<HH', len(self._rectangles), len(self._rows))
+
+        header += struct.pack('<I', ram_offset)  # rectangle_addr
+
+        rectangle_ram = b''
+        for rectangle in self._rectangles:
+            rectangle_ram += rectangle.to_binary(ram_offset)
+        assert len(rectangle_ram) == OSD_RECTANGLE_SIZE * len(self._rectangles)
+        ram += rectangle_ram
+        ram_offset += OSD_RECTANGLE_SIZE * len(self._rectangles)
+
+        header += struct.pack('<HH',
+                              self._palettes[0].count,
+                              self._palettes[1].count)
+
+        header += struct.pack('<I', ram_offset)  # palette0_addr
+        palette0_ram = self._palettes[0].to_binary()
+        assert len(palette0_ram) == self._palettes[0].count * 4
+        ram += palette0_ram
+        ram_offset += self._palettes[0].count * 4
+
+        header += struct.pack('<I', ram_offset)  # palette1_addr
+        palette1_ram = self._palettes[1].to_binary()
+        assert len(palette1_ram) == self._palettes[1].count * 4
+        ram += palette1_ram
+        ram_offset += self._palettes[1].count * 4
+
+        sized_drawing = {}
+        object_index = 0
+        for glyph in self._glyphs:
+            size = (glyph.font_width, glyph.font_height)
+            if size not in sized_drawing:
+                sized_drawing[size] = [glyph]
+            else:
+                sized_drawing[size].append(glyph)
+            glyph.object_index = object_index
+            object_index += 1
+
+        for bitmap in self._bitmaps:
+            size = (bitmap.width, bitmap.height)
+            if size not in sized_drawing:
+                sized_drawing[size] = [bitmap]
+            else:
+                sized_drawing[size].append(bitmap)
+            bitmap.object_index = object_index
+            object_index += 1
+
+        header += struct.pack('<I', ram_offset)  # rows_addr
+
+        return header, ram

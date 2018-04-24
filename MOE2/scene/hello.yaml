@@ -33,7 +33,11 @@ Scene:
               border_weight: 2
               bgcolor: [5, 6]
               gradient_mode: TOP_TO_BOTTOM
-
+        Bitmaps:
+          - Bitmap:
+              id: bitmap0
+              bitmaps: 'images/menu.bmp'
+              transparent_color: 0xFF00FF
         Rows:
           - Row:
               y: 0
@@ -44,7 +48,6 @@ Scene:
                     id: text0
                     color: 2
                     text: 'Hello'
-
                 - Text:
                     column: 10
                     id: text1
@@ -54,9 +57,11 @@ Scene:
               y: 100
               size: [54,19]
               Columns:
-                - Bitmap:
+                - Image:
+                    id: image0
+                    bitmap: bitmap0
                     column: 1
-                    id: bitmap0
-                    bitmaps: 'images/menu.bmp'
-                    transparent_color: 0xFF00FF
-                    width_dec: 0
+                - Image:
+                    id: image0
+                    bitmap: bitmap0
+                    column: 4

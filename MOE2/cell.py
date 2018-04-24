@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+
 class Cell(object):
     def __init__(self, row, drawing, color=None, width_dec=0):
         self._row = row
@@ -18,4 +19,3 @@ class Cell(object):
             if color is not None:
                 window_line_buffer[x + start] = color
             offset += 1
-

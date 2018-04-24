@@ -3,6 +3,7 @@
 import struct
 
 from log import Log
+from imageutil import ImageUtil
 
 logger = Log.get_logger("engine")
 
@@ -54,7 +55,7 @@ class Palette(object):
         data = []
         for color in color_data:
             if color == transparent_color:
-                color |= 0xFF000000
+                color = ImageUtil.set_alpha(color, 0xFF)
             index = self.find_color(color)
             if index is None:
                 data.append(self.add_color(color))
@@ -66,16 +67,9 @@ class Palette(object):
         return "%s(id: %s, size:%d)" % \
                (type(self), self._id, len(self._lut))
 
-    def to_binary(self, ram_offset):
+    def to_binary(self):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
-        lut_len = len(self._lut)
-        header = struct.pack('<BxH',
-                             self.pixel_bits,
-                             len(self._lut))
+        ram = b''
         if len(self._lut) > 0:
             ram = struct.pack('<%dI' % len(self._lut), *self._lut)
-            header += struct.pack('<I', ram_offset)
-        else:
-            ram = b''
-            header += struct.pack('<I', 0)
-        return header, ram
+        return ram

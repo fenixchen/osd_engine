@@ -255,4 +255,21 @@ class Rectangle(object):
                    -1 if self._bgcolor_end is None else self._bgcolor_end)
 
     def to_binary(self, ram_offset):
-        logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
+        logger.debug('Generate %s <%s>' % (type(self), self._id))
+        ram = b''
+
+        ram += struct.pack('<HH', self._x, self._y)
+
+        ram += struct.pack('<HH', self._width, self._height)
+
+        ram += struct.pack('<BBBB', self._border_color_top,
+                           self._border_color_bottom,
+                           self._border_color_left,
+                           self._border_color_right)
+
+        ram += struct.pack('<BBBB', self._border_weight,
+                           (self._gradient_mode.value << 4) | self._border_style.value,
+                           0 if self._bgcolor_start is None else self._bgcolor_start,
+                           0 if self._bgcolor_end is None else self._bgcolor_end)
+
+        return ram

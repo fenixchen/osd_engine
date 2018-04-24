@@ -12,42 +12,42 @@ logger = Log.get_logger("engine")
 
 
 class Bitmap(object):
-    """
-    位图对象
-    """
-
-    def width(self):
-        return self._width
-
-    def __init__(self, row, column, id, bitmaps,
-                 width=None, height=None, tiled=False,
-                 transparent_color=None, mutable=False, current_bitmap=0,
-                 width_dec=0):
-
-        self._palette = row.window.palettes[1]
-        self._row = row
-        self._column = column
+    def __init__(self, window, id, bitmaps,
+                 transparent_color=None,
+                 current_bitmap=0):
+        self._object_index = None
+        self._palette = window.palettes[1]
+        self._window = window
         self._id = id
-        self._multable = False
 
         self._data = []
         if isinstance(bitmaps, str):
             bitmaps = [bitmaps]
         assert (isinstance(bitmaps, list))
         self._bitmap_count = len(bitmaps)
-        self._width = row.cell_width
-        self._height = row.cell_height
-        self._width_dec = width_dec
         self._transparent_color = transparent_color
         self._current_bitmap = current_bitmap
         color_data = []
         for bitmap in bitmaps:
-            data = ImageUtil.load(bitmap, self._width, self._height, transparent_color)
+            self._width, self._height, data = ImageUtil.load(bitmap, transparent_color)
             color_data.extend(data)
 
         self._data = self._palette.extend(color_data, transparent_color)
 
         self._current = 0
+
+    @property
+    def object_index(self):
+        assert self._object_index is not None
+        return self._object_index
+
+    @object_index.setter
+    def object_index(self, i):
+        self._object_index = i
+
+    @property
+    def id(self):
+        return self._id
 
     @property
     def height(self):
@@ -57,16 +57,12 @@ class Bitmap(object):
     def width(self):
         return self._width
 
-    def fill_cells(self, cells):
-        column = self._column
-        cells[column] = Cell(self._row, self, None, self._width_dec)
-
     def pixel(self, pixel_offset, color):
         start = self._width * self._height * self._current_bitmap
         start += pixel_offset
         color_index = self._data[pixel_offset]
         color = self._palette.color(color_index)
-        if (color & 0xFF000000) == 0xFF000000:
+        if ImageUtil.alpha(color) == 0xFF:
             return None
         else:
             return color
@@ -75,10 +71,6 @@ class Bitmap(object):
         return "%s(id: %s, palette: %s, %d x %d, count: %d, len: %d)" % \
                (type(self), self._id, self._palette, self._width, self._height,
                 self._bitmap_count, len(self._data))
-
-    @property
-    def ingredient_type(self):
-        return IngredientType.BITMAP.value
 
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>' % (type(self), self._id))

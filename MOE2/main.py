@@ -5,7 +5,7 @@ from scene import Scene
 import os
 
 TEST_ALL = False
-GENERATE_BIN = False
+GENERATE_BIN = True
 if TEST_ALL:
     yamls = [
         'scene/animation.yaml',

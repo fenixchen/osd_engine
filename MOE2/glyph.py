@@ -24,8 +24,8 @@ class Glyph(object):
         return self._object_index
 
     @object_index.setter
-    def object_index(self, object_index):
-        self._object_index = object_index
+    def object_index(self, i):
+        self._object_index = i
 
     @property
     def monochrome(self):

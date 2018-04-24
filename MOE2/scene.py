@@ -10,6 +10,7 @@ from imageutil import ImageUtil
 from window import Window
 from enumerate import *
 from log import Log
+import struct
 
 logger = Log.get_logger("engine")
 
@@ -251,8 +252,10 @@ class Scene(object):
         bins += struct.pack('<I', ram_offset)
 
         bins += struct.pack('<BBBB',
-                            OSD_PALETTE_HEADER_SIZE, OSD_INGREDIENT_HEADER_SIZE,
-                            OSD_WINDOW_HEADER_SIZE, OSD_GLYPH_HEADER_SIZE)
+                            OSD_PALETTE_HEADER_SIZE,
+                            OSD_WINDOW_HEADER_SIZE,
+                            OSD_RECTANGLE_SIZE,
+                            OSD_CELL_SIZE)
 
         bins += struct.pack('<BxH', len(self._windows), self._timer_ms);
 
@@ -278,7 +281,6 @@ class Scene(object):
         return headers, rams
 
     def generate_binary(self, target_binary, target_header, taget_address=0):
-
         assert self._yaml_file is not None
 
         ram_usage = {}
@@ -307,9 +309,9 @@ class Scene(object):
             assert size == header_size
             f.write(window_ram)
 
-        self._log_binary_size(ram_usage)
+        #self._log_binary_size(ram_usage)
 
-        self._generate_header_file(target_header, target_binary)
+        #self._generate_header_file(target_header, target_binary)
 
     def _generate_header_file(self, target_header, target_binary):
         # create header files
