@@ -73,11 +73,16 @@ class Glyph(object):
         else:
             return None
 
+    def is_glyph(self):
+        return True
+
     def __str__(self):
         ret = "%s(font:%s, font_width:%d, font_height:%d, char:%d, width:%d)" % (
             type(self), self._font.id, self._font_width, self._font_height, self.code,
             self._width)
         return ret
 
-    def to_binary(self, ram_offset):
-        pass
+    def to_binary(self):
+        logger.debug('Generate %s <%s>(%d x %d)' % (type(self), self._char_code, self._font_width, self._font_height))
+        data_size = len(self._data)
+        return struct.pack('<%sB' % data_size, *self._data)

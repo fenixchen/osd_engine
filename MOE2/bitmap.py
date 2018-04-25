@@ -67,42 +67,15 @@ class Bitmap(object):
         else:
             return color
 
+    def is_glyph(self):
+        return False
+
     def __str__(self):
         return "%s(id: %s, palette: %s, %d x %d, count: %d, len: %d)" % \
                (type(self), self._id, self._palette, self._width, self._height,
                 self._bitmap_count, len(self._data))
 
-    def to_binary(self, ram_offset):
+    def to_binary(self):
         logger.debug('Generate %s <%s>' % (type(self), self._id))
-        ram = b''
-        pixel_bits = self._palette.pixel_bits
-        headers = struct.pack('<BBxx', self.ingredient_type, self._palette.object_index)
-
-        flag = (1 if self._tiled else 0) | \
-               (0 if self._transparent_color is None else 1) << 1
-
-        headers += struct.pack('<BBBB',
-                               flag,
-                               0 if self._mask_color is None else self._mask_color,
-                               self._bitmap_count,
-                               self._current_bitmap)
-
-        headers += struct.pack('<I', ram_offset)
-
-        headers += struct.pack('<xxxx')
-
         data_size = len(self._data)
-
-        ram += struct.pack('<HH', self._bitmap_width, self._bitmap_height)
-
-        ram += struct.pack('<I', 0 if self._transparent_color is None else self._transparent_color)
-
-        ram += struct.pack('<I', data_size)
-
-        if pixel_bits <= 8:
-            ram += struct.pack('<%sB' % data_size, *self._data)
-        elif pixel_bits <= 16:
-            ram += struct.pack('<%sH' % data_size, *self._data)
-        else:
-            raise Exception('Not implemented %d' % pixel_bits)
-        return headers, ram
+        return struct.pack('<%sB' % data_size, *self._data)

@@ -24,9 +24,17 @@ Scene:
 
         Rectangles:
           - Rectangle:
+              id: rect_border
+              x: 0
+              y: 0
+              width: 400
+              height: 300
+              border_color: 4
+              border_weight: 1
+          - Rectangle:
               id: rect0
               x: 100
-              y: 100
+              y: 150
               width: 200
               height: 100
               border_color: [1, 2, 3, 4]
@@ -40,11 +48,12 @@ Scene:
               transparent_color: 0xFF00FF
         Rows:
           - Row:
-              y: 0
+              id: row0
+              y: 10
               size: [16,16]
               Columns:
                 - Text:
-                    column: 0
+                    column: 1
                     id: text0
                     color: 2
                     text: 'Hello'
@@ -54,13 +63,30 @@ Scene:
                     color: 3
                     text: 'World'
           - Row:
+              id: row1
+              y: 50
+              size: [24, 24]
+              Columns:
+                - Text:
+                    column: 1
+                    id: text0
+                    color: 2
+                    text: 'Hello'
+                - Text:
+                    column: 10
+                    id: text1
+                    color: 3
+                    text: 'World'
+
+          - Row:
+              id: row2
               y: 100
               size: [54,19]
               Columns:
                 - Image:
                     id: image0
                     bitmap: bitmap0
-                    column: 1
+                    column: 2
                 - Image:
                     id: image0
                     bitmap: bitmap0

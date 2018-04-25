@@ -13,16 +13,18 @@ class Rectangle(object):
     def __init__(self, window, id,
                  x=0, y=0,
                  width=0, height=0,
-                 border_color=0, border_weight=0, bgcolor=None,
+                 border_color=0, border_weight=0,
+                 bgcolor=None,
                  gradient_mode=GradientMode.SOLID.name,
                  border_style=LineStyle.SOLID.name,
-                 mutable=False):
+                 visible=True):
         self._window = window
         self._id = id
         self._x = x
         self._y = y
-        self._width = 0 if width is None else width
-        self._height = 0 if height is None else height
+        self._visible = visible
+        self._width = width
+        self._height = height
         self._border_style = LineStyle[border_style]
         self._border_weight = border_weight
         if self._border_weight != 0:
@@ -67,6 +69,10 @@ class Rectangle(object):
             self._bgcolor_end = None
 
         self._palette = window.palettes[0]
+
+    @property
+    def visible(self):
+        return self._visible
 
     def _check_border_style(self, x):
         if self._border_style == LineStyle.SOLID:
@@ -267,7 +273,12 @@ class Rectangle(object):
                            self._border_color_left,
                            self._border_color_right)
 
-        ram += struct.pack('<BBBB', self._border_weight,
+        assert self._border_weight <= 0x7F
+        if self._visible:
+            border_weight = self._border_weight | (1 << 7)
+        else:
+            border_weight = self._border_weight
+        ram += struct.pack('<BBBB', border_weight,
                            (self._gradient_mode.value << 4) | self._border_style.value,
                            0 if self._bgcolor_start is None else self._bgcolor_start,
                            0 if self._bgcolor_end is None else self._bgcolor_end)

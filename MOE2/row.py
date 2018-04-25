@@ -5,15 +5,18 @@ from bitmap import Bitmap
 from text import Text
 from glyph import Glyph
 from image import Image
+import struct
 
 logger = Log.get_logger("engine")
 
 
 class Row(object):
-    def __init__(self, window, y, size, Columns=[]):
+    def __init__(self, window, y, size, id='', visible=True, Columns=[]):
         self._object_index = None
         self._window = window
         self._y = y
+        self._id = id
+        self._visible = visible
         self._cell_width, self._cell_height = size
         self._columns = []
         for column_info in Columns:
@@ -47,6 +50,16 @@ class Row(object):
     def object_index(self, i):
         self._object_index = i
 
+    @property
+    def visible(self):
+        return self._visible
+
+    def is_glyph_row(self):
+        for cell in self._cells:
+            if cell is not None and cell.is_glyph():
+                return True
+        return False
+
     def draw_line(self, window_line_buffer, row_y):
         x = 0
         for i, cell in enumerate(self._cells):
@@ -55,7 +68,7 @@ class Row(object):
                                row_y, x, self._cell_width)
                 x += self.cell_width - cell.width_dec
             else:
-                x = self._cell_width * i
+                x = self._cell_width * (i + 1)
 
     @property
     def y(self):
@@ -84,3 +97,16 @@ class Row(object):
     def __str__(self):
         return "%s(y:%d, cell_width:%d, cell_height:%d)" % (
             type(self), self._y, self._cell_width, self._cell_height)
+
+    def to_binary(self, is_glyph_row, resource_addr):
+        logger.debug('Generate %s <%s>(y:%d)' % (type(self),self._id,self._y))
+        ram = b''
+        ram += struct.pack('<I', resource_addr)
+        ram += struct.pack('<BBBB', 1 if is_glyph_row else 0, self._cell_width, self._cell_height,
+                           1 if self._visible else 0)
+        for cell in self._cells:
+            if cell is None:
+                ram += struct.pack('<BBB', 0, 0, 0)
+            else:
+                ram += struct.pack('<BBB', cell.object_index, cell.color, cell.width_dec)
+        return ram

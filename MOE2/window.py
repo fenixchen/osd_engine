@@ -208,11 +208,15 @@ class Window(object):
         window_line_buf = [0] * self._width
 
         for rectangle in self._rectangles:
+            if not rectangle.visible:
+                continue
             if rectangle.y <= window_y < rectangle.y + rectangle.height:
                 rectangle.draw_line(window_line_buf, window_y - rectangle.y)
                 painted = True
 
         for row in self._rows:
+            if not row.visible:
+                continue
             if row.y <= window_y < row.y + row.cell_height:
                 row.draw_line(window_line_buf, window_y - row.y)
                 painted = True
@@ -243,6 +247,7 @@ class Window(object):
 
         header += struct.pack('<I', ram_offset)  # rectangle_addr
 
+        # build rectangles
         rectangle_ram = b''
         for rectangle in self._rectangles:
             rectangle_ram += rectangle.to_binary(ram_offset)
@@ -250,6 +255,7 @@ class Window(object):
         ram += rectangle_ram
         ram_offset += OSD_RECTANGLE_SIZE * len(self._rectangles)
 
+        # build palette0, palette1
         header += struct.pack('<HH',
                               self._palettes[0].count,
                               self._palettes[1].count)
@@ -266,26 +272,63 @@ class Window(object):
         ram += palette1_ram
         ram_offset += self._palettes[1].count * 4
 
-        sized_drawing = {}
+        # build glyph
+        sized_glyphs = {}
         object_index = 0
         for glyph in self._glyphs:
             size = (glyph.font_width, glyph.font_height)
-            if size not in sized_drawing:
-                sized_drawing[size] = [glyph]
+            if size not in sized_glyphs:
+                sized_glyphs[size] = [glyph]
             else:
-                sized_drawing[size].append(glyph)
+                sized_glyphs[size].append(glyph)
             glyph.object_index = object_index
             object_index += 1
 
+        sized_glyph_addr = {}  # (width, height) => ram_addr
+        for sizes in sized_glyphs.keys():
+            sized_glyph_addr[sizes] = ram_offset
+            glyphs_ram = b''
+            for glyph in sized_glyphs[sizes]:
+                glyphs_ram += glyph.to_binary()
+            assert len(glyphs_ram) == sizes[0] * sizes[1] / 8 * len(sized_glyphs[sizes])
+            ram_offset += len(glyphs_ram)
+            ram += glyphs_ram
+        logger.debug("sized_glyph_addr ==> %s" % sized_glyph_addr)
+
+        # build bitmaps
+        sized_bitmaps = {}
+        object_index = 0
         for bitmap in self._bitmaps:
             size = (bitmap.width, bitmap.height)
-            if size not in sized_drawing:
-                sized_drawing[size] = [bitmap]
+            if size not in sized_bitmaps:
+                sized_bitmaps[size] = [bitmap]
             else:
-                sized_drawing[size].append(bitmap)
+                sized_bitmaps[size].append(bitmap)
             bitmap.object_index = object_index
             object_index += 1
+        sized_bitmap_addr = {}  # (width, height) => ram_addr
+        for sizes in sized_bitmaps.keys():
+            bitmap_ram = b''
+            sized_bitmap_addr[sizes] = ram_offset
+            for glyph in sized_bitmaps[sizes]:
+                bitmap_ram += glyph.to_binary()
+            assert len(bitmap_ram) == sizes[0] * sizes[1] * len(sized_bitmaps[sizes])
+            ram_offset += len(bitmap_ram)
+            ram += bitmap_ram
+
+        logger.debug("sized_bitmap_addr ==>%s" % sized_bitmap_addr)
 
         header += struct.pack('<I', ram_offset)  # rows_addr
-
+        row_ram = b''
+        for row in self._rows:
+            sizes = (row.cell_width, row.cell_height)
+            is_glyph_row = row.is_glyph_row()
+            if is_glyph_row:
+                assert sizes in sized_glyph_addr
+                resource_addr = sized_glyph_addr[sizes]
+            else:
+                assert sizes in sized_bitmap_addr
+                resource_addr = sized_bitmap_addr[sizes]
+            row_ram += row.to_binary(is_glyph_row, resource_addr)
+        ram_offset += len(row_ram)
         return header, ram

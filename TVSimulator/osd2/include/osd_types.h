@@ -80,7 +80,8 @@ struct _osd_rectangle_hw {
     u8 border_color_top, border_color_bottom;
     u8 border_color_left, border_color_right;
 
-    u8 border_weight;
+    u8 border_weight: 7;
+	u8 visible: 1;
     u8 border_style: 4; //OSD_LINE_STYLE_XXX, lower 4 bit
     u8 gradient_mode:4; //OSD_GRADIENT_MODE_TOP_TO_BOTTOM_XXX, higher 4 bit
     u8 bgcolor_start, bgcolor_end;    
@@ -91,7 +92,8 @@ struct _osd_rectangle_hw {
 typedef struct _osd_window_hw osd_window_hw;
 
 struct _osd_window_hw {
-    u8 visible;
+    u8 visible: 1;
+	u8 reserved: 7;
     u8 alpha;
     u8 z_order;
     u8 reserved;
@@ -117,9 +119,11 @@ struct _osd_window_hw {
 
 typedef struct _osd_row_hw osd_row_hw;
 struct _osd_row_hw {
-    u32 resource_addr;
+    u32 resource_addr: 32;
+	u8 is_glyph_row;
     u8 cell_width;
     u8 cell_height;
+	u8 reserved;
     osd_cell_hw cell[1];
 };
 

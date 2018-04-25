@@ -27,7 +27,6 @@ class Text(object):
     def fill_cells(self, cells):
         column = self._column
         previous = None
-        color = self._window.palettes[0].color(self._color)
         for char in self._text:
             glyph = self._window.get_glyph(self._font, char,
                                            self._row.cell_width,
@@ -40,7 +39,7 @@ class Text(object):
             else:
                 kerning = 0
             width_dec = self._row.cell_width - glyph.width + kerning
-            cells[column] = Cell(self._row, glyph, color, width_dec)
+            cells[column] = Cell(self._row, glyph, self._color, width_dec)
             column += 1
             previous = char
 
