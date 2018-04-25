@@ -309,9 +309,9 @@ class Scene(object):
             assert size == header_size
             f.write(window_ram)
 
-        #self._log_binary_size(ram_usage)
+        self._log_binary_size(ram_usage)
 
-        #self._generate_header_file(target_header, target_binary)
+        # self._generate_header_file(target_header, target_binary)
 
     def _generate_header_file(self, target_header, target_binary):
         # create header files
@@ -352,76 +352,70 @@ class Scene(object):
     def _log_binary_size(self, ram_usage):
         total_size = 0
 
+        index_ram_size = 0
+        resource_ram_size = 0
+        rectangle_ram_size = 0
         total_size = ram_usage['scene_header']
         logger.info('** SCENE <%s> size:%d, Total:%d', self._title, ram_usage['scene_header'], total_size)
 
         for window_index, window in enumerate(self._windows):
-            logger.info("**** [%d] WINDOW <%s> block_count(%d)", window_index, window.id, len(window._blocks))
+            logger.info("**** [%d] WINDOW <%s> row_count(%d)", window_index, window.id, len(window._rows))
             window_header_size = ram_usage[window]
             total_size += window_header_size
             logger.info('****** Header size:%d, Total:%d', window_header_size, total_size)
 
-            block_size = len(window._blocks) * OSD_BLOCK_HEADER_SIZE
-            total_size += block_size
-            logger.info('****** Block data size:%d, Total:%d', block_size, total_size)
-
-            ingredient_size = 0
-            for i, ingredient in enumerate(window._ingredients):
-                s = ram_usage[ingredient]
-                ingredient_size += s
-                logger.info('****** [%04d] %-32s => %5d, Total:%d', i, ingredient.id, s, total_size + ingredient_size)
-            logger.info('****** <INGREDIENT> size:%d', ingredient_size)
-            total_size += ingredient_size
+            rectangle_size = 0
+            for i, rectangle in enumerate(window._rectangles):
+                s = ram_usage[rectangle]
+                rectangle_size += s
+                logger.info('****** Rectangle[%04d] %-32s => %5d, Total:%d', i, rectangle.id, s,
+                            total_size + rectangle_size)
+            logger.info('****** <RECTANGLE> size:%d', rectangle_size)
+            total_size += rectangle_size
+            rectangle_ram_size += rectangle_size
 
             glyph_size = 0
             for i, glyph in enumerate(window._glyphs):
                 s = ram_usage[glyph]
                 glyph_size += s
-                logger.info('****** [%04d] %-16s (%02d x %02d) => %5d, Total:%d',
-                            i, glyph.id, glyph.width, glyph.height, s, total_size + glyph_size)
+                logger.info('****** [%04d] %-24s => %5d, Total:%d',
+                            i, glyph.id, s, total_size + glyph_size)
 
             logger.info('******  <GLYPH> size:%d', glyph_size)
             total_size += glyph_size
+            resource_ram_size += glyph_size
+
+            bitmap_size = 0
+            for i, bitmap in enumerate(window._bitmaps):
+                s = ram_usage[bitmap]
+                bitmap_size += s
+                logger.info('****** [%04d] %-13s %3d x %3d  => %5d, Total:%d',
+                            i, bitmap.id, bitmap.width, bitmap.height, s, total_size + bitmap_size)
+
+            logger.info('******  <BITMAP> size:%d', bitmap_size)
+            total_size += bitmap_size
+            resource_ram_size += bitmap_size
 
             palette_size = 0
-            for i, palette in enumerate(window._palettes):
+            for i, palette in enumerate(window.palettes):
                 s = ram_usage[palette]
                 palette_size += s
-                logger.info('****** [%04d] %-32s => %5d, Total:%d', i, palette.id, s, palette_size + total_size)
+                logger.info('****** [%04d] %-20s %3d => %5d, Total:%d', i, palette.id, palette.count, s, palette_size + total_size)
             logger.info('****** <palette> size:%d', palette_size)
             total_size += palette_size
 
+            row_size = 0
+            for i, row in enumerate(window._rows):
+                s = ram_usage[row]
+                row_size += s
+                logger.info('****** [%04d] %-13s (%3dx%3d) 8 + (%2d) x 3 => %5d, Total:%d',
+                            i, row.id, row.cell_width, row.cell_height, row.cell_count, s, total_size + row_size)
+
+            logger.info('******  <ROW> size:%d', row_size)
+            total_size += row_size
+            index_ram_size += row_size
+
         logger.info('** <TOTAL> size:%d' % total_size)
-        return
-
-        ingredient_size = 0
-        for i, ingredient in enumerate(self._ingredients):
-            s = ram_usage[ingredient]
-            ingredient_size += s
-            logger.info('[%04d] %-32s => %d, Total:%d', i, ingredient.id, s, total_size + ingredient_size)
-        logger.info('[****] <ingredient> size:%d', ingredient_size)
-        total_size += ingredient_size
-
-        window_size = 0
-        for i, window in enumerate(self._windows):
-            s = ram_usage[window]
-            window_size += s
-            logger.info('[%04d] %-32s block(%04d) => %d, Total:%d',
-                        i, window.id, len(window.blocks), s, window_size + total_size)
-        logger.info('[****] <RAM window> size:%d', window_size)
-        total_size += window_size
-
-        total_size += ram_usage['scene_bin'] + ram_usage['palette_bin'] + \
-                      ram_usage['ingredient_bin'] + ram_usage['window_bin']
-
-        logger.info('-' * 32)
-        logger.info('[****] <Scene> size:%d' % ram_usage['scene_header'])
-        logger.info('[****] <Palette> size:%d' % ram_usage['palette_bin'])
-        logger.info('[****] <Ingredient> size:%d' % ram_usage['ingredient_bin'])
-        logger.info('[****] <Window> size:%d' % ram_usage['window_bin'])
-        logger.info('[****] <Glyph RAM> size:%d' % glyph_size)
-        logger.info('[****] <Palette RAM > size:%d' % palette_size)
-        logger.info('[****] <Ingredient RAM> size:%d' % ingredient_size)
-        logger.info('[****] <Window RAM> size:%d' % window_size)
-        logger.info('[****] <Glyph RAM> size:%d' % glyph_size)
-        logger.info('[****] <TOTAL> size:%d' % total_size)
+        logger.info('** <INDEX_RAM> size:%d' % index_ram_size)
+        logger.info('** <RESOURCE_RAM> size:%d' % resource_ram_size)
+        logger.info('** <RECTANGLE_RAM> size:%d' % rectangle_ram_size)

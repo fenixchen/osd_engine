@@ -42,6 +42,14 @@ class Row(object):
         return obj
 
     @property
+    def id(self):
+        return self._id
+
+    @property
+    def cell_count(self):
+        return self._cell_count
+
+    @property
     def object_index(self):
         assert self._object_index is not None
         return self._object_index

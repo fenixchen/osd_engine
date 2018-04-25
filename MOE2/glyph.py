@@ -33,7 +33,7 @@ class Glyph(object):
 
     @property
     def id(self):
-        return '%s-%d-%d' % (self._font.id, self._font_size, self.code)
+        return '%s-%dx%d-%d' % (self._font.id, self._font_width, self._font_height, self.code)
 
     @property
     def font(self):

@@ -83,6 +83,10 @@ class Window(object):
         return obj
 
     @property
+    def id(self):
+        return self._id
+
+    @property
     def default_font(self):
         return self._default_font
 
@@ -250,10 +254,13 @@ class Window(object):
         # build rectangles
         rectangle_ram = b''
         for rectangle in self._rectangles:
-            rectangle_ram += rectangle.to_binary(ram_offset)
+            r = rectangle.to_binary(ram_offset)
+            rectangle_ram += r
+            ram_usage[rectangle] = len(r)
+
         assert len(rectangle_ram) == OSD_RECTANGLE_SIZE * len(self._rectangles)
+        ram_offset += len(rectangle_ram)
         ram += rectangle_ram
-        ram_offset += OSD_RECTANGLE_SIZE * len(self._rectangles)
 
         # build palette0, palette1
         header += struct.pack('<HH',
@@ -262,15 +269,17 @@ class Window(object):
 
         header += struct.pack('<I', ram_offset)  # palette0_addr
         palette0_ram = self._palettes[0].to_binary()
+        ram_usage[self._palettes[0]] = len(palette0_ram)
         assert len(palette0_ram) == self._palettes[0].count * 4
+        ram_offset += len(palette0_ram)
         ram += palette0_ram
-        ram_offset += self._palettes[0].count * 4
 
         header += struct.pack('<I', ram_offset)  # palette1_addr
         palette1_ram = self._palettes[1].to_binary()
         assert len(palette1_ram) == self._palettes[1].count * 4
+        ram_usage[self._palettes[1]] = len(palette1_ram)
+        ram_offset += len(palette1_ram)
         ram += palette1_ram
-        ram_offset += self._palettes[1].count * 4
 
         # build glyph
         sized_glyphs = {}
@@ -289,7 +298,9 @@ class Window(object):
             sized_glyph_addr[sizes] = ram_offset
             glyphs_ram = b''
             for glyph in sized_glyphs[sizes]:
-                glyphs_ram += glyph.to_binary()
+                r = glyph.to_binary()
+                glyphs_ram += r
+                ram_usage[glyph] = len(r)
             assert len(glyphs_ram) == sizes[0] * sizes[1] / 8 * len(sized_glyphs[sizes])
             ram_offset += len(glyphs_ram)
             ram += glyphs_ram
@@ -310,8 +321,10 @@ class Window(object):
         for sizes in sized_bitmaps.keys():
             bitmap_ram = b''
             sized_bitmap_addr[sizes] = ram_offset
-            for glyph in sized_bitmaps[sizes]:
-                bitmap_ram += glyph.to_binary()
+            for bitmap in sized_bitmaps[sizes]:
+                r = bitmap.to_binary()
+                bitmap_ram += r
+                ram_usage[bitmap] = len(r)
             assert len(bitmap_ram) == sizes[0] * sizes[1] * len(sized_bitmaps[sizes])
             ram_offset += len(bitmap_ram)
             ram += bitmap_ram
@@ -329,6 +342,11 @@ class Window(object):
             else:
                 assert sizes in sized_bitmap_addr
                 resource_addr = sized_bitmap_addr[sizes]
-            row_ram += row.to_binary(is_glyph_row, resource_addr)
+            r = row.to_binary(is_glyph_row, resource_addr)
+            row_ram += r
+            ram_usage[row] = len(r)
+
         ram_offset += len(row_ram)
+        ram += row_ram
+
         return header, ram

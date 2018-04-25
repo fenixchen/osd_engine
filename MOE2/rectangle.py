@@ -234,6 +234,10 @@ class Rectangle(object):
             self._fill_rect(window_line_buf, y)
 
     @property
+    def id(self):
+        return self._id
+
+    @property
     def x(self):
         return self._x
 
