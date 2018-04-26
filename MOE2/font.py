@@ -9,18 +9,19 @@ from enumerate import OSD_DEFAULT_FONT_SIZE
 
 logger = Log.get_logger("engine")
 
+
 class Font(object):
     BASE_DIR = ''
 
     def __init__(self, scene, id, file,
-                 font_width=None, font_height=None,
+                 glyph_width=None, glyph_height=None,
                  charmap=None, monochrome=True):
         self._scene = scene
         self._id = id
         self._file = file
         self._monochrome = monochrome
-        self._font_width = font_width
-        self._font_height = font_height
+        self._glyph_width = glyph_width
+        self._glyph_height = glyph_height
         self._faces = []
         if isinstance(file, list):
             assert len(file) == 4
@@ -42,12 +43,11 @@ class Font(object):
     def id(self):
         return self._id
 
-
-    def get_kerning(self, char1, char2, font_width, font_height):
+    def get_kerning(self, char1, char2, font_size):
         face = self._faces[0]
         assert (face is not None)
-        font_width_unit = font_width * 64
-        font_height_unit = font_height * 64
+        font_width_unit = font_size * 64
+        font_height_unit = font_size * 64
 
         face.set_char_size(font_width_unit, font_height_unit)
         kerning = face.get_kerning(char1, char2)
@@ -65,17 +65,13 @@ class Font(object):
         else:
             int_list[byte_index] &= ~(1 << bit_index)
 
-    def load_char(self, char, font_width, font_height=None):
+    def load_char(self, char, font_size, font_width, font_height):
         face = self._faces[0]
         assert face is not None
-        assert font_width % 4 == 0
-        if font_height is None:
-            font_height = font_width
-        assert font_height % 4 == 0
 
-        font_width_unit = font_width * 64
-        font_height_unit = font_height * 64
-        face.set_char_size(font_width_unit, font_height_unit)
+        assert font_width % 4 == 0 and font_height % 4 == 0
+
+        face.set_char_size(font_size * 64, font_size * 64)
 
         if self._monochrome:
             flags = freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO
@@ -87,7 +83,8 @@ class Font(object):
         left = max(0, face.glyph.bitmap_left)
         top = max(0, (face.size.ascender >> 6) - face.glyph.bitmap_top)
         top = min(font_height - bitmap.rows, top)
-        width = face.glyph.advance.x >> 6
+        char_width = face.glyph.advance.x >> 6
+        assert char_width <= font_width
 
         glyph_data_len = font_width * font_height // 8
         glyph_data = [0] * glyph_data_len
@@ -103,7 +100,7 @@ class Font(object):
                 bit = self._get_bit(bitmap_buffer, src_bit_offset)
                 self._set_bit(glyph_data, dst_bit_offset, bit)
 
-        return glyph_data, width
+        return glyph_data, char_width
 
     def __str__(self):
         if isinstance(self._file, list):
@@ -114,36 +111,3 @@ class Font(object):
     def to_binary(self, ram_offset):
         logger.debug('Generate %s <%s>[%d]' % (type(self), self._id, self.object_index))
         return b'', b''
-
-
-if __name__ == '__main__':
-    def get_bit(int_list, bit_offset):
-        bit = int_list[bit_offset >> 3] & (128 >> (bit_offset & 7))
-        return bit
-
-
-    def print_char(data, font_width, font_height):
-        for y in range(font_height):
-            for x in range(font_width):
-                if get_bit(data, y * font_width + x):
-                    print('*', end='')
-                else:
-                    print('-', end='')
-            print()
-
-
-    font_width = 24
-    font_height = 24
-    font = Font(None, '', r'scene\fonts\calibri.ttf')
-    text = 'Hello world'
-    previous = None
-    for char in text:
-        data, width = font.load_char(char, font_width, font_height)
-        if previous is not None:
-            kerning = font.get_kerning(previous, char, font_width, font_height)
-        else:
-            kerning = 0
-        width_dec = font_width - width + kerning
-        print("width: %d, width_dec:%d, kerning:%d" % (width, width_dec, kerning))
-        print_char(data, font_width, font_height)
-        previous = char

@@ -11,13 +11,18 @@ logger = Log.get_logger("engine")
 
 
 class Row(object):
-    def __init__(self, window, y, size, id='', visible=True, Columns=[]):
+    def __init__(self, window, y, size, x=0, id='',
+                 visible=True,
+                 Columns=[],
+                 show_grid=False):
         self._object_index = None
         self._window = window
         self._y = y
+        self._x = x
         self._id = id
         self._visible = visible
         self._cell_width, self._cell_height = size
+        self._show_grid = show_grid
         self._columns = []
         for column_info in Columns:
             obj = self._create_object(column_info)
@@ -40,6 +45,14 @@ class Row(object):
         obj = cls(row=self, **values)
         logger.debug(obj)
         return obj
+
+    @property
+    def show_grid(self):
+        return self._show_grid
+
+    @show_grid.setter
+    def show_grid(self, show):
+        self._show_grid = show
 
     @property
     def id(self):
@@ -69,14 +82,23 @@ class Row(object):
         return False
 
     def draw_line(self, window_line_buffer, row_y):
-        x = 0
+        if self._show_grid:
+            if row_y == 0 or row_y == self._cell_height - 1:
+                for x in range(self._x, self._window.width):
+                    window_line_buffer[x] = 0xFF00FF
+            else:
+                x = self._x
+                while x < self._window.width:
+                    window_line_buffer[x] = 0xFF00FF
+                    x += self._cell_width
+        x = self._x
         for i, cell in enumerate(self._cells):
             if cell is not None:
                 cell.draw_line(window_line_buffer,
                                row_y, x, self._cell_width)
-                x += self.cell_width - cell.width_dec
+                x += self.cell_width + cell.width_delta
             else:
-                x = self._cell_width * (i + 1)
+                x += self._cell_width
 
     @property
     def y(self):
@@ -107,14 +129,15 @@ class Row(object):
             type(self), self._y, self._cell_width, self._cell_height)
 
     def to_binary(self, is_glyph_row, resource_addr):
-        logger.debug('Generate %s <%s>(y:%d)' % (type(self),self._id,self._y))
+        logger.debug('Generate %s <%s>(y:%d)' % (type(self), self._id, self._y))
         ram = b''
+        ram += struct.pack('<HH', self._x, self._y)
         ram += struct.pack('<I', resource_addr)
-        ram += struct.pack('<BBBB', 1 if is_glyph_row else 0, self._cell_width, self._cell_height,
-                           1 if self._visible else 0)
+        flag = (1 if is_glyph_row else 0) | (1 if self._visible else 0) << 1
+        ram += struct.pack('<BBBx', flag, self._cell_width, self._cell_height)
         for cell in self._cells:
             if cell is None:
                 ram += struct.pack('<BBB', 0, 0, 0)
             else:
-                ram += struct.pack('<BBB', cell.object_index, cell.color, cell.width_dec)
+                ram += struct.pack('<BBb', cell.object_index, cell.color, cell.width_delta)
         return ram

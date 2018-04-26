@@ -7,32 +7,11 @@ import os
 TEST_ALL = False
 GENERATE_BIN = True
 if TEST_ALL:
-    yamls = [
-        'scene/animation.yaml',
-        'scene/bitmap.yaml',
-        'scene/button.yaml',
-        'scene/font.yaml',
-        'scene/hello.yaml',
-        'scene/ico.yaml',
-        'scene/inputbox.yaml',
-        'scene/label.yaml',
-        'scene/line.yaml',
-        'scene/menu.yaml',
-        'scene/monitor.yaml',
-        'scene/neg_block.yaml',
-        'scene/progressbar.yaml',
-        'scene/rect.yaml',
-        'scene/screensaver.yaml',
-        'scene/text.yaml',
-        'scene/tv.yaml',
-        'atv/no_signal.yaml',
-        'atv/system_settings.yaml']
+    yamls = ['scene/hello.yaml'
+             ]
 else:
+    yamls = ['scene/system_settings.yaml']
     #yamls = ['scene/hello.yaml']
-    #yamls = ['atv/no_signal.yaml']
-    #yamls = ['atv/system_settings.yaml']
-    #yamls = ['scene/monitor.yaml']
-    yamls = ['scene/hello.yaml']
 
 if __name__ == '__main__':
     scenes = []

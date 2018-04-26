@@ -12,6 +12,8 @@ Scene:
         y: 100
         width: 400
         height: 300
+        default_font_size: 16
+        show_grid: True
 
         Palettes:
           - Palette:
@@ -49,6 +51,7 @@ Scene:
         Rows:
           - Row:
               id: row0
+              x: 10
               y: 10
               size: [16,16]
               Columns:
@@ -64,6 +67,7 @@ Scene:
                     text: 'World'
           - Row:
               id: row1
+              x: 50
               y: 50
               size: [24, 24]
               Columns:
@@ -71,15 +75,18 @@ Scene:
                     column: 1
                     id: text0
                     color: 2
+                    font_size: 24
                     text: 'Hello'
                 - Text:
                     column: 10
                     id: text1
                     color: 3
+                    font_size: 24
                     text: 'World'
 
           - Row:
               id: row2
+              x: 100
               y: 100
               size: [54,19]
               Columns:

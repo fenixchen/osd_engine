@@ -6,10 +6,14 @@ from cell import Cell
 
 logger = Log.get_logger("engine")
 
+
 class Text(object):
-    def __init__(self, row, column, id, text, color,
+    def __init__(self, row, column, text, color,
+                 id='',
                  font=None,
-                 mutable=False):
+                 font_size=None,
+                 mutable=False,
+                 width_delta=0):
         self._text = text
         self._color = color
         self._font = font
@@ -20,6 +24,10 @@ class Text(object):
         self._row = row
         self._column = column
         self._mutable = mutable
+        self._font_size = font_size
+        self._width_delta = width_delta
+        if self._font_size is None:
+            self._font_size = row.window.default_font_size
 
         if isinstance(self._text, int):
             self._text = [self._text]
@@ -27,19 +35,20 @@ class Text(object):
     def fill_cells(self, cells):
         column = self._column
         previous = None
-        for char in self._text:
+        for i, char in enumerate(self._text):
             glyph = self._window.get_glyph(self._font, char,
+                                           self._font_size,
                                            self._row.cell_width,
                                            self._row.cell_height)
             assert glyph is not None
             if previous is not None:
-                kerning = self._window.get_kerning(self._font, previous, char,
-                                                   self._row.cell_width,
-                                                   self._row.cell_height)
+                kerning = self._window.get_kerning(self._font, previous, char, self._font_size)
             else:
                 kerning = 0
-            width_dec = self._row.cell_width - glyph.width + kerning
-            cells[column] = Cell(self._row, glyph, self._color, width_dec)
+            width_delta = glyph.char_width - self._row.cell_width - kerning
+            if i == len(self._text) - 1:
+                width_delta += self._width_delta
+            cells[column] = Cell(self._row, glyph, self._color, width_delta)
             column += 1
             previous = char
 

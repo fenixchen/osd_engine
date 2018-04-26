@@ -91,6 +91,8 @@ class App(object):
         s.generate_binary(target_folder=bin_folder, ram_base_addr=0xF000000)
 
     def mouse_click(self, event):
+        if len(self._scenes) <= 1:
+            return
         if event.num == 1:
             self._scene_index = (self._scene_index + 1) % len(self._scenes)
         elif event.num == 3:

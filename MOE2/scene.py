@@ -29,7 +29,17 @@ class Scene(object):
         self._timer_ms = 0
         self._title = ''
         self._map_define = {}
+        self._default_font = None
+        self._default_font_size = 16
         self.load(yaml_file, True)
+
+    @property
+    def default_font_size(self):
+        return self._default_font_size
+
+    @property
+    def default_font(self):
+        return self._default_font
 
     @property
     def filename(self):
@@ -136,6 +146,8 @@ class Scene(object):
         if root:
             self._width = config['width'] if 'width' in config else 640
             self._height = config['height'] if 'height' in config else 480
+            self._default_font = config['default_font'] if 'default_font' in config else None
+            self._default_font_size = config['default_font_size'] if 'default_font_size' in config else 16
             self._frames = 1 if 'frames' not in config else int(config['frames'])
             if 'title' in config:
                 self._title = config['title']
@@ -375,22 +387,22 @@ class Scene(object):
             rectangle_ram_size += rectangle_size
 
             glyph_size = 0
-            for i, glyph in enumerate(window._glyphs):
+            for glyph in window._glyphs:
                 s = ram_usage[glyph]
                 glyph_size += s
                 logger.info('****** [%04d] %-24s => %5d, Total:%d',
-                            i, glyph.id, s, total_size + glyph_size)
+                            glyph.object_index, glyph.id, s, total_size + glyph_size)
 
             logger.info('******  <GLYPH> size:%d', glyph_size)
             total_size += glyph_size
             resource_ram_size += glyph_size
 
             bitmap_size = 0
-            for i, bitmap in enumerate(window._bitmaps):
+            for bitmap in window._bitmaps:
                 s = ram_usage[bitmap]
                 bitmap_size += s
                 logger.info('****** [%04d] %-13s %3d x %3d  => %5d, Total:%d',
-                            i, bitmap.id, bitmap.width, bitmap.height, s, total_size + bitmap_size)
+                            bitmap.object_index, bitmap.id, bitmap.width, bitmap.height, s, total_size + bitmap_size)
 
             logger.info('******  <BITMAP> size:%d', bitmap_size)
             total_size += bitmap_size
@@ -400,12 +412,15 @@ class Scene(object):
             for i, palette in enumerate(window.palettes):
                 s = ram_usage[palette]
                 palette_size += s
-                logger.info('****** [%04d] %-20s %3d => %5d, Total:%d', i, palette.id, palette.count, s, palette_size + total_size)
+                logger.info('****** [%04d] %-20s %3d => %5d, Total:%d', i, palette.id, palette.count, s,
+                            palette_size + total_size)
             logger.info('****** <palette> size:%d', palette_size)
             total_size += palette_size
 
             row_size = 0
             for i, row in enumerate(window._rows):
+                if len(row._columns) == 0:
+                    continue
                 s = ram_usage[row]
                 row_size += s
                 logger.info('****** [%04d] %-13s (%3dx%3d) 8 + (%2d) x 3 => %5d, Total:%d',

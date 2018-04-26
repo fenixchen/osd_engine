@@ -1,0 +1,589 @@
+Scene:
+  width: 800
+  height: 600
+  default_font: mono_16
+  default_font_size: 24
+
+  Includes:
+    - Include:
+        file: common.yaml
+
+  Windows:
+    - Window:
+        id: left
+        x: 0
+        y: 0
+        width: 286
+        height: 553
+        default_font_size: 24
+        show_grid: False
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
+                       0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
+                       0x909090, 0x104E8B, 0xCDCD00, 0x9191E6, 0xEEB422]
+        Rectangles:
+          - Rectangle:
+              x: 0
+              y: 175
+              width: 284
+              height: 75
+              border_weight: 1
+              border_color: 2
+              bgcolor: [5, 13]
+              height: 75
+              gradient_mode: CORNER_TO_CENTER
+
+          - Rectangle:
+              x: 0
+              y: 250
+              width: 284
+              height: 75
+              border_weight: 1
+              border_color: 2
+              bgcolor: [6, 7]
+              height: 75
+              gradient_mode: CORNER_TO_CENTER
+
+          - Rectangle:
+              x: 0
+              y: 325
+              width: 284
+              height: 75
+              border_weight: 1
+              border_color: 2
+              bgcolor: [6, 7]
+              height: 75
+              gradient_mode: CORNER_TO_CENTER
+
+          - Rectangle:
+              x: 0
+              y: 400
+              width: 284
+              height: 75
+              border_weight: 1
+              border_color: 2
+              bgcolor: [6, 7]
+              height: 75
+              gradient_mode: CORNER_TO_CENTER
+
+          - Rectangle:
+              x: 0
+              y: 475
+              width: 284
+              height: 75
+              border_weight: 1
+              border_color: 2
+              bgcolor: [6, 7]
+              height: 75
+              gradient_mode: CORNER_TO_CENTER
+
+        Bitmaps:
+          - Bitmap:
+              id: left_top_left
+              bitmaps: 'images/left_top_left.bmp'
+
+          - Bitmap:
+              id: left_top_right
+              bitmaps: 'images/left_top_right.bmp'
+
+          - Bitmap:
+              id: left_top_tile
+              bitmaps: 'images/left_top_tile.bmp'
+
+        Rows:
+          - Row:
+              y: 0
+              size: [11, 49]
+              Columns:
+                - Image:
+                    bitmap: left_top_left
+                    column: 0
+                - Image:
+                    bitmap: left_top_tile
+                    column: [1,24]
+                - Image:
+                    bitmap: left_top_right
+                    column: 25
+          - Row:
+              y: 200
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 5
+                    color: 2
+                    text: 'Picture'
+
+          - Row:
+              y: 275
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 5
+                    color: 1
+                    text: 'Sound'
+
+          - Row:
+              y: 350
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 5
+                    color: 1
+                    text: 'Channel'
+
+          - Row:
+              y: 425
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 5
+                    color: 1
+                    text: 'Feature'
+
+          - Row:
+              y: 500
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 5
+                    color: 1
+                    text: 'Setup'
+
+    - Window:
+        id: top
+        x: 286
+        y: 0
+        width: 514
+        height: 71
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
+                       0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
+                       0x909090, 0x104E8B, 0xCDCD00, 0x9191E6, 0xEEB422]
+        Bitmaps:
+          - Bitmap:
+              id: title_tile
+              bitmaps: 'images/title_tile.bmp'
+          - Bitmap:
+              id: title_left
+              bitmaps: 'images/title_left.bmp'
+          - Bitmap:
+              id: title_right
+              bitmaps: 'images/title_right.bmp'
+        Rows:
+          - Row:
+              y: 0
+              size: [73, 71]
+              Columns:
+                - Image:
+                    bitmap: title_left
+                    column: 0
+                - Image:
+                    bitmap: title_tile
+                    column: [1,5]
+                - Image:
+                    bitmap: title_right
+                    column: 6
+          - Row:
+              y: 32
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 11
+                    color: 2
+                    text: 'Picture'
+    - Window:
+        id: bottom
+        x: 0
+        y: 551
+        width: 1.0
+        height: 47
+        show_grid: False
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
+                       0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
+                       0x909090, 0x104E8B, 0xCDCD00, 0x9191E6, 0xEEB422]
+        Bitmaps:
+          - Bitmap:
+              id: left_bottom
+              bitmaps: 'images/left_bottom.bmp'
+          - Bitmap:
+              id: bottom
+              bitmaps: 'images/bottom.bmp'
+        Rows:
+          - Row:
+              y: 0
+              size: [50, 47]
+              Columns:
+                - Image:
+                    column: 0
+                    bitmap: left_bottom
+                - Image:
+                    bitmap: bottom
+                    column: [1, 15]
+          - Row:
+              x: 160
+              y: 10
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 0
+                    color: 2
+                    text: 'Move'
+                - Text:
+                    column: 10
+                    color: 2
+                    text: 'Enter'
+                - Text:
+                    column: 21
+                    color: 2
+                    text: 'Exit'
+                - Text:
+                    column: 31
+                    color: 2
+                    text: 'Return'
+    - Window:
+        id: bottom2
+        x: 0
+        y: 551
+        width: 1.0
+        height: 47
+        Bitmaps:
+          - Bitmap:
+              id: move
+              bitmaps: 'images/move.bmp'
+              transparent_color: 0xFF00FF
+
+          - Bitmap:
+              id: enter
+              bitmaps: 'images/enter.bmp'
+              transparent_color: 0xFF00FF
+
+          - Bitmap:
+              id: exit
+              bitmaps: 'images/exit.bmp'
+              transparent_color: 0xFF00FF
+
+          - Bitmap:
+              id: menu
+              bitmaps: 'images/menu.bmp'
+              transparent_color: 0xFF00FF
+        Rows:
+          - Row:
+              y: 12
+              x: 100
+              size: [57, 19]
+              Columns:
+                - Image:
+                    column: 0
+                    bitmap: move
+                    width_delta: -9
+
+                - Image:
+                    column: 3
+                    bitmap: enter
+
+                - Image:
+                    column: 6
+                    bitmap: exit
+                    width_delta: -3
+
+                - Image:
+                    column: 9
+                    bitmap: menu
+                    width_delta: -3
+
+    - Window:
+        id: center
+        x: 286
+        y: 71
+        width: 514
+        height: 482
+        show_grid: False
+        Palettes:
+          - Palette:
+              id: palette0
+              colors: [0x000000, 0x000000, 0xFFFFFF, 0xFF0000, 0xFF00FF,
+                       0x7171C6, 0x808080, 0xD0D0D0, 0x8FBC8F, 0xEEE8CD,
+                       0x909090, 0x104E8B, 0xCDCD00, 0x9191E6, 0xEEB422]
+        Rectangles:
+          - Rectangle:
+              x: 0
+              y: 0
+              width: 514
+              height: 48
+              bgcolor: 8
+          - Rectangle:
+              x: 0
+              y: 48
+              width: 514
+              height: 48
+              bgcolor: 9
+          - Rectangle:
+              x: 0
+              y: 96
+              width: 514
+              height: 48
+              bgcolor: 8
+          - Rectangle:
+              x: 0
+              y: 144
+              width: 514
+              height: 48
+              bgcolor: 9
+          - Rectangle:
+              x: 0
+              y: 192
+              width: 514
+              height: 48
+              bgcolor: 8
+          - Rectangle:
+              x: 0
+              y: 240
+              width: 514
+              height: 48
+              bgcolor: 9
+          - Rectangle:
+              x: 0
+              y: 288
+              width: 514
+              height: 48
+              bgcolor: 8
+          - Rectangle:
+              x: 0
+              y: 336
+              width: 514
+              height: 48
+              bgcolor: 9
+          - Rectangle:
+              x: 0
+              y: 384
+              width: 514
+              height: 48
+              bgcolor: 8
+          - Rectangle:
+              x: 0
+              y: 432
+              width: 514
+              height: 48
+              bgcolor: 9
+          - Rectangle:
+              x: 280
+              y: 52
+              width: 200
+              height: 40
+              bgcolor: 11
+              border_weight: 4
+              border_color: 14
+          - Rectangle:
+              x: 280
+              y: 100
+              width: 200
+              height: 40
+              bgcolor: 10
+          - Rectangle:
+              x: 280
+              y: 148
+              width: 200
+              height: 40
+              bgcolor: 10
+          - Rectangle:
+              x: 280
+              y: 196
+              width: 200
+              height: 40
+              bgcolor: 10
+          - Rectangle:
+              x: 280
+              y: 244
+              width: 200
+              height: 40
+              bgcolor: 10
+          - Rectangle:
+              x: 280
+              y: 292
+              width: 200
+              height: 40
+              bgcolor: 10
+          - Rectangle:
+              x: 280
+              y: 340
+              width: 200
+              height: 40
+              bgcolor: 11
+          - Rectangle:
+              x: 280
+              y: 388
+              width: 200
+              height: 40
+              bgcolor: 10
+        Bitmaps:
+          - Bitmap:
+              id: page_up
+              bitmaps: 'images/page_up.bmp'
+              transparent_color: 0xFF00FF
+          - Bitmap:
+              id: page_down
+              bitmaps: 'images/page_down.bmp'
+              transparent_color: 0xFF00FF
+          - Bitmap:
+              id: left
+              bitmaps: 'images/left.bmp'
+              transparent_color: 0xFE02FE
+          - Bitmap:
+              id: right
+              bitmaps: 'images/right.bmp'
+              transparent_color: 0xFE02FE
+        Rows:
+          - Row:
+              x: 300
+              y: 0
+              size: [123, 26]
+              Columns:
+                - Image:
+                    bitmap: page_up
+                    column: 0
+
+          - Row:
+              x: 300
+              y: 456
+              size: [123, 26]
+              Columns:
+                - Image:
+                    bitmap: page_down
+                    column: 0
+
+          - Row:
+              x: 60
+              y: 60
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 0
+                    text: 'Picture Mode'
+                    color: 1
+                    width_delta: 90
+                - Text:
+                    column: 14
+                    text: 'Standard'
+                    color: 1
+
+          - Row:
+              x: 60
+              y: 108
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 1
+                    text: 'Brightness'
+                    color: 1
+                    width_delta: 115
+                - Text:
+                    column: 14
+                    text: '50'
+                    color: 1
+
+          - Row:
+              x: 60
+              y: 156
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 1
+                    text: 'Contrast'
+                    color: 1
+                    width_delta: 115
+                - Text:
+                    column: 13
+                    text: '50'
+                    color: 1
+
+          - Row:
+              x: 60
+              y: 204
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 1
+                    text: 'Sharpness'
+                    color: 1
+                    width_delta: 115
+                - Text:
+                    column: 13
+                    text: '50'
+                    color: 1
+
+          - Row:
+              x: 60
+              y: 252
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 2
+                    text: 'Colour'
+                    color: 1
+                    width_delta: 115
+                - Text:
+                    column: 12
+                    text: '50'
+                    color: 1
+
+          - Row:
+              x: 60
+              y: 300
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 2
+                    text: 'Tint'
+                    color: 1
+                    width_delta: 105
+                - Text:
+                    column: 12
+                    text: '50'
+                    color: 1
+          - Row:
+              y: 60
+              x: 260
+              size: [16, 18]
+              Columns:
+                - Image:
+                    column: 0
+                    bitmap: left
+                - Image:
+                    column: 14
+                    bitmap: right
+          - Row:
+              x: 60
+              y: 348
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 0
+                    text: 'Colour Temperature'
+                    color: 1
+                    width_delta: 100
+                - Text:
+                    column: 18
+                    text: '50'
+                    color: 1
+
+          - Row:
+              x: 60
+              y: 396
+              size: [20, 24]
+              Columns:
+                - Text:
+                    column: 1
+                    text: 'Aspect Ratio'
+                    color: 1
+                    width_delta: 75
+                - Text:
+                    column: 16
+                    text: '16:9'
+                    color: 1

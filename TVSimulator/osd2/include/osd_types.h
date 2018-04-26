@@ -119,11 +119,14 @@ struct _osd_window_hw {
 
 typedef struct _osd_row_hw osd_row_hw;
 struct _osd_row_hw {
+	u16 x, y;
     u32 resource_addr: 32;
-	u8 is_glyph_row;
+	u8 is_glyph_row:1;
+	u8 visible:1;
+	u8 reserved1: 6;
     u8 cell_width;
     u8 cell_height;
-	u8 reserved;
+	u8 reserved2;	
     osd_cell_hw cell[1];
 };
 

@@ -23,7 +23,8 @@ class Window(object):
                  Preloads=[],
                  Rows=[],
                  default_font=None,
-                 default_font_size=16):
+                 default_font_size=None,
+                 show_grid=None):
         self._scene = scene
         self._id = id
         self._scene = scene
@@ -41,6 +42,10 @@ class Window(object):
         self._texts = []
         self._rows = []
         self._default_font_size = default_font_size
+        if self._default_font_size is None:
+            self._default_font_size = scene.default_font_size
+
+        self._show_grid = show_grid
 
         if default_font is None:
             self._default_font = scene.fonts[0]
@@ -53,6 +58,11 @@ class Window(object):
         for palette_info in Palettes:
             palette = self._create_object(palette_info)
             self._palettes.append(palette)
+            if len(self._palettes) == 2:
+                continue
+
+        for i in range(len(self._palettes), 2):
+            self._palettes.append(Palette(self, 'palette_%d' % i, []))
 
         assert len(self._palettes) == 2
 
@@ -68,6 +78,8 @@ class Window(object):
             row = self._create_object(row_info)
             row.object_index = len(self._rows) - 1
             self._rows.append(row)
+            if show_grid is not None:
+                row.show_grid = show_grid
 
     def _create_object(self, item):
         assert (len(item.keys()) > 0)
@@ -102,7 +114,7 @@ class Window(object):
     def palettes(self):
         return self._palettes
 
-    def get_kerning(self, font, char1, char2, font_width, font_height):
+    def get_kerning(self, font, char1, char2, font_size):
         if font is None:
             font = self.default_font
 
@@ -110,7 +122,7 @@ class Window(object):
             font = font
         else:
             font = self._scene.find_font(font)
-        return font.get_kerning(char1, char2, font_width, font_height)
+        return font.get_kerning(char1, char2, font_size)
 
     def get_bitmap(self, bitmap_id):
         for bitmap in self._bitmaps:
@@ -119,7 +131,7 @@ class Window(object):
 
         assert False, 'Cannot find bitmap <%s>' % bitmap_id
 
-    def get_glyph(self, font, char_code, font_width, font_height):
+    def get_glyph(self, font, char_code, font_size, font_width, font_height):
         """
         find glyph, create it if not found
         """
@@ -134,11 +146,12 @@ class Window(object):
         for glyph in self._glyphs:
             if glyph.char_code == char_code and \
                     glyph.font == font and \
-                    glyph.font_width == font_width and \
-                    glyph.font_height == font_height:
+                    glyph.font_size == font_size and \
+                    glyph.width == font_width and \
+                    glyph.height == font_height:
                 return glyph
 
-        glyph = Glyph(font, char_code, font_width, font_height)
+        glyph = Glyph(font, char_code, font_size, font_width, font_height)
         logger.debug(glyph)
         self._glyphs.append(glyph)
         glyph.object_index = len(self._glyphs) - 1
@@ -209,24 +222,32 @@ class Window(object):
     def draw_line(self, y):
         painted = False
         window_y = y - self._y
-        window_line_buf = [0] * self._width
+        window_line_buffer = [0] * self._width
+        if self._show_grid:
+            painted = True
+            if window_y == 0 or window_y == self.height - 1:
+                for x in range(self.width):
+                    window_line_buffer[x] = 0xFF00FF
+            else:
+                window_line_buffer[0] = 0xFF00FF
+                window_line_buffer[self._width - 1] = 0xFF00FF
 
         for rectangle in self._rectangles:
             if not rectangle.visible:
                 continue
             if rectangle.y <= window_y < rectangle.y + rectangle.height:
-                rectangle.draw_line(window_line_buf, window_y - rectangle.y)
+                rectangle.draw_line(window_line_buffer, window_y - rectangle.y)
                 painted = True
 
         for row in self._rows:
             if not row.visible:
                 continue
             if row.y <= window_y < row.y + row.cell_height:
-                row.draw_line(window_line_buf, window_y - row.y)
+                row.draw_line(window_line_buffer, window_y - row.y)
                 painted = True
 
         if painted:
-            return window_line_buf
+            return window_line_buffer
         else:
             return None
 
@@ -283,15 +304,14 @@ class Window(object):
 
         # build glyph
         sized_glyphs = {}
-        object_index = 0
+
         for glyph in self._glyphs:
-            size = (glyph.font_width, glyph.font_height)
+            size = (glyph.width, glyph.height)
             if size not in sized_glyphs:
                 sized_glyphs[size] = [glyph]
             else:
                 sized_glyphs[size].append(glyph)
-            glyph.object_index = object_index
-            object_index += 1
+            glyph.object_index = len(sized_glyphs[size]) - 1
 
         sized_glyph_addr = {}  # (width, height) => ram_addr
         for sizes in sized_glyphs.keys():
@@ -308,15 +328,14 @@ class Window(object):
 
         # build bitmaps
         sized_bitmaps = {}
-        object_index = 0
         for bitmap in self._bitmaps:
             size = (bitmap.width, bitmap.height)
             if size not in sized_bitmaps:
                 sized_bitmaps[size] = [bitmap]
             else:
                 sized_bitmaps[size].append(bitmap)
-            bitmap.object_index = object_index
-            object_index += 1
+            bitmap.object_index = len(sized_bitmaps[size]) - 1
+
         sized_bitmap_addr = {}  # (width, height) => ram_addr
         for sizes in sized_bitmaps.keys():
             bitmap_ram = b''
@@ -334,6 +353,8 @@ class Window(object):
         header += struct.pack('<I', ram_offset)  # rows_addr
         row_ram = b''
         for row in self._rows:
+            if len(row._columns) == 0:
+                continue
             sizes = (row.cell_width, row.cell_height)
             is_glyph_row = row.is_glyph_row()
             if is_glyph_row:

@@ -10,9 +10,10 @@ logger = Log.get_logger("engine")
 
 
 class Rectangle(object):
-    def __init__(self, window, id,
-                 x=0, y=0,
-                 width=0, height=0,
+    def __init__(self, window,
+                 x, y,
+                 width, height,
+                 id='',
                  border_color=0, border_weight=0,
                  bgcolor=None,
                  gradient_mode=GradientMode.SOLID.name,

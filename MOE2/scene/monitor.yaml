@@ -1,0 +1,9 @@
+Scene:
+  width: 960
+  height: 540
+  default_font: mono_16
+  default_font_size: 16
+
+  Includes:
+    - Include:
+        file: common.yaml
