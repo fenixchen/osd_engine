@@ -4,6 +4,7 @@
 #include "tv_types.h"
 #include "tv_conn.h"
 #include "tv_utils.h"
+#include "tv_queue.h"
 
 #endif
 

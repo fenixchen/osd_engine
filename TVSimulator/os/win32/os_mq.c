@@ -20,7 +20,7 @@ static void os_mq_destroy(os_mq *self) {
 static void os_mq_put_impl(os_mq *self, void *data) {
     TV_TYPE_GET_PRIV(os_mq_priv, self, priv);
     TV_ASSERT(!priv->full);
-    memcpy(priv->data + priv->write * priv->data_size, data, priv->data_size);
+    TV_MEMCPY(priv->data + priv->write * priv->data_size, data, priv->data_size);
 
     priv->write = (priv->write + 1) % priv->capacity;
     if (priv->write == priv->read) {

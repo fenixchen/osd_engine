@@ -223,14 +223,6 @@ class Window(object):
         painted = False
         window_y = y - self._y
         window_line_buffer = [0] * self._width
-        if self._show_grid:
-            painted = True
-            if window_y == 0 or window_y == self.height - 1:
-                for x in range(self.width):
-                    window_line_buffer[x] = 0xFF00FF
-            else:
-                window_line_buffer[0] = 0xFF00FF
-                window_line_buffer[self._width - 1] = 0xFF00FF
 
         for rectangle in self._rectangles:
             if not rectangle.visible:
@@ -245,6 +237,15 @@ class Window(object):
             if row.y <= window_y < row.y + row.cell_height:
                 row.draw_line(window_line_buffer, window_y - row.y)
                 painted = True
+
+        if self._show_grid:
+            painted = True
+            if window_y == 0 or window_y == self.height - 1:
+                for x in range(self.width):
+                    window_line_buffer[x] = 0xFF00FF
+            else:
+                window_line_buffer[0] = 0xFF00FF
+                window_line_buffer[self._width - 1] = 0xFF00FF
 
         if painted:
             return window_line_buffer

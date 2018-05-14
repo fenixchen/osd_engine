@@ -92,6 +92,10 @@ Scene:
               id: left_top_tile
               bitmaps: 'images/left_top_tile.bmp'
 
+          - Bitmap:
+              id: photo
+              bitmaps: 'images/icon_photo.bmp'
+
         Rows:
           - Row:
               y: 0
@@ -106,6 +110,14 @@ Scene:
                 - Image:
                     bitmap: left_top_right
                     column: 25
+          - Row:
+              y: 55
+              x: 92
+              size: [100, 100]
+              Columns:
+                - Image:
+                    bitmap: photo
+                    column: 0
           - Row:
               y: 200
               size: [20, 24]
@@ -157,6 +169,7 @@ Scene:
         y: 0
         width: 514
         height: 71
+        show_grid: False
         Palettes:
           - Palette:
               id: palette0
@@ -253,6 +266,7 @@ Scene:
         y: 551
         width: 1.0
         height: 47
+        show_grid: False
         Bitmaps:
           - Bitmap:
               id: move

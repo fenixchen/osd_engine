@@ -75,6 +75,7 @@
   <ItemGroup>
     <ClInclude Include="include\tv_api.h" />
     <ClInclude Include="include\tv_conn.h" />
+    <ClInclude Include="include\tv_queue.h" />
     <ClInclude Include="include\tv_types.h" />
     <ClInclude Include="include\tv_utils.h" />
   </ItemGroup>

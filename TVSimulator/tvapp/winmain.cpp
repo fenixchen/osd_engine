@@ -14,11 +14,11 @@ extern "C"
 #include "tv_app.h"
 }
 
-#define TFD_TEST 0
+#define TFD_TEST 1
 #define OS_TEST 0
 
 //#define STARTUP_OSD_FILE "..\\scenes\\label.osd"
-#define STARTUP_OSD_FILE "..\\atv\\no_signal.osd"
+//#define STARTUP_OSD_FILE "..\\atv\\no_signal.osd"
 //#define STARTUP_OSD_FILE "..\\atv\\system_settings.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\tv.osd"
 //#define STARTUP_OSD_FILE "..\\scenes\\monitor.osd"
@@ -42,12 +42,22 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
+void SetStdOutToNewConsole();
+extern "C" void tfd_test();
+
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                        HINSTANCE hPrevInstance,
                        LPTSTR    lpCmdLine,
                        int       nCmdShow) {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+
+    SetStdOutToNewConsole();
+#if TFD_TEST == 1
+    tfd_test();
+    system("pause");
+    return 0;
+#endif
 
     // TODO: 在此放置代码。
     MSG msg;
@@ -308,7 +318,6 @@ void SetStdOutToNewConsole() {
     setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-extern "C" void tfd_test();
 extern "C" void os_test();
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -389,10 +398,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
         break;
     case WM_CREATE:
-        SetStdOutToNewConsole();
-#if TFD_TEST == 1
-        tfd_test();
-#endif
 #if OS_TEST == 1
         os_test();
 #endif

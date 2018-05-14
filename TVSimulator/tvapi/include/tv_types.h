@@ -79,6 +79,8 @@ typedef int t_bool;
 
 #define TV_BETWEEN(x, lval, uval) ((x) >= (lval) && (x) < (uval))
 
+#define TV_MEMCPY memcpy
+
 
 #endif
 

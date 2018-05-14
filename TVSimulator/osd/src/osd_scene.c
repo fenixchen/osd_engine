@@ -84,7 +84,7 @@ static void osd_scene_paint(osd_scene *self,
                 }
             }
         }
-        memcpy(framebuffer + y * width, line_buffer, sizeof(u32) * width);
+        TV_MEMCPY(framebuffer + y * width, line_buffer, sizeof(u32) * width);
     }
     FREE_OBJECT(window_line_buffer);
     FREE_OBJECT(line_buffer);

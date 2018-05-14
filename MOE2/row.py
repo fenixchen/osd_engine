@@ -82,6 +82,15 @@ class Row(object):
         return False
 
     def draw_line(self, window_line_buffer, row_y):
+        x = self._x
+        for i, cell in enumerate(self._cells):
+            if cell is not None:
+                cell.draw_line(window_line_buffer,
+                               row_y, x, self._cell_width)
+                x += self.cell_width + cell.width_delta
+            else:
+                x += self._cell_width
+
         if self._show_grid:
             if row_y == 0 or row_y == self._cell_height - 1:
                 for x in range(self._x, self._window.width):
@@ -91,14 +100,6 @@ class Row(object):
                 while x < self._window.width:
                     window_line_buffer[x] = 0xFF00FF
                     x += self._cell_width
-        x = self._x
-        for i, cell in enumerate(self._cells):
-            if cell is not None:
-                cell.draw_line(window_line_buffer,
-                               row_y, x, self._cell_width)
-                x += self.cell_width + cell.width_delta
-            else:
-                x += self._cell_width
 
     @property
     def y(self):

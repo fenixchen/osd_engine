@@ -6,7 +6,7 @@ u8 *tv_read_file(const char *filename, u32 *len) {
     unsigned char *buffer = NULL;
     fp = fopen(filename, "rb");
     if (fp == NULL) {
-        printf("open <%s> failed.\n", filename);
+        TV_ERR("open <%s> failed.\n", filename);
         return buffer;
     }
     fseek(fp, 0L, SEEK_END);
@@ -14,7 +14,7 @@ u8 *tv_read_file(const char *filename, u32 *len) {
     fseek(fp, 0, SEEK_SET);
     buffer = (unsigned char *)malloc(length);
     if (fread(buffer, length, 1, fp) != 1) {
-        printf("read <%s> failed.\n", filename);
+        TV_ERR("read <%s> failed.\n", filename);
         free(buffer);
         return NULL;
     }
