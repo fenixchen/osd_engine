@@ -156,6 +156,9 @@ struct name {								\
 #define	SLIST_HEAD_INITIALIZER(head)					\
 	{ NULL }
 
+#ifdef SLIST_ENTRY
+#undef SLIST_ENTRY
+#endif
 #define	SLIST_ENTRY(type)						\
 struct {								\
 	struct type *sle_next;	/* next element */			\

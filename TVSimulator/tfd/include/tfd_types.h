@@ -16,8 +16,6 @@ typedef u32 tfd_table_id;
 #define TFD_DESC_LEN 47
 typedef struct _tfd_header tfd_header;
 struct _tfd_header {
-    u16   header_len;		//2
-    u16   version;			//2
     u32   group_count;		//4
     u32   build_time;		//4
     char  desc[TFD_DESC_LEN];    //47
@@ -28,26 +26,15 @@ struct _tfd_header {
 
 typedef struct _tfd_group_header tfd_group_header;
 struct _tfd_group_header {
-    u16				header_len;
-    u16				version;
     u32				module_count;
     tfd_group_id    group_id;
 };
 
 typedef struct _tfd_module_header tfd_module_header;
 struct _tfd_module_header {
-    u16				header_len;
-    u16				version;
-    u32				state_count;
     tfd_module_id	module_id;
+    u16				state_count;
     u8				send_mode;
-};
-
-typedef struct _tfd_state_header tfd_state_header;
-struct _tfd_state_header {
-    u16				header_len;
-    u16				version;
-    tfd_state_id	module_id;
 };
 
 #pragma pack()

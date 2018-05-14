@@ -35,7 +35,6 @@ struct _tfd_attr_item_id_name {
 
 struct _tfd_manager_priv {
     tfd_header header;
-    u32 group_count;
     tfd_group **group_array;
 
     u32 attr_group_count;
@@ -66,7 +65,6 @@ struct _tfd_attr_prop {
 
 typedef struct _tfd_state tfd_state;
 struct _tfd_state {
-    tfd_state_header header;
     u32 attr_prop_count;
     tfd_attr_prop *attr_prop_array;
 };
@@ -75,7 +73,6 @@ struct _tfd_module_priv {
     tfd_module *self;
     tfd_module_header header;
     char *name;
-    u32 state_count;
     tfd_state *state_array;
     u32 fw_plugin_id;
     u32 data_size;
@@ -124,16 +121,11 @@ static void tfd_manager_load(tfd_manager *self, u8 *data, u32 size) {
     TV_MEMCPY(&priv->header, offset, sizeof(priv->header));
     offset += sizeof(priv->header);
 
-    priv->group_count = *(u32*)(offset);
-    offset += sizeof(u32);
+    priv->group_array = MALLOC_OBJECT_ARRAY(tfd_group*, priv->header.group_count);
 
-    priv->group_array = MALLOC_OBJECT_ARRAY(tfd_group*, priv->group_count);
-
-    for (i = 0; i < priv->group_count; i ++) {
+    for (i = 0; i < priv->header.group_count; i ++) {
         priv->group_array[i] = tfd_group_create(&offset);
     }
-
-    offset += sizeof(u16) +  sizeof(u16); //ignore header
 
     priv->attr_group_count = *(u32*)offset;
     offset += sizeof(u32);
@@ -244,7 +236,7 @@ static void tfd_group_destroy(tfd_group *self) {
 }
 
 static tfd_group *tfd_group_create(const u8 **p_offset) {
-    u32 module_count, i;
+    u32 i;
     u8 name_len;
     tfd_group_priv *priv;
     const u8 *offset = *p_offset;
@@ -265,11 +257,8 @@ static tfd_group *tfd_group_create(const u8 **p_offset) {
     priv->name[name_len] = '\0';
     offset += name_len;
 
-    module_count = *(u32*)offset;
-    offset += sizeof(module_count);
-
-    priv->modules = MALLOC_OBJECT_ARRAY(tfd_module*, module_count);
-    for (i = 0; i < module_count; i ++) {
+    priv->modules = MALLOC_OBJECT_ARRAY(tfd_module*, priv->header.module_count);
+    for (i = 0; i < priv->header.module_count; i ++) {
         priv->modules[i] = tfd_module_create(&offset);
     }
 
@@ -281,7 +270,7 @@ static tfd_group *tfd_group_create(const u8 **p_offset) {
 static void tfd_module_destroy(tfd_module *self) {
     u32 i, j;
     FREE_OBJECT(self->priv->data);
-    for (i = 0; i < self->priv->state_count; i ++) {
+    for (i = 0; i < self->priv->header.state_count; i ++) {
         tfd_state *state = &self->priv->state_array[i];
         for (j = 0; j < state->attr_prop_count; j ++) {
             tfd_attr_prop *attr_prop = &state->attr_prop_array[j];
@@ -326,17 +315,10 @@ static tfd_module *tfd_module_create(const u8 **p_offset) {
     offset += name_len;
 
     /* load tfd state_array */
-    priv->state_count = *(u32*)offset;
-    offset += sizeof(priv->state_count);
+    priv->state_array = MALLOC_OBJECT_ARRAY(tfd_state, priv->header.state_count);
 
-    priv->state_array = MALLOC_OBJECT_ARRAY(tfd_state, priv->state_count);
-
-    for (i = 0; i < priv->state_count; i ++) {
+    for (i = 0; i < priv->header.state_count; i ++) {
         tfd_state *state = &priv->state_array[i];
-        TV_MEMCPY(&state->header, offset, sizeof(state->header));
-        offset += sizeof(state->header);
-
-        offset += sizeof(u16) + sizeof(u16); //ignore attr_prop header
 
         state->attr_prop_count = *(u32*)offset;
         offset += sizeof(state->attr_prop_count);
@@ -360,11 +342,6 @@ static tfd_module *tfd_module_create(const u8 **p_offset) {
     priv->fw_plugin_id = *(u32*)offset;
     offset += sizeof(u32);
 
-    TV_ASSERT(*(u32*)offset == 1);
-    offset += sizeof(u32);
-
-    offset += sizeof(u32); //ignore chip_id
-
     priv->data_size = *(u32*)offset;
     offset += sizeof(u32);
 
@@ -373,8 +350,6 @@ static tfd_module *tfd_module_create(const u8 **p_offset) {
     offset += priv->data_size;
 
     /* load attribute group for module */
-    offset += sizeof(u16) + sizeof(u16); //ignore attr_prop header
-
     priv->attr_prop_count = *(u32*)offset;
     offset += sizeof(priv->attr_prop_count);
 
