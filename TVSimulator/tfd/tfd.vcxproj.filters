@@ -20,9 +20,21 @@
     <ClInclude Include="include\tfd_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tfd_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\tfd_manager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tfd_group.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tfd_module.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tfd_table.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
