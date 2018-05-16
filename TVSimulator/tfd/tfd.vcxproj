@@ -12,14 +12,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\tfd_api.h" />
-    <ClInclude Include="include\tfd_manager.h" />
     <ClInclude Include="include\tfd_types.h" />
-    <ClInclude Include="src\tfd_internal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\tfd_filter.c" />
     <ClCompile Include="src\tfd_group.c" />
     <ClCompile Include="src\tfd_manager.c" />
     <ClCompile Include="src\tfd_module.c" />
+    <ClCompile Include="src\tfd_regtable.c" />
     <ClCompile Include="src\tfd_table.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

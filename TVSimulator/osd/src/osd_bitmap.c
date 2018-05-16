@@ -78,13 +78,13 @@ static void osd_bitmap_dump(osd_ingredient *ingredient) {
     TV_TYPE_GET_PRIV(osd_bitmap_priv, self, priv);
 
     bitmap = priv->bitmap;
-    TV_LOG("Bitmap\n\tpalette:%d, count:%d, addr:%#x, size:%d\n\t"
-           "bitmap_width:%d, bitmap_height:%d, tiled:%d, mask_color:%d\n",
-           ingredient->palette_index(ingredient),
-           bitmap->bitmap_count,
-           bitmap->data_addr, priv->data->data_size,
-           priv->data->bitmap_width, priv->data->bitmap_height,
-           bitmap->tiled, bitmap->mask_color);
+    TV_LOGI("Bitmap\n\tpalette:%d, count:%d, addr:%#x, size:%d\n\t"
+            "bitmap_width:%d, bitmap_height:%d, tiled:%d, mask_color:%d\n",
+            ingredient->palette_index(ingredient),
+            bitmap->bitmap_count,
+            bitmap->data_addr, priv->data->data_size,
+            priv->data->bitmap_width, priv->data->bitmap_height,
+            bitmap->tiled, bitmap->mask_color);
 }
 
 static void osd_bitmap_set_current(osd_bitmap *self, u8 bitmap_index) {

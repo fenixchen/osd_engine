@@ -56,18 +56,18 @@ void osd_text_paint(osd_ingredient *ingredient,
     }
 }
 
-void osd_text_set_text(osd_text *self, const t_wchar *str) {
+void osd_text_set_text(osd_text *self, const wchar *str) {
     int len, i;
     TV_TYPE_GET_PRIV(osd_text_priv, self, priv);
     len = tv_wchar_len(str);
     len = TV_MIN(len, priv->hw->length);
 
     for (i = 0; i < len; i ++) {
-        t_wchar ch = str[i];
+        wchar ch = str[i];
         u16 glyph_index = priv->window->find_glyph(priv->window, ch, priv->hw->font_id, priv->hw->font_size);
         if (glyph_index == OSD_INVALID_GLYPH_INDEX) {
-            TV_ERR("Cannot find char_code(%d), font_id(%d), font_size(%d) from glyph of window\n",
-                   ch, priv->hw->font_id, priv->hw->font_size);
+            TV_LOGE("Cannot find char_code(%d), font_id(%d), font_size(%d) from glyph of window\n",
+                    ch, priv->hw->font_id, priv->hw->font_size);
             TV_ASSERT(glyph_index != OSD_INVALID_GLYPH_INDEX);
         }
         priv->text_data[i].glyph_index = glyph_index;
@@ -98,8 +98,8 @@ static void osd_text_dump(osd_ingredient *ingredient) {
     osd_text *self = (osd_text *)ingredient;
     TV_TYPE_GET_PRIV(osd_text_priv, self, priv);
 
-    TV_LOG("Text\tcolor:%d, length:%d, top_line:%d\n",
-           priv->hw->color, priv->hw->length, priv->hw->top_line);
+    TV_LOGI("Text\tcolor:%d, length:%d, top_line:%d\n",
+            priv->hw->color, priv->hw->length, priv->hw->top_line);
 }
 
 static void osd_text_set_color(osd_text *self, u32 color) {

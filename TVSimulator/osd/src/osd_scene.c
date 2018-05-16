@@ -29,9 +29,9 @@ static int osd_scene_timer_interval(osd_scene *self) {
 
 static void osd_scene_dump(osd_scene *self) {
     TV_TYPE_GET_PRIV(osd_scene_priv, self, scene);
-    TV_LOG("scene\n\tname:%s, width:%d, height:%d, target_address:%#x\n",
-           scene->hw->title,
-           scene->hw->width, scene->hw->height, scene->hw->target_address);
+    TV_LOGI("scene\n\tname:%s, width:%d, height:%d, target_address:%#x\n",
+            scene->hw->title,
+            scene->hw->width, scene->hw->height, scene->hw->target_address);
 }
 
 static osd_window* osd_scene_window(osd_scene *self, u32 index) {
@@ -172,19 +172,19 @@ osd_scene *osd_scene_create(const char *osd_file, osd_proc *proc) {
 
     TV_ASSERT(osd_file);
 
-    TV_LOG("OSD_SCENE_HEADER_SIZE:%d\n", OSD_SCENE_HEADER_SIZE);
+    TV_LOGI("OSD_SCENE_HEADER_SIZE:%d\n", OSD_SCENE_HEADER_SIZE);
     TV_ASSERT(OSD_SCENE_HEADER_SIZE == 8 * sizeof(u32));
 
-    TV_LOG("OSD_GLYPH_HEADER_SIZE:%d\n", OSD_GLYPH_HEADER_SIZE);
+    TV_LOGI("OSD_GLYPH_HEADER_SIZE:%d\n", OSD_GLYPH_HEADER_SIZE);
     TV_ASSERT(OSD_GLYPH_HEADER_SIZE == 4 * sizeof(u32));
 
-    TV_LOG("OSD_INGREDIENT_HEADER_SIZE:%d\n", OSD_INGREDIENT_HEADER_SIZE);
+    TV_LOGI("OSD_INGREDIENT_HEADER_SIZE:%d\n", OSD_INGREDIENT_HEADER_SIZE);
     TV_ASSERT(OSD_INGREDIENT_HEADER_SIZE == 4 * sizeof(u32));
 
-    TV_LOG("OSD_PALETTE_HEADER_SIZE:%d\n", OSD_PALETTE_HEADER_SIZE);
+    TV_LOGI("OSD_PALETTE_HEADER_SIZE:%d\n", OSD_PALETTE_HEADER_SIZE);
     TV_ASSERT(OSD_PALETTE_HEADER_SIZE == 2 * sizeof(u32));
 
-    TV_LOG("OSD_WINDOW_HEADER_SIZE:%d\n", OSD_WINDOW_HEADER_SIZE);
+    TV_LOGI("OSD_WINDOW_HEADER_SIZE:%d\n", OSD_WINDOW_HEADER_SIZE);
     TV_ASSERT(OSD_WINDOW_HEADER_SIZE == 9 * sizeof(u32));
 
     binary = osd_binary_create(osd_file);

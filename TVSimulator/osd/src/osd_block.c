@@ -15,9 +15,9 @@ static void osd_block_dump(osd_block *self) {
     osd_block_hw *block;
     TV_TYPE_GET_PRIV(osd_block_priv, self, priv);
     block = priv->hw;
-    TV_LOG("Block\n"
-           "\tblock visible:%d, ingredient:%d, x:%d, y:%d, (%d x %d)\n",
-           block->visible, block->ingredient_index, block->x, block->y, block->width, block->height);
+    TV_LOGI("Block\n"
+            "\tblock visible:%d, ingredient:%d, x:%d, y:%d, (%d x %d)\n",
+            block->visible, block->ingredient_index, block->x, block->y, block->width, block->height);
 }
 
 static u16 osd_block_ingredient_index(osd_block *self) {

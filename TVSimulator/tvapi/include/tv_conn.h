@@ -10,11 +10,11 @@ typedef struct _tv_conn tv_conn;
 struct _tv_conn {
     tv_conn_priv *priv;
     void		(*destroy)(tv_conn *self);
-    t_bool		(*set_config)(tv_conn *self, u32 param, u32 value);
-    t_bool		(*get_config)(tv_conn *self, u32 param, u32 *value);
-    t_bool		(*open)(tv_conn *self);
-    t_bool		(*w32)(tv_conn *self, u32 addr, u32 value);
-    t_bool		(*r32)(tv_conn *self, u32 addr, u32 *value);
+    boolean		(*set_config)(tv_conn *self, u32 param, u32 value);
+    boolean		(*get_config)(tv_conn *self, u32 param, u32 *value);
+    boolean		(*open)(tv_conn *self);
+    boolean		(*w32)(tv_conn *self, u32 addr, u32 value);
+    boolean		(*r32)(tv_conn *self, u32 addr, u32 *value);
     void		(*close)(tv_conn *self);
 };
 

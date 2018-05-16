@@ -26,18 +26,18 @@ static u32 osd_label_start_y(osd_ingredient *self) {
 }
 
 static void osd_label_dump(osd_ingredient *ingredient) {
-    TV_LOG("Label\n");
+    TV_LOGI("Label\n");
 }
 
 static void osd_label_set_int(osd_label *self, int value) {
     char buffer[16];
-    t_wchar ubuffer[16];
+    wchar ubuffer[16];
     sprintf(buffer, "%d", value);
     tv_char_to_wchar(ubuffer, buffer);
     self->set_string(self, ubuffer);
 }
 
-static void osd_label_set_string(osd_label *self, const t_wchar *str) {
+static void osd_label_set_string(osd_label *self, const wchar *str) {
     osd_text *text;
     osd_block* block_text;
     TV_TYPE_GET_PRIV(osd_label_priv, self, priv);

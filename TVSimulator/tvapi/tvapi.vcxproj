@@ -48,7 +48,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;..\os\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,12 +75,14 @@
   <ItemGroup>
     <ClInclude Include="include\tv_api.h" />
     <ClInclude Include="include\tv_conn.h" />
+    <ClInclude Include="include\tv_log.h" />
     <ClInclude Include="include\tv_queue.h" />
     <ClInclude Include="include\tv_types.h" />
     <ClInclude Include="include\tv_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\tv_conn.c" />
+    <ClCompile Include="src\tv_log.c" />
     <ClCompile Include="src\tv_utils.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

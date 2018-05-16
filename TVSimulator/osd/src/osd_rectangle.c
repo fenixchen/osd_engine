@@ -231,14 +231,14 @@ static void osd_rectangle_dump(osd_ingredient *ingredient) {
     TV_TYPE_GET_PRIV(osd_rectangle_priv, self, priv);
 
     rect = priv->rectangle;
-    TV_LOG("Rectangle\n\tpalette:%d, gradient_mode:%d\n"
-           "\tborder_color:[%d,%d,%d,%d], border_weight:%d, border_style:%d\n"
-           "\tbgcolor:[%d,%d]\n",
-           ingredient->palette_index(ingredient),
-           rect->gradient_mode,
-           rect->border_color_top, rect->border_color_bottom, rect->border_color_left,
-           rect->border_color_right, rect->border_weight, rect->border_style,
-           rect->bgcolor_start, rect->bgcolor_end);
+    TV_LOGI("Rectangle\n\tpalette:%d, gradient_mode:%d\n"
+            "\tborder_color:[%d,%d,%d,%d], border_weight:%d, border_style:%d\n"
+            "\tbgcolor:[%d,%d]\n",
+            ingredient->palette_index(ingredient),
+            rect->gradient_mode,
+            rect->border_color_top, rect->border_color_bottom, rect->border_color_left,
+            rect->border_color_right, rect->border_weight, rect->border_style,
+            rect->bgcolor_start, rect->bgcolor_end);
 
 }
 

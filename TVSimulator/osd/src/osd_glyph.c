@@ -12,8 +12,8 @@ struct _osd_glyph_priv {
 
 static void osd_glyph_dump(osd_glyph *self) {
     TV_TYPE_GET_PRIV(osd_glyph_priv, self, priv);
-    TV_LOG("Glyph\n\tchar:%d, font_id:%d, font_size:%d\n",
-           priv->hw->char_code, priv->hw->font_id, priv->hw->font_size);
+    TV_LOGI("Glyph\n\tchar:%d, font_id:%d, font_size:%d\n",
+            priv->hw->char_code, priv->hw->font_id, priv->hw->font_size);
 }
 
 static void osd_glyph_destroy(osd_glyph *self) {

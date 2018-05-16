@@ -11,6 +11,25 @@ typedef u32 tfd_module_id;
 typedef u32 tfd_state_id;
 typedef u32 tfd_table_id;
 
+typedef struct _tfd_filter tfd_filter;
+typedef struct _tfd_manager tfd_manager;
+typedef struct _tfd_group tfd_group;
+typedef struct _tfd_module tfd_module;
+typedef struct _tfd_table tfd_table;
+typedef struct _tfd_plugin_regtable tfd_plugin_regtable;
+
+#define tfd_module_id_to_group_id(module_id) (((module_id) >> 12) & 0xFF)
+
+#define tfd_module_id_to_module_index(module_id) ((module_id) & 0xFFF)
+
+#define tfd_attr_item_id_to_attr_id(attr_item_id) (((attr_item_id) >> 16) & 0xFFF)
+
+
+enum TFD_PLUGIN_TYPE {
+    TFD_PLUGIN_REGTABLE = 0x00090007,
+};
+
+
 #pragma pack(1)
 
 #define TFD_DESC_LEN 47
@@ -38,6 +57,5 @@ struct _tfd_module_header {
 };
 
 #pragma pack()
-
 
 #endif

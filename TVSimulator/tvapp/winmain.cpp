@@ -11,6 +11,7 @@
 #include "winmain.h"
 extern "C"
 {
+#include "os_api.h"
 #include "tv_app.h"
 }
 
@@ -53,6 +54,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     SetStdOutToNewConsole();
+    os_init();
 #if TFD_TEST == 1
     tfd_test();
     system("pause");

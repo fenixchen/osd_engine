@@ -18,6 +18,7 @@
 #include <time.h>
 #include <fcntl.h>
 #include <io.h>
+#include <stdarg.h>
 
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -27,9 +28,9 @@ typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;
 
-typedef unsigned short t_wchar;
+typedef unsigned short wchar;
 
-typedef int t_bool;
+typedef unsigned char boolean;
 
 #define false 0
 
@@ -62,15 +63,11 @@ typedef int t_bool;
 #define TV_MAX_PATH 256
 #endif
 
-
-#define TV_LOG printf
-
-#define TV_ERR printf
+#define TV_NOT_IMPL() TV_ASSERT(0)
 
 #define TV_ASSERT assert
 
 #define TV_OFFSET_OF(type, member)   (size_t)&(((type *)0)->member)
-
 
 #define TV_MAX(x, y) ((x) > (y) ? (x) : (y))
 #define TV_MIN(x, y) ((x) < (y) ? (x) : (y))

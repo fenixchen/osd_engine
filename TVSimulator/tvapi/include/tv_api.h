@@ -5,6 +5,6 @@
 #include "tv_conn.h"
 #include "tv_utils.h"
 #include "tv_queue.h"
-
+#include "tv_log.h"
 #endif
 

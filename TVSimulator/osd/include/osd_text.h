@@ -12,7 +12,7 @@ struct _osd_text {
     u8 (*font_id)(osd_text *self);
     u8 (*font_size)(osd_text *self);
     u16 (*length)(osd_text *self);
-    void (*set_text)(osd_text *self, const t_wchar *str);
+    void (*set_text)(osd_text *self, const wchar *str);
     void (*set_color)(osd_text *self, u32 color);
     u32 (*color)(osd_text *self);
 };

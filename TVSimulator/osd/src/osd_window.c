@@ -55,13 +55,13 @@ static void osd_window_dump(osd_window *self) {
     TV_TYPE_GET_PRIV(osd_window_priv, self, priv);
     window = priv->hw;
 
-    TV_LOG("window\n"
-           "\tvisible:%d, alpha:%d, z_order:%d\n"
-           "\tx:%d, y:%d, width:%d, height:%d\n",
-           window->visible, window->alpha, window->z_order,
-           window->x, window->y, window->width, window->height);
-    TV_LOG("\tblock_count:%d, block_addr:%#x\n",
-           window->block_count, (unsigned int)priv->blocks);
+    TV_LOGI("window\n"
+            "\tvisible:%d, alpha:%d, z_order:%d\n"
+            "\tx:%d, y:%d, width:%d, height:%d\n",
+            window->visible, window->alpha, window->z_order,
+            window->x, window->y, window->width, window->height);
+    TV_LOGI("\tblock_count:%d, block_addr:%#x\n",
+            window->block_count, (unsigned int)priv->blocks);
 
 }
 

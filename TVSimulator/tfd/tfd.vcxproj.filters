@@ -14,13 +14,7 @@
     <ClInclude Include="include\tfd_api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\tfd_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\tfd_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tfd_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,6 +29,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tfd_table.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tfd_regtable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tfd_filter.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

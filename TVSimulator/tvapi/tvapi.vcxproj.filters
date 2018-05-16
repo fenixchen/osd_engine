@@ -26,12 +26,18 @@
     <ClInclude Include="include\tv_queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\tv_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\tv_conn.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tv_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tv_log.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

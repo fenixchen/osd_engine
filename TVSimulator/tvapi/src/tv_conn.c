@@ -11,23 +11,23 @@ void tv_conn_destroy(tv_conn *self) {
     FREE_OBJECT(self);
 }
 
-t_bool tv_conn_set_config(tv_conn *self, u32 param, u32 value) {
+boolean tv_conn_set_config(tv_conn *self, u32 param, u32 value) {
     return false;
 }
 
-t_bool tv_conn_get_config(tv_conn *self, u32 param, u32 *value) {
+boolean tv_conn_get_config(tv_conn *self, u32 param, u32 *value) {
     return false;
 }
 
-t_bool tv_conn_open(tv_conn *self) {
+boolean tv_conn_open(tv_conn *self) {
     return false;
 }
 
-t_bool tv_conn_w32(tv_conn *self, u32 addr, u32 value) {
+boolean tv_conn_w32(tv_conn *self, u32 addr, u32 value) {
     return false;
 }
 
-t_bool tv_conn_r32(tv_conn *self, u32 addr, u32 *value) {
+boolean tv_conn_r32(tv_conn *self, u32 addr, u32 *value) {
     return false;
 }
 

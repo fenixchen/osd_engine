@@ -1,10 +1,10 @@
 #include "os_api.h"
-
+#include "tv_api.h"
 
 void *thread_func(void *param) {
     int i = 0;
     for (i = 0; i < 5; i ++) {
-        TV_LOG("Hello %d\n", i);
+        TV_LOGI("Hello %d\n", i);
         os_msleep(1000);
     }
     return NULL;

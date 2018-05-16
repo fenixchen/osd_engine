@@ -72,8 +72,8 @@ static void osd_line_dump(osd_ingredient *ingredient) {
     TV_TYPE_GET_PRIV(osd_line_priv, self, priv);
 
     line = priv->line;
-    TV_LOG("Line\n\tx1:%d, y1:%d, x2:%d, y2:%d\n",
-           line->x1, line->y1, line->x2, line->y2);
+    TV_LOGI("Line\n\tx1:%d, y1:%d, x2:%d, y2:%d\n",
+            line->x1, line->y1, line->x2, line->y2);
 }
 
 static void osd_line_destroy(osd_ingredient *self) {
